@@ -2,8 +2,23 @@
 {
   "extends": "expo-module-scripts/tsconfig.base",
   "compilerOptions": {
-    "outDir": "./build"
+    "strict": true,
+    "target": "ES2020",
+    "module": "ESNext",
+    "moduleResolution": "bundler",
+    "declaration": true,
+    "declarationMap": true,
+    "outDir": "./build",
+    "skipLibCheck": true
   },
-  "include": ["./src"],
-  "exclude": ["**/__mocks__/*", "**/__tests__/*", "**/__rsc_tests__/*"]
+  "include": ["src/**/*", "index.ts", "hooks/**/*"],
+  "exclude": [
+    "__tests__",
+    "**/*.test.ts",
+    "**/*.spec.ts",
+    "example",
+    "ios/Tests",
+    "android/src/test",
+    "android/src/androidTest"
+  ]
 }
