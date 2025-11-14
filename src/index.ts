@@ -2,4 +2,4 @@
 // and on native platforms to LoqaAudioBridgeModule.ts
 export { default } from './LoqaAudioBridgeModule';
 export { default as LoqaAudioBridgeModuleView } from './LoqaAudioBridgeModuleView';
-export * from  './LoqaAudioBridgeModule.types';
+export * from './LoqaAudioBridgeModule.types';
