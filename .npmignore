@@ -12,3 +12,8 @@ __tests__
 /android/src/test/
 /android/build/
 /example/
+
+# iOS tests
+ios/Tests/
+ios/**/*Tests.swift
+ios/**/*Test.swift
