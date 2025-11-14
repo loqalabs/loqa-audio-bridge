@@ -1,5 +1,5 @@
 /**
- * Buffer Management Utilities for VoicelineDSP
+ * Buffer Management Utilities for LoqaAudioBridge
  *
  * Provides cross-platform buffer size calculation, validation, and
  * sample rate fallback logic for iOS and Android audio streaming.
