@@ -1,0 +1,11 @@
+{
+  "platforms": ["ios", "android"],
+  "ios": {
+    "modules": ["LoqaAudioBridgeModule"],
+    "deploymentTarget": "13.4"
+  },
+  "android": {
+    "modules": ["expo.modules.loqaaudiobridge.LoqaAudioBridgeModule"],
+    "minSdkVersion": 24
+  }
+}
