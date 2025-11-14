@@ -1,6 +1,30 @@
+import AVFoundation
 import ExpoModulesCore
+import UIKit
+
+/// Configuration for audio streaming session (from v0.2.0)
+struct StreamConfig: Record {
+    @Field var sampleRate: Int = 16000
+    @Field var bufferSize: Int = 2048
+    @Field var channels: Int = 1
+    @Field var vadEnabled: Bool = true
+    @Field var adaptiveProcessing: Bool = true
+}
 
 public class LoqaAudioBridgeModule: Module {
+  // MARK: - Properties (v0.2.0 audio capture)
+
+  /// Audio engine for capturing microphone input
+  private var audioEngine: AVAudioEngine?
+
+  /// Input node from the audio engine
+  private var inputNode: AVAudioInputNode?
+
+  /// Audio session for managing audio configuration
+  private var audioSession: AVAudioSession?
+
+  /// Supported sample rates for iOS (AVAudioEngine)
+  private let supportedSampleRates = [8000, 16000, 22050, 44100, 48000]
   // Each module class must implement the definition function. The definition consists of components
   // that describes the module's functionality and behavior.
   // See https://docs.expo.dev/modules/module-api for more details about available components.
@@ -16,7 +40,7 @@ public class LoqaAudioBridgeModule: Module {
     }
 
     // Defines event names that the module can send to JavaScript.
-    Events("onChange")
+    Events("onChange", "onAudioSamples", "onStreamError", "onStreamStatusChange")
 
     // Defines a JavaScript synchronous function that runs the native code on the JavaScript thread.
     Function("hello") {
@@ -44,5 +68,37 @@ public class LoqaAudioBridgeModule: Module {
 
       Events("onLoad")
     }
+  }
+
+  // MARK: - Private Helper Functions (v0.2.0 audio capture)
+
+  /// Configure AVAudioSession for recording
+  private func configureAudioSession() throws {
+    audioSession = AVAudioSession.sharedInstance()
+
+    guard let session = audioSession else {
+      throw NSError(
+        domain: "LoqaAudioBridge",
+        code: 1001,
+        userInfo: [NSLocalizedDescriptionKey: "Failed to get audio session"]
+      )
+    }
+
+    // Set category: .record (input-only)
+    // Mode: .measurement (minimal processing for accurate capture)
+    // Options: .allowBluetoothA2DP (support Bluetooth microphones - FIXED FR7)
+    try session.setCategory(
+      .record,
+      mode: .measurement,
+      options: [.allowBluetoothA2DP]
+    )
+
+    // Activate the audio session
+    try session.setActive(true, options: [])
+  }
+
+  /// Find closest supported sample rate for iOS
+  private func findClosestSupportedRate(requested: Int) -> Int {
+    return supportedSampleRates.min(by: { abs($0 - requested) < abs($1 - requested) }) ?? 16000
   }
 }
