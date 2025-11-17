@@ -353,3 +353,39 @@ export function validateStreamConfig(config: Partial<StreamConfig>): StreamConfi
 
   return validated;
 }
+
+// ========================================
+// Namespace Export (for backward compatibility with v0.2.0 tests)
+// ========================================
+
+/**
+ * LoqaAudioBridge namespace - provides all streaming functions as a single namespace export
+ *
+ * This namespace export maintains backward compatibility with v0.2.0 test code
+ * that uses `LoqaAudioBridge.startAudioStream()` instead of named imports.
+ *
+ * @example
+ * ```typescript
+ * // Namespace style (v0.2.0 compatibility)
+ * await LoqaAudioBridge.startAudioStream({ bufferSize: 2048 });
+ *
+ * // Named imports (preferred in v0.3.0)
+ * import { startAudioStream } from '@loqalabs/loqa-audio-bridge';
+ * await startAudioStream({ bufferSize: 2048 });
+ * ```
+ */
+export const LoqaAudioBridge = {
+  // Streaming functions
+  startAudioStream,
+  stopAudioStream,
+  isStreaming,
+
+  // Event listeners
+  addAudioSampleListener,
+  addStreamStatusListener,
+  addStreamErrorListener,
+
+  // Configuration helpers
+  createDefaultStreamConfig,
+  validateStreamConfig,
+};

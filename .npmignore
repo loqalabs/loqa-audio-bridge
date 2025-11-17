@@ -6,6 +6,7 @@
 
 __mocks__
 __tests__
+jest.setup.js
 
 /babel.config.js
 /android/src/androidTest/
