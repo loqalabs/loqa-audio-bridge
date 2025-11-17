@@ -25,4 +25,11 @@ Pod::Spec.new do |s|
   }
 
   s.source_files = "**/*.{h,m,mm,swift,hpp,cpp}"
+
+  # Exclude test files from production builds (Story 2.3 - multi-layer test exclusion)
+  s.exclude_files = [
+    "Tests/**/*",
+    "**/*Tests.swift",
+    "**/*Test.swift"
+  ]
 end
