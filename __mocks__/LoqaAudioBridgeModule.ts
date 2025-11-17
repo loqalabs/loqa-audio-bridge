@@ -12,7 +12,8 @@ const mockEmitter = new EventEmitter({} as any);
 
 // Mock state
 let isCurrentlyStreaming = false;
-let currentConfig: any = null;
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+let _currentConfig: any = null; // Stored but not read in mock - kept for potential future test assertions
 
 // Mock native module
 const LoqaAudioBridgeModule = {
@@ -24,7 +25,7 @@ const LoqaAudioBridgeModule = {
       throw new Error('ALREADY_STREAMING');
     }
 
-    currentConfig = config;
+    _currentConfig = config;
     isCurrentlyStreaming = true;
 
     // Simulate async native initialization
@@ -68,7 +69,7 @@ const LoqaAudioBridgeModule = {
     }
 
     isCurrentlyStreaming = false;
-    currentConfig = null;
+    _currentConfig = null;
 
     // Emit stopped status
     setTimeout(() => {

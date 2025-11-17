@@ -333,8 +333,7 @@ export function validateStreamConfig(config: Partial<StreamConfig>): StreamConfi
     adaptiveProcessing: config.adaptiveProcessing ?? true,
   };
 
-  // Validate buffer size
-  const { BUFFER_SIZE_MIN, BUFFER_SIZE_MAX } = require('./src/buffer-utils');
+  // Validate buffer size (using already-imported constants)
   if (validated.bufferSize! < BUFFER_SIZE_MIN || validated.bufferSize! > BUFFER_SIZE_MAX) {
     throw new Error(
       `Invalid buffer size: ${validated.bufferSize}. Must be between ${BUFFER_SIZE_MIN} and ${BUFFER_SIZE_MAX} samples.`
