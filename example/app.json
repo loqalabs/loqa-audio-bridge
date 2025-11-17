@@ -1,32 +1,31 @@
 {
   "expo": {
-    "name": "loqa-audio-bridge-example",
+    "name": "LoqaAudioBridge Example",
     "slug": "loqa-audio-bridge-example",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
-    "newArchEnabled": true,
     "splash": {
-      "image": "./assets/splash-icon.png",
+      "image": "./assets/splash.png",
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
+    "platforms": ["ios", "android"],
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "expo.modules.loqaaudiobridge.example"
+      "bundleIdentifier": "com.loqalabs.audiobridge.example",
+      "infoPlist": {
+        "NSMicrophoneUsageDescription": "This app needs microphone access to demonstrate audio streaming."
+      }
     },
     "android": {
+      "package": "com.loqalabs.audiobridge.example",
+      "permissions": ["RECORD_AUDIO"],
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
-      },
-      "edgeToEdgeEnabled": true,
-      "predictiveBackGestureEnabled": false,
-      "package": "expo.modules.loqaaudiobridge.example"
-    },
-    "web": {
-      "favicon": "./assets/favicon.png"
+      }
     }
   }
 }
