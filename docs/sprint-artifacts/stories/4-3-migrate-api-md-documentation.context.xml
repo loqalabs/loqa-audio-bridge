@@ -1,0 +1,224 @@
+<story-context id=".bmad/bmm/workflows/4-implementation/story-context/template" v="1.0">
+  <metadata>
+    <epicId>4</epicId>
+    <storyId>4.3</storyId>
+    <title>Migrate API.md Documentation</title>
+    <status>drafted</status>
+    <generatedAt>2025-11-17</generatedAt>
+    <generator>BMAD Story Context Workflow</generator>
+    <sourceStoryPath>docs/loqa-audio-bridge/sprint-artifacts/stories/4-3-migrate-api-md-documentation.md</sourceStoryPath>
+  </metadata>
+
+  <story>
+    <asA>a developer using this package</asA>
+    <iWant>comprehensive API reference documentation</iWant>
+    <soThat>I can understand all configuration options and methods</soThat>
+    <tasks>
+- Locate v0.2.0 API.md source (AC: 11)
+  - Find existing API.md (730 lines)
+  - Review structure and content
+  - Identify sections to preserve
+- Update package references (AC: 1, 9)
+  - Replace VoicelineDSP with @loqalabs/loqa-audio-bridge (all occurrences)
+  - Replace VoicelineDSPModule with LoqaAudioBridgeModule
+  - Update all import statements
+  - Update code examples to use new package name
+- Document module methods (AC: 2)
+  - startAudioStream: parameters, returns, errors, examples, platform notes
+  - stopAudioStream: behavior and returns
+  - isStreaming: return value and usage
+- Document event listeners (AC: 3)
+  - addAudioSamplesListener: payload structure, callback, cleanup
+  - addStreamStatusListener: status events
+  - addStreamErrorListener: error handling
+- Document React hook (AC: 4)
+  - useAudioStreaming: parameters and return value
+  - Lifecycle and auto-cleanup behavior
+  - Component integration example
+- Document TypeScript interfaces (AC: 5)
+  - AudioConfig: all properties with types and defaults
+  - AudioSample: event payload fields
+  - StreamStatus: enum values
+  - StreamError: error object structure
+- Create configuration reference table (AC: 6)
+  - List all config parameters
+  - Document types, defaults, descriptions, valid values
+  - Add notes for platform-specific constraints
+- Add comprehensive code examples (AC: 7)
+  - Basic streaming setup
+  - VAD configuration
+  - Error handling patterns
+  - Battery-aware configuration
+  - React component integration
+- Validate API documentation (AC: 8, 10, 11)
+  - Compile all TypeScript examples
+  - Cross-reference with type definitions
+  - Verify platform differences documented
+  - Ensure all v0.2.0 content preserved
+- Cross-reference with example app (AC: 7, 8)
+  - Verify examples match example app patterns
+  - Ensure consistency across documentation
+    </tasks>
+  </story>
+
+  <acceptanceCriteria>
+1. **All references updated** from v0.2.0 to v0.3.0: VoicelineDSP → @loqalabs/loqa-audio-bridge, VoicelineDSPModule → LoqaAudioBridgeModule, import statements updated, all code examples use new package name
+2. **Module Methods Section** documents startAudioStream, stopAudioStream, isStreaming with full parameter documentation, return values, error handling, examples, platform-specific notes
+3. **Event Listeners Section** documents addAudioSamplesListener, addStreamStatusListener, addStreamErrorListener with event payload structure, callback signatures, subscription cleanup
+4. **React Hook Section** documents useAudioStreaming hook with parameters, return value shape, lifecycle behavior (auto-cleanup), example usage in component
+5. **TypeScript Interfaces Section** documents AudioConfig, AudioSample, StreamStatus, StreamError with all properties documented
+6. **Configuration Reference Table** includes all parameters with types, defaults, descriptions, valid values
+7. **Code Examples Section** includes basic streaming, VAD configuration, error handling, battery-aware config, React component integration examples
+8. **All TypeScript code examples** compile without errors
+9. **Examples use v0.3.0** package name and imports
+10. **Platform-specific behaviors** clearly called out (iOS vs Android differences)
+11. **Migration preserves all v0.2.0 content** (FR28: existing 730 lines migrated)
+  </acceptanceCriteria>
+
+  <artifacts>
+    <docs>
+- **path**: docs/loqa-audio-bridge/collaboration/voicelinedsp-v0.2.0-api-spec.md
+  **title**: v0.2.0 API Specification
+  **section**: ALL
+  **snippet**: 730-line comprehensive API reference for VoicelineDSP v0.2.0 including type definitions, module methods, event listeners, configuration options, and code examples. This is the primary source document to migrate.
+
+- **path**: docs/loqa-audio-bridge/PRD.md
+  **title**: Product Requirements Document
+  **section**: FR28 - API Documentation
+  **snippet**: Migrate existing API.md (730 lines) from v0.2.0 to v0.3.0. Preserve all content while updating package names, imports, and references.
+
+- **path**: docs/loqa-audio-bridge/sprint-artifacts/tech-spec-epic-4.md
+  **title**: Epic 4 Technical Specification
+  **section**: API.md Structure
+  **snippet**: Module methods, event listeners, React hook, TypeScript interfaces, configuration reference table with all parameters, code examples covering basic streaming, VAD, error handling, battery optimization, React component integration.
+    </docs>
+    <code>
+- **path**: modules/loqa-audio-bridge/src/index.ts
+  **kind**: module entry point
+  **symbol**: exports
+  **lines**: 1-6
+  **reason**: Shows public API exports - what's available to import. Reexports LoqaAudioBridgeModule and LoqaAudioBridgeModuleView, plus all types from LoqaAudioBridgeModule.types.
+
+- **path**: modules/loqa-audio-bridge/src/types.ts
+  **kind**: type definitions
+  **symbol**: AudioSampleEvent, StreamConfig, StreamStatusEvent, StreamErrorEvent, StreamErrorCode
+  **lines**: 1-136
+  **reason**: Complete TypeScript interface definitions for documentation. All properties with JSDoc comments explaining purpose, defaults, ranges. Source of truth for API.md TypeScript Interfaces section (AC5).
+
+- **path**: modules/loqa-audio-bridge/src/LoqaAudioBridgeModule.types.ts
+  **kind**: type definitions
+  **symbol**: additional module types
+  **lines**: ALL
+  **reason**: Additional type definitions exported by module for comprehensive API documentation.
+
+- **path**: modules/loqa-audio-bridge/src/LoqaAudioBridgeModule.ts
+  **kind**: module implementation
+  **symbol**: startAudioStream, stopAudioStream, addAudioSamplesListener
+  **lines**: ALL
+  **reason**: Native module method signatures and implementations for Module Methods section documentation (AC2, AC3). Shows actual API surface.
+    </code>
+    <dependencies>
+- **npm**: expo-modules-core - EventEmitter, Subscription types for listener documentation
+- **TypeScript**: Compilation target for validating code examples (AC8)
+- **Source Material**: v0.2.0 API.md (730 lines) at docs/loqa-audio-bridge/collaboration/voicelinedsp-v0.2.0-api-spec.md
+    </dependencies>
+  </artifacts>
+
+  <constraints>
+- All v0.2.0 content must be preserved (FR28 requirement - 730 lines migrated)
+- Package name VoicelineDSP must be globally replaced with @loqalabs/loqa-audio-bridge
+- Module name VoicelineDSPModule must be globally replaced with LoqaAudioBridgeModule
+- All import statements must use new package name (AC1, AC9)
+- Code examples must compile with `npx tsc` - zero TypeScript errors (AC8)
+- Platform differences must be clearly documented (e.g., iOS power-of-2 buffer sizes) (AC10)
+- Configuration reference table must match types.ts exactly (AC6)
+- Examples must be consistent with README and INTEGRATION_GUIDE (same sampleRate: 16000, bufferSize: 2048)
+- Migrated API.md should be ~730-750 lines (similar scope to v0.2.0)
+- Cross-reference with example app code for consistency (AC7)
+  </constraints>
+
+  <interfaces>
+- **name**: startAudioStream
+  **kind**: Module method
+  **signature**: startAudioStream(config?: StreamConfig): Promise&lt;void&gt;
+  **path**: modules/loqa-audio-bridge/src/LoqaAudioBridgeModule.ts
+
+- **name**: stopAudioStream
+  **kind**: Module method
+  **signature**: stopAudioStream(): Promise&lt;void&gt;
+  **path**: modules/loqa-audio-bridge/src/LoqaAudioBridgeModule.ts
+
+- **name**: isStreaming
+  **kind**: Module method
+  **signature**: isStreaming(): boolean
+  **path**: modules/loqa-audio-bridge/src/LoqaAudioBridgeModule.ts
+
+- **name**: addAudioSamplesListener
+  **kind**: Event listener registration
+  **signature**: addAudioSamplesListener(callback: (event: AudioSampleEvent) => void): Subscription
+  **path**: modules/loqa-audio-bridge/src/LoqaAudioBridgeModule.ts
+
+- **name**: addStreamStatusListener
+  **kind**: Event listener registration
+  **signature**: addStreamStatusListener(callback: (event: StreamStatusEvent) => void): Subscription
+  **path**: modules/loqa-audio-bridge/src/LoqaAudioBridgeModule.ts
+
+- **name**: addStreamErrorListener
+  **kind**: Event listener registration
+  **signature**: addStreamErrorListener(callback: (event: StreamErrorEvent) => void): Subscription
+  **path**: modules/loqa-audio-bridge/src/LoqaAudioBridgeModule.ts
+
+- **name**: useAudioStreaming
+  **kind**: React Hook
+  **signature**: useAudioStreaming(config?: StreamConfig): AudioStreamingResult
+  **path**: modules/loqa-audio-bridge/src/useAudioStreaming.ts (if exists, otherwise document in API.md)
+
+- **name**: StreamConfig
+  **kind**: Configuration interface
+  **signature**: { sampleRate?: number (default: 16000); bufferSize?: number (default: 2048); channels?: number (default: 1); vadEnabled?: boolean (default: true); adaptiveProcessing?: boolean (default: true) }
+  **path**: modules/loqa-audio-bridge/src/types.ts
+
+- **name**: AudioSampleEvent
+  **kind**: Event payload interface
+  **signature**: { samples: number[]; sampleRate: number; frameLength: number; timestamp: number; rms: number }
+  **path**: modules/loqa-audio-bridge/src/types.ts
+
+- **name**: StreamStatusEvent
+  **kind**: Event payload interface
+  **signature**: { status: 'streaming' | 'stopped' | 'paused' | 'battery_optimized'; timestamp: number; platform?: 'ios' | 'android' }
+  **path**: modules/loqa-audio-bridge/src/types.ts
+
+- **name**: StreamErrorEvent
+  **kind**: Error event payload interface
+  **signature**: { error: StreamErrorCode; message: string; platform?: 'ios' | 'android'; timestamp: number }
+  **path**: modules/loqa-audio-bridge/src/types.ts
+
+- **name**: StreamErrorCode
+  **kind**: Error enum
+  **signature**: enum { PERMISSION_DENIED, SESSION_CONFIG_FAILED, ENGINE_START_FAILED, DEVICE_NOT_AVAILABLE, BUFFER_OVERFLOW }
+  **path**: modules/loqa-audio-bridge/src/types.ts
+  </interfaces>
+
+  <tests>
+    <standards>
+Documentation testing for API.md:
+- Code example extraction and TypeScript compilation (all examples must compile)
+- Type signature verification against source types.ts (100% match required)
+- Content comparison with v0.2.0 API.md (all sections preserved)
+- Line count validation (~730-750 lines, similar scope to v0.2.0)
+- Package name audit (zero occurrences of VoicelineDSP or voiceline-dsp)
+    </standards>
+    <locations>
+N/A - Documentation file, not code
+    </locations>
+    <ideas>
+- **Manual Test 1**: Code Example Compilation - Extract all code blocks from API.md to temp .ts files, run `npx tsc` on each, verify zero compilation errors (validates AC8)
+- **Manual Test 2**: Type Signature Verification - For each interface documented in API.md TypeScript Interfaces section, compare against modules/loqa-audio-bridge/src/types.ts for 100% accuracy (validates AC5)
+- **Manual Test 3**: Package Name Audit - Run `grep -r "VoicelineDSP\|voiceline-dsp" API.md` - should return zero results (validates AC1, AC9)
+- **Manual Test 4**: Content Preservation Check - Compare v0.2.0 API.md section headers/structure with migrated API.md, verify all sections preserved (validates AC11)
+- **Manual Test 5**: Platform Differences Audit - Search API.md for "iOS" and "Android" keywords, verify platform-specific behaviors documented (e.g., buffer size power-of-2 constraint on iOS) (validates AC10)
+- **Manual Test 6**: Configuration Table Accuracy - Compare AC6 configuration reference table with types.ts StreamConfig interface, verify all properties match with correct types, defaults, valid values (validates AC6)
+- **Manual Test 7**: Line Count Validation - Count lines in migrated API.md, verify ~730-750 lines (similar scope to v0.2.0 per AC11)
+    </ideas>
+  </tests>
+</story-context>

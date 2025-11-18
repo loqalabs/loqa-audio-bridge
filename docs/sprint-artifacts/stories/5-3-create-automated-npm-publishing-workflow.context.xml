@@ -1,0 +1,172 @@
+<story-context id=".bmad/bmm/workflows/4-implementation/story-context/template" v="1.0">
+  <metadata>
+    <epicId>5</epicId>
+    <storyId>5.3</storyId>
+    <title>Create Automated npm Publishing Workflow</title>
+    <status>drafted</status>
+    <generatedAt>2025-11-17</generatedAt>
+    <generator>BMAD Story Context Workflow</generator>
+    <sourceStoryPath>docs/loqa-audio-bridge/sprint-artifacts/stories/5-3-create-automated-npm-publishing-workflow.md</sourceStoryPath>
+  </metadata>
+
+  <story>
+    <asA>package maintainer</asA>
+    <iWant>automated npm publishing triggered by git tags</iWant>
+    <soThat>releases are repeatable and validated</soThat>
+    <tasks>
+- [ ] Create .github/workflows/publish-npm.yml (AC: 1)
+- [ ] Implement CI validation step (AC: 2)
+- [ ] Implement package validation step (AC: 3)
+- [ ] Implement npm publishing step (AC: 4)
+- [ ] Implement GitHub Release creation (AC: 5)
+- [ ] Configure repository secrets (AC: 7)
+- [ ] Test publishing workflow (AC: 6)
+- [ ] Validate published package (AC: 8)
+    </tasks>
+  </story>
+
+  <acceptanceCriteria>
+1. **Workflow triggers** on git tags matching `v*.*.*` (semantic versioning)
+2. **CI validation** runs before publish: npm ci, lint, test, build
+3. **Package validation** uses same logic from Story 5.2, fails if test files found
+4. **Publishing** executes `npm publish --access public` with NPM_TOKEN
+5. **GitHub Release** created automatically with tarball attached
+6. **End-to-end test** works: tag → push → publish → release
+7. **NPM_TOKEN** configured in GitHub repository secrets
+8. **Published package** installable via `npx expo install @loqalabs/loqa-audio-bridge`
+  </acceptanceCriteria>
+
+  <artifacts>
+    <docs>
+      <doc>
+        <path>docs/loqa-audio-bridge/sprint-artifacts/tech-spec-epic-5.md</path>
+        <title>Epic 5 Technical Specification</title>
+        <section>Architecture Alignment → Decision 4 (Git Tag-Based Publishing)</section>
+        <snippet>Publishing workflow triggered by semantic version tags (v*.*.*). Developer creates tag, GitHub Actions runs validation, then publishes to npm and creates GitHub Release. Manual tagging prevents accidental publishes.</snippet>
+      </doc>
+      <doc>
+        <path>docs/loqa-audio-bridge/sprint-artifacts/tech-spec-epic-5.md</path>
+        <title>Epic 5 Technical Specification</title>
+        <section>Workflows → Workflow 1 (npm Package Publishing)</section>
+        <snippet>Complete publishing sequence: npm version → git commit → git tag → push tag → CI validation → npm publish → GitHub Release. Automated validation ensures quality gate before publish.</snippet>
+      </doc>
+      <doc>
+        <path>docs/loqa-audio-bridge/sprint-artifacts/tech-spec-epic-5.md</path>
+        <title>Epic 5 Technical Specification</title>
+        <section>APIs → npm Registry API</section>
+        <snippet>npm publish uses NPM_TOKEN for authentication (write:packages scope). Publishes to https://www.npmjs.com/package/@loqalabs/loqa-audio-bridge. Fails if version already exists.</snippet>
+      </doc>
+      <doc>
+        <path>docs/loqa-audio-bridge/sprint-artifacts/stories/5-2-create-github-actions-ci-pipeline.md</path>
+        <title>Story 5.2: CI Pipeline</title>
+        <section>Package Validation Job</section>
+        <snippet>Validation logic to reuse: npm pack, extract tarball, check for test files/directories, fail if found. Same validation runs in publish workflow before npm publish.</snippet>
+      </doc>
+    </docs>
+    <code>
+      <artifact>
+        <path>.github/workflows/ci.yml</path>
+        <kind>workflow</kind>
+        <symbol>CI workflow from Story 5.2</symbol>
+        <lines>-</lines>
+        <reason>Reference for validation logic to reuse in publish workflow</reason>
+      </artifact>
+      <artifact>
+        <path>modules/loqa-audio-bridge/package.json</path>
+        <kind>configuration</kind>
+        <symbol>version field</symbol>
+        <lines>3</lines>
+        <reason>Version must match git tag for publishing (e.g., tag v0.3.0 → version 0.3.0)</reason>
+      </artifact>
+      <artifact>
+        <path>.github/workflows/voiceline-dsp-release.yml</path>
+        <kind>workflow</kind>
+        <symbol>existing release workflow</symbol>
+        <lines>-</lines>
+        <reason>Reference for GitHub release patterns in Loqa monorepo</reason>
+      </artifact>
+    </code>
+    <dependencies>
+      <npm>
+        <package name="@loqalabs/loqa-audio-bridge" version="0.3.0" scope="publishTarget" />
+      </npm>
+      <github-actions>
+        <action name="actions/checkout" version="v4" purpose="Clone repository" />
+        <action name="actions/setup-node" version="v4" purpose="Install Node.js with registry config" />
+        <action name="softprops/action-gh-release" version="v1" purpose="Create GitHub Release" />
+      </github-actions>
+      <secrets>
+        <secret name="NPM_TOKEN" scope="npm publish authentication" rotation="90 days" />
+        <secret name="GITHUB_TOKEN" scope="GitHub Release creation (auto-provided)" rotation="automatic" />
+      </secrets>
+    </dependencies>
+  </artifacts>
+
+  <constraints>
+- **Semantic versioning enforcement**: Tag must match v*.*.*  pattern (e.g., v0.3.0, v1.0.0, v2.1.3)
+- **Version synchronization**: Git tag version must match package.json version field
+- **Pre-publish validation**: All CI checks (lint, test, build, package validation) must pass before npm publish
+- **Idempotency**: Cannot publish same version twice (npm registry prevents overwrites)
+- **NPM_TOKEN security**: Token stored in GitHub Secrets, never committed to code, write:packages scope only
+- **Public package access**: Must use `--access public` for scoped packages (@loqalabs/*)
+- **GitHub Release attachment**: Tarball file must be attached to release for manual download
+- **Automatic release notes**: Use GitHub's auto-generated notes from commits since last tag
+  </constraints>
+
+  <interfaces>
+    <interface>
+      <name>GitHub Actions Tag Trigger</name>
+      <kind>Event-driven</kind>
+      <signature>on: push (tags: ['v*.*.*'])</signature>
+      <path>.github/workflows/publish-npm.yml</path>
+      <description>Workflow triggers when tag matching semantic version pattern is pushed</description>
+    </interface>
+    <interface>
+      <name>npm publish</name>
+      <kind>CLI command</kind>
+      <signature>npm publish --access public</signature>
+      <path>-</path>
+      <description>Publishes package to npm registry using NPM_TOKEN for authentication</description>
+    </interface>
+    <interface>
+      <name>GitHub Release API</name>
+      <kind>GitHub Actions</kind>
+      <signature>softprops/action-gh-release@v1 with files and generate_release_notes</signature>
+      <path>.github/workflows/publish-npm.yml</path>
+      <description>Creates GitHub Release with tarball attachment and auto-generated notes</description>
+    </interface>
+    <interface>
+      <name>npm registry verification</name>
+      <kind>HTTP endpoint</kind>
+      <signature>https://www.npmjs.com/package/@loqalabs/loqa-audio-bridge</signature>
+      <path>-</path>
+      <description>Public npm registry page for published package verification</description>
+    </interface>
+  </interfaces>
+
+  <tests>
+    <standards>
+Testing is integration-level via live workflow execution. Create test tag (e.g., v0.3.0-test or v0.3.0), push to GitHub, monitor workflow execution. Validate npm package appears on registry and is installable. Manual rollback testing via npm deprecate if needed.
+    </standards>
+    <locations>
+- Workflow definition: .github/workflows/publish-npm.yml
+- npm registry: https://www.npmjs.com/package/@loqalabs/loqa-audio-bridge
+- GitHub Releases: Repository → Releases tab
+- Workflow execution logs: GitHub Actions tab
+- Package installation test: Fresh Expo project with npx expo install
+    </locations>
+    <ideas>
+- **AC1 Test**: Create tag v0.3.0, push, verify workflow triggers (check GitHub Actions tab)
+- **AC2 Test**: Verify workflow runs npm ci, lint, test, build before publish step
+- **AC3 Test**: Add test file temporarily, verify package validation fails and blocks publish
+- **AC4 Test**: Monitor npm publish step execution, verify success message in logs
+- **AC5 Test**: Check GitHub Releases, verify release created with tag name and tarball attached
+- **AC6 Test**: Complete end-to-end test: update version → commit → tag → push → verify publish
+- **AC7 Test**: Document NPM_TOKEN setup process and verify token works
+- **AC8 Test**: Fresh Expo project → npx expo install @loqalabs/loqa-audio-bridge → verify installs correctly
+- **Registry Test**: Visit npm registry page, verify package metadata correct (name, version, description)
+- **Version Mismatch Test**: Create tag v0.3.1 with package.json still at 0.3.0, verify workflow warns or fails
+- **Rollback Test**: Document npm deprecate process for emergency rollback scenario
+    </ideas>
+  </tests>
+</story-context>

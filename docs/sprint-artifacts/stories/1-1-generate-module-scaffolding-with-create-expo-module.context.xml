@@ -1,0 +1,145 @@
+<story-context id=".bmad/bmm/workflows/4-implementation/story-context/template" v="1.0">
+  <metadata>
+    <epicId>1</epicId>
+    <storyId>1</storyId>
+    <title>Generate Module Scaffolding with create-expo-module</title>
+    <status>drafted</status>
+    <generatedAt>2025-11-13</generatedAt>
+    <generator>BMAD Story Context Workflow</generator>
+    <sourceStoryPath>docs/loqa-audio-bridge/sprint-artifacts/stories/1-1-generate-module-scaffolding-with-create-expo-module.md</sourceStoryPath>
+  </metadata>
+
+  <story>
+    <asA>developer</asA>
+    <iWant>the module structure generated using create-expo-module CLI</iWant>
+    <soThat>all required configuration files are present and properly formatted for Expo autolinking</soThat>
+    <tasks>
+      - Run create-expo-module CLI: Install latest create-expo-module compatible with Expo 52+, execute npx create-expo-module@latest loqa-audio-bridge, answer prompts with package name "@loqalabs/loqa-audio-bridge" and iOS + Android support
+      - Validate generated structure: Confirm all configuration files exist (package.json, expo-module.config.json, LoqaAudioBridge.podspec, android/build.gradle, index.ts, ios/ and android/ directories)
+      - Configure package metadata: Set package name, version 0.3.0, add peer dependencies for expo, react, react-native
+      - Configure platform specifications: Verify platforms in expo-module.config.json, set iOS deployment target 13.4+, Android minSdkVersion 24
+      - Validate against architecture: Cross-reference with Architecture Decision 1, verify autolinking configuration files
+    </tasks>
+  </story>
+
+  <acceptanceCriteria>
+    1. Scaffolding Generation: When running npx create-expo-module@latest loqa-audio-bridge, all required files are generated (package.json, expo-module.config.json, LoqaAudioBridge.podspec, android/build.gradle, index.ts, ios/ and android/ directories with starter code)
+    2. Package.json Configuration: Generated package.json includes name "@loqalabs/loqa-audio-bridge", version "0.3.0", peer dependencies for expo, react, react-native
+    3. Module Configuration: expo-module.config.json specifies platforms ["ios", "android"], iOS deployment target 13.4+, Android minSdkVersion 24
+    4. Structure Validation: Generated structure matches architecture Decision 1, all autolinking configuration files present
+  </acceptanceCriteria>
+
+  <artifacts>
+    <docs>
+      <doc>
+        <path>docs/loqa-audio-bridge/PRD.md</path>
+        <title>@loqalabs/loqa-audio-bridge v0.3.0 - Product Requirements Document</title>
+        <section>MVP - Minimum Viable Product (v0.3.0 Core)</section>
+        <snippet>Proper Expo Module Scaffolding: Regenerate module structure using create-expo-module CLI. All required configuration files automatically generated: package.json with proper metadata and peerDependencies, expo-module.config.json with platform-specific module names, voiceline-dsp.podspec for iOS CocoaPods integration, build.gradle for Android module configuration. Expo autolinking functional out of the box (no manual Podfile edits).</snippet>
+      </doc>
+      <doc>
+        <path>docs/loqa-audio-bridge/architecture.md</path>
+        <title>Architecture Document: @loqalabs/loqa-audio-bridge v0.3.0</title>
+        <section>Decision 1: Foundation Strategy</section>
+        <snippet>Selected: Option B - Use create-expo-module as starter template. Rationale: Official Expo scaffolding ensures correct structure, includes autolinking configuration out-of-the-box, provides proper expo-module.config.json and .podspec templates, reduces risk of missing critical packaging files (root cause of v0.2.0 failures). Action: Run npx create-expo-module@latest loqa-audio-bridge, copy v0.2.0 implementation code into scaffolded structure, validate autolinking works with fresh Expo app.</snippet>
+      </doc>
+      <doc>
+        <path>docs/loqa-audio-bridge/architecture.md</path>
+        <title>Architecture Document: @loqalabs/loqa-audio-bridge v0.3.0</title>
+        <section>Decision 2: Version Strategy & Compatibility</section>
+        <snippet>Configuration: name "@loqalabs/loqa-audio-bridge", version "0.3.0", peerDependencies: expo ">=52.0.0", react ">=18.0.0", react-native ">=0.72.0". Rationale: Expo 52+ provides stable Modules API, React Native 0.72+ covers 95% of active projects, single package simplifies maintenance.</snippet>
+      </doc>
+      <doc>
+        <path>docs/loqa-audio-bridge/architecture.md</path>
+        <title>Architecture Document: @loqalabs/loqa-audio-bridge v0.3.0</title>
+        <section>3. Project Structure</section>
+        <snippet>Expected structure: loqa-audio-bridge/ with package.json, expo-module.config.json, LoqaAudioBridge.podspec, index.ts, src/ (TypeScript module code), ios/ (LoqaAudioBridgeModule.swift and starter code), android/ (build.gradle and src/main/java/ with starter Kotlin code), example/ (example app scaffolding).</snippet>
+      </doc>
+      <doc>
+        <path>docs/loqa-audio-bridge/epics.md</path>
+        <title>Epic 1: Foundation & Scaffolding - Story 1.1</title>
+        <section>Story 1.1: Generate Module Scaffolding with create-expo-module</section>
+        <snippet>Prerequisites: None (first story). Technical Notes: Use latest create-expo-module version compatible with Expo 52+, answer prompts with package name "@loqalabs/loqa-audio-bridge" and iOS + Android support, verify generated structure matches architecture Decision 1.</snippet>
+      </doc>
+    </docs>
+    <code>
+      <!-- No existing code artifacts - this is the first story creating the foundation -->
+    </code>
+    <dependencies>
+      <node>
+        <create-expo-module>latest compatible with Expo 52+</create-expo-module>
+        <expo>>=52.0.0 (peer dependency)</expo>
+        <react>>=18.0.0 (peer dependency)</react>
+        <react-native>>=0.72.0 (peer dependency)</react-native>
+      </node>
+      <ios>
+        <deployment-target>13.4+</deployment-target>
+        <cocoapods>Required for .podspec integration</cocoapods>
+      </ios>
+      <android>
+        <minSdkVersion>24</minSdkVersion>
+        <gradle>For build configuration</gradle>
+      </android>
+    </dependencies>
+  </artifacts>
+
+  <constraints>
+    - Package naming: MUST use "@loqalabs/loqa-audio-bridge" (not VoicelineDSP) to align with Loqa Labs branding and distinguish from loqa-voice-dsp Rust crate
+    - Scaffolding tool version: Use create-expo-module compatible with Expo 52+ to ensure latest autolinking standards
+    - Module configuration: expo-module.config.json MUST specify both platforms (iOS and Android) to enable cross-platform autolinking
+    - Platform targets: iOS 13.4+ deployment target, Android API 24+ (minSdkVersion) to maintain compatibility with target user base
+    - Official scaffolding: Use create-expo-module CLI (official Expo tool) to ensure correct structure and avoid missing configuration files that plagued v0.2.0
+    - No manual Podfile edits: Autolinking must work out-of-the-box as a core success criterion for v0.3.0
+  </constraints>
+
+  <interfaces>
+    <interface>
+      <name>create-expo-module CLI</name>
+      <kind>Command-line tool</kind>
+      <signature>npx create-expo-module@latest [module-name]</signature>
+      <path>External tool - Expo official scaffolding CLI</path>
+    </interface>
+    <interface>
+      <name>expo-module.config.json</name>
+      <kind>Configuration file</kind>
+      <signature>JSON with platforms array, iOS deployment target, Android minSdkVersion</signature>
+      <path>To be generated in module root</path>
+    </interface>
+    <interface>
+      <name>package.json</name>
+      <kind>npm package manifest</kind>
+      <signature>JSON with name, version, peerDependencies</signature>
+      <path>To be generated in module root</path>
+    </interface>
+    <interface>
+      <name>LoqaAudioBridge.podspec</name>
+      <kind>CocoaPods specification</kind>
+      <signature>Ruby DSL for iOS module configuration</signature>
+      <path>To be generated in module root</path>
+    </interface>
+    <interface>
+      <name>android/build.gradle</name>
+      <kind>Gradle build configuration</kind>
+      <signature>Groovy DSL for Android module configuration</signature>
+      <path>To be generated in android/</path>
+    </interface>
+  </interfaces>
+
+  <tests>
+    <standards>
+      Validation-focused testing for this story: Verify all configuration files are generated with correct structure and valid syntax. Check package.json has valid JSON, expo-module.config.json has valid JSON with required fields, LoqaAudioBridge.podspec has valid Ruby syntax, android/build.gradle has valid Groovy syntax. Verify directory structure matches architecture specification. No unit tests required for scaffolding generation - validation is file existence and syntax checking.
+    </standards>
+    <locations>
+      - Module root: Configuration files (package.json, expo-module.config.json, LoqaAudioBridge.podspec)
+      - android/: build.gradle
+      - ios/: Podspec and starter Swift code
+      - Validation scripts can be added to verify structure (deferred to subsequent stories)
+    </locations>
+    <ideas>
+      AC#1: Verify all required files exist after running create-expo-module CLI - Test: List directory contents and check for package.json, expo-module.config.json, LoqaAudioBridge.podspec, android/build.gradle, index.ts, ios/, android/ directories
+      AC#2: Validate package.json configuration - Test: Parse package.json and verify name is "@loqalabs/loqa-audio-bridge", version is "0.3.0", peerDependencies include expo, react, react-native with correct version ranges
+      AC#3: Validate module configuration - Test: Parse expo-module.config.json and verify platforms array includes "ios" and "android", iOS deployment target is 13.4+, Android minSdkVersion is 24
+      AC#4: Validate structure against architecture - Test: Cross-reference generated directory structure with Architecture Decision 1 specification, verify all autolinking configuration files present
+    </ideas>
+  </tests>
+</story-context>

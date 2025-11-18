@@ -1,0 +1,249 @@
+<story-context id="bmad/bmm/workflows/4-implementation/story-context/template" v="1.0">
+  <metadata>
+    <epicId>3</epicId>
+    <storyId>3.3</storyId>
+    <title>Create Example App Scaffolding</title>
+    <status>drafted</status>
+    <generatedAt>2025-11-17</generatedAt>
+    <generator>BMAD Story Context Workflow</generator>
+    <sourceStoryPath>docs/loqa-audio-bridge/sprint-artifacts/stories/3-3-create-example-app-scaffolding.md</sourceStoryPath>
+  </metadata>
+
+  <story>
+    <asA>developer</asA>
+    <iWant>an example Expo app with the module installed</iWant>
+    <soThat>consumers can see working integration code (FR30)</soThat>
+    <tasks>
+      - Task 1: Create example directory and Expo app (npx create-expo-app example --template blank-typescript)
+      - Task 2: Configure dependency on parent module (file:.. dependency added to package.json)
+      - Task 3: Configure app.json metadata (app name, bundle IDs, permissions)
+      - Task 4: Run Expo prebuild (native projects generated for iOS and Android)
+      - Task 5: Build iOS example app (npx expo run:ios succeeds)
+      - Task 6: Build Android example app (npx expo run:android succeeds)
+      - Task 7: Verify module installation (module accessible from example app)
+      - Task 8: Document example app structure
+      - Task 9: Add to .npmignore (example excluded from npm package)
+      - Task 10: Clean up and prepare for Story 3.4
+    </tasks>
+  </story>
+
+  <acceptanceCriteria>
+    AC1: example/ directory created with blank TypeScript template
+    AC2: package.json includes file:.. dependency to parent module
+    AC3: app.json includes iOS microphone permission (NSMicrophoneUsageDescription)
+    AC4: app.json includes Android RECORD_AUDIO permission
+    AC5: npx expo run:ios builds and launches successfully
+    AC6: npx expo run:android builds and launches successfully
+  </acceptanceCriteria>
+
+  <artifacts>
+    <docs>
+      <doc>
+        <path>docs/loqa-audio-bridge/sprint-artifacts/tech-spec-epic-3.md</path>
+        <title>Epic 3 Technical Specification: Autolinking & Integration Proof</title>
+        <section>Story 3.3: Example App Scaffolding Workflow</section>
+        <snippet>Story 3.3 creates the example app structure in example/ directory using Expo blank-typescript template, configures microphone permissions for both platforms, and validates that builds succeed on iOS and Android.</snippet>
+      </doc>
+      <doc>
+        <path>docs/loqa-audio-bridge/architecture.md</path>
+        <title>Architecture Document - v0.3.0</title>
+        <section>Section 3.1: Project Structure</section>
+        <snippet>Example app follows recommended directory layout with proper separation. Example app is excluded from npm package via .npmignore but available on GitHub for reference.</snippet>
+      </doc>
+      <doc>
+        <path>docs/loqa-audio-bridge/architecture.md</path>
+        <title>Architecture Document - v0.3.0</title>
+        <section>Section 4.3: Installation (Consumer Perspective)</section>
+        <snippet>Example app demonstrates file:.. dependency pattern for local module testing before npm publish. This allows testing changes to the module without publishing.</snippet>
+      </doc>
+    </docs>
+    <code>
+      <artifact>
+        <path>modules/loqa-audio-bridge/example/package.json</path>
+        <kind>configuration</kind>
+        <symbol>package.json</symbol>
+        <lines>all</lines>
+        <reason>Example app dependencies including file:.. reference to parent module. Enables local testing before npm publish.</reason>
+      </artifact>
+      <artifact>
+        <path>modules/loqa-audio-bridge/example/app.json</path>
+        <kind>configuration</kind>
+        <symbol>app.json</symbol>
+        <lines>all</lines>
+        <reason>Expo app configuration including microphone permissions for iOS (NSMicrophoneUsageDescription) and Android (RECORD_AUDIO). Required for audio streaming functionality.</reason>
+      </artifact>
+      <artifact>
+        <path>modules/loqa-audio-bridge/example/App.tsx</path>
+        <kind>component</kind>
+        <symbol>App.tsx</symbol>
+        <lines>all</lines>
+        <reason>Main app component (blank template in this story, will be implemented in Story 3.4). Entry point for example app.</reason>
+      </artifact>
+      <artifact>
+        <path>modules/loqa-audio-bridge/.npmignore</path>
+        <kind>configuration</kind>
+        <symbol>.npmignore</symbol>
+        <lines>all</lines>
+        <reason>npm package exclusion configuration. Must include example/ to prevent shipping example app in published package.</reason>
+      </artifact>
+      <artifact>
+        <path>modules/loqa-audio-bridge/package.json</path>
+        <kind>configuration</kind>
+        <symbol>package.json</symbol>
+        <lines>1-51</lines>
+        <reason>Parent module metadata that example app depends on via file:.. reference.</reason>
+      </artifact>
+      <artifact>
+        <path>modules/loqa-audio-bridge/index.ts</path>
+        <kind>module-entry</kind>
+        <symbol>index.ts</symbol>
+        <lines>1-100</lines>
+        <reason>Module API that example app will import to demonstrate usage (startAudioStream, stopAudioStream, event listeners).</reason>
+      </artifact>
+    </code>
+    <dependencies>
+      <node>
+        <package>@loqalabs/loqa-audio-bridge</package>
+        <version>file:..</version>
+        <reason>Local dependency on parent module using file protocol for pre-publish testing</reason>
+      </node>
+      <node>
+        <package>expo</package>
+        <version>~52.0.0</version>
+        <reason>Expo framework for example app</reason>
+      </node>
+      <node>
+        <package>react</package>
+        <version>18.2.0</version>
+        <reason>React library for example app UI</reason>
+      </node>
+      <node>
+        <package>react-native</package>
+        <version>0.74.0</version>
+        <reason>React Native runtime for example app</reason>
+      </node>
+      <node>
+        <package>typescript</package>
+        <version>^5.3.0</version>
+        <reason>TypeScript for example app (blank-typescript template includes this)</reason>
+      </node>
+    </dependencies>
+    <platform>
+      <tool>Expo CLI</tool>
+      <version>latest</version>
+      <reason>Creates example app with blank-typescript template and runs prebuild</reason>
+    </platform>
+    <platform>
+      <tool>Xcode</tool>
+      <version>14.0+</version>
+      <reason>Builds iOS example app</reason>
+    </platform>
+    <platform>
+      <tool>Android Studio</tool>
+      <version>Flamingo+</version>
+      <reason>Builds Android example app</reason>
+    </platform>
+  </artifacts>
+
+  <constraints>
+    - Example app must be created in modules/loqa-audio-bridge/example/ directory
+    - Must use blank-typescript template (clean starting point, TypeScript pre-configured)
+    - package.json must use file:.. dependency (not npm registry version)
+    - iOS microphone permission must be configured in app.json (NSMicrophoneUsageDescription)
+    - Android microphone permission must be configured in app.json (RECORD_AUDIO)
+    - Example app must build successfully on both iOS and Android before Story 3.4
+    - Example app must be excluded from npm package (.npmignore must include example/)
+    - App.tsx can remain blank template in this story (implementation happens in Story 3.4)
+    - Build times: iOS ~3-5 minutes first build, Android ~4-6 minutes first build
+  </constraints>
+
+  <interfaces>
+    <interface>
+      <name>app.json - iOS Permissions</name>
+      <kind>Expo App Configuration</kind>
+      <signature>
+        {
+          "expo": {
+            "ios": {
+              "infoPlist": {
+                "NSMicrophoneUsageDescription": "This app needs microphone access to demonstrate audio streaming."
+              }
+            }
+          }
+        }
+      </signature>
+      <path>modules/loqa-audio-bridge/example/app.json</path>
+    </interface>
+    <interface>
+      <name>app.json - Android Permissions</name>
+      <kind>Expo App Configuration</kind>
+      <signature>
+        {
+          "expo": {
+            "android": {
+              "permissions": ["RECORD_AUDIO"]
+            }
+          }
+        }
+      </signature>
+      <path>modules/loqa-audio-bridge/example/app.json</path>
+    </interface>
+    <interface>
+      <name>package.json - File Dependency</name>
+      <kind>npm Package Configuration</kind>
+      <signature>
+        {
+          "dependencies": {
+            "@loqalabs/loqa-audio-bridge": "file:.."
+          }
+        }
+      </signature>
+      <path>modules/loqa-audio-bridge/example/package.json</path>
+    </interface>
+    <interface>
+      <name>Expo Create App Command</name>
+      <kind>CLI Tool</kind>
+      <signature>npx create-expo-app example --template blank-typescript</signature>
+      <path>n/a</path>
+    </interface>
+    <interface>
+      <name>Expo Prebuild Command</name>
+      <kind>CLI Tool</kind>
+      <signature>npx expo prebuild</signature>
+      <path>n/a</path>
+    </interface>
+  </interfaces>
+
+  <tests>
+    <standards>
+      This is an implementation story focusing on scaffolding setup. Testing approach:
+      1. Create example/ directory with npx create-expo-app
+      2. Verify blank-typescript template includes TypeScript, package.json, app.json, App.tsx
+      3. Add file:.. dependency to package.json
+      4. Run npm install and verify symlink created (node_modules/@loqalabs/loqa-audio-bridge → parent)
+      5. Configure microphone permissions in app.json for both platforms
+      6. Run npx expo prebuild and verify ios/ and android/ directories created
+      7. Verify autolinking: check Podfile for LoqaAudioBridge, check settings.gradle for loqaaudiobridge
+      8. Build iOS with npx expo run:ios and verify app launches on simulator
+      9. Build Android with npx expo run:android and verify app launches on emulator
+      10. Verify module importable: create test TypeScript file that imports module and run tsc --noEmit
+      11. Update .npmignore to exclude example/
+      12. Verify with npm pack that example/ not in tarball
+      Success criteria: Both builds succeed, app launches, module importable, example excluded from package.
+    </standards>
+    <locations>
+      - modules/loqa-audio-bridge/example/ (example app source)
+      - modules/loqa-audio-bridge/.npmignore (package exclusions)
+    </locations>
+    <ideas>
+      - Test Idea 1 (AC1): Create example app with blank-typescript template and verify App.tsx, package.json, app.json exist
+      - Test Idea 2 (AC2): Add file:.. dependency and run npm install, verify node_modules/@loqalabs/loqa-audio-bridge symlinks to parent directory
+      - Test Idea 3 (AC3-AC4): Configure microphone permissions in app.json and verify prebuild generates Info.plist with NSMicrophoneUsageDescription and AndroidManifest.xml with RECORD_AUDIO
+      - Test Idea 4 (AC5): Build iOS app with npx expo run:ios and verify app launches on simulator with no errors
+      - Test Idea 5 (AC6): Build Android app with npx expo run:android and verify app launches on emulator with no errors
+      - Test Idea 6: Verify autolinking works in example app by checking Podfile and settings.gradle contain module references (reuses validation from Stories 3.1 and 3.2)
+      - Test Idea 7: Create test-import.ts that imports module, run tsc --noEmit, and verify no import errors (proves module accessible)
+      - Test Idea 8: Add example/ to .npmignore, run npm pack, and verify tarball does not contain example directory (proves exclusion works)
+    </ideas>
+  </tests>
+</story-context>

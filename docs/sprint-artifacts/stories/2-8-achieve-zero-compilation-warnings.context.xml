@@ -1,0 +1,248 @@
+<story-context id=".bmad/bmm/workflows/4-implementation/story-context/template" v="1.0">
+  <metadata>
+    <epicId>2</epicId>
+    <storyId>8</storyId>
+    <title>Achieve Zero Compilation Warnings</title>
+    <status>ready-for-dev</status>
+    <generatedAt>2025-11-14</generatedAt>
+    <generator>BMAD Story Context Workflow</generator>
+    <sourceStoryPath>docs/loqa-audio-bridge/sprint-artifacts/stories/2-8-achieve-zero-compilation-warnings.md</sourceStoryPath>
+  </metadata>
+
+  <story>
+    <asA>developer</asA>
+    <iWant>both iOS and Android builds to compile with zero warnings</iWant>
+    <soThat>code quality is production-ready (FR9)</soThat>
+    <tasks>
+### Task 1: Run iOS Build and Document Warnings
+- Run xcodebuild clean build from module root
+- Extract warnings from build log
+- Document each unique warning type
+- Create list of warnings to fix
+
+### Task 2: Fix iOS Swift Warnings
+- Fix unused variables (remove or prefix with _)
+- Fix deprecated APIs (update to modern equivalents)
+- Fix force unwrapping (use optional binding)
+- Fix implicit type conversions (add explicit casts)
+- Re-build after each fix until zero warnings
+
+### Task 3: Run Android Build and Document Warnings
+- Run ./gradlew clean build from android directory
+- Extract warnings from build log
+- Document each unique warning type
+- Create list of warnings to fix
+
+### Task 4: Fix Android Kotlin Warnings
+- Fix unused variables (remove or rename to _)
+- Fix nullable type warnings (add ?. or !!)
+- Fix redundant modifiers (remove unnecessary keywords)
+- Fix deprecated APIs (update to modern equivalents)
+- Fix unchecked casts (add explicit type checks)
+- Re-build after each fix until zero warnings
+
+### Task 5: Run TypeScript Compilation and Fix Warnings
+- Run npx tsc --noEmit from module root
+- Fix type errors (missing annotations, implicit any, type mismatches)
+- Re-compile until zero errors/warnings
+
+### Task 6: Run ESLint and Fix Warnings
+- Run npm run lint from module root
+- Fix linting issues (unused imports, code style, console statements)
+- Run lint --fix for auto-fixable issues
+- Re-lint until zero errors/warnings
+
+### Task 7: Final Validation - All Platforms Zero Warnings
+- Verify iOS build: 0 warnings
+- Verify Android build: 0 warnings
+- Verify TypeScript: 0 errors, 0 warnings
+- Verify ESLint: 0 errors, 0 warnings
+- Document final build logs showing zero warnings
+</tasks>
+  </story>
+
+  <acceptanceCriteria>
+1. iOS build executed with clean build
+2. All iOS warnings identified and fixed
+3. iOS build shows 0 warnings
+4. Android build executed with clean build
+5. All Android warnings identified and fixed
+6. Android build shows 0 warnings
+7. TypeScript compilation executed
+8. All TypeScript errors/warnings fixed
+9. TypeScript shows 0 errors, 0 warnings
+10. ESLint executed
+11. All linting errors/warnings fixed
+12. ESLint shows 0 errors, 0 warnings
+13. Final validation: All platforms show zero warnings
+14. Build logs archived (evidence of zero warnings)
+15. Any suppressions documented with justification
+  </acceptanceCriteria>
+
+  <artifacts>
+    <docs>
+      <doc>
+        <path>docs/loqa-audio-bridge/sprint-artifacts/tech-spec-epic-2.md</path>
+        <title>Epic Technical Specification: Code Migration & Quality Fixes</title>
+        <section>NFR-R2: Zero Compilation Warnings</section>
+        <snippet>Zero warnings required across all platforms (iOS Swift, Android Kotlin, TypeScript, ESLint). Warnings indicate potential code quality/reliability issues. This is mandatory gate before Epic 3.</snippet>
+      </doc>
+      <doc>
+        <path>docs/loqa-audio-bridge/sprint-artifacts/tech-spec-epic-2.md</path>
+        <title>Epic Technical Specification: Code Migration & Quality Fixes</title>
+        <section>Workflows and Sequencing - Story 2.8</section>
+        <snippet>Run iOS/Android/TypeScript builds, identify warnings, fix systematically, re-run until all platforms show zero warnings. Document completion when all platforms build cleanly.</snippet>
+      </doc>
+    </docs>
+    <code>
+      <artifact>
+        <path>modules/loqa-audio-bridge/ios/LoqaAudioBridgeModule.swift</path>
+        <kind>swift</kind>
+        <symbol>LoqaAudioBridgeModule</symbol>
+        <lines></lines>
+        <reason>iOS implementation that may have Swift compiler warnings to fix.</reason>
+      </artifact>
+      <artifact>
+        <path>modules/loqa-audio-bridge/android/src/main/java/expo/modules/loqaaudiobridge/LoqaAudioBridgeModule.kt</path>
+        <kind>kotlin</kind>
+        <symbol>LoqaAudioBridgeModule</symbol>
+        <lines></lines>
+        <reason>Android implementation that may have Kotlin compiler warnings to fix.</reason>
+      </artifact>
+      <artifact>
+        <path>modules/loqa-audio-bridge/src/index.ts</path>
+        <kind>typescript</kind>
+        <symbol></symbol>
+        <lines></lines>
+        <reason>TypeScript entry point that may have type errors or linting warnings to fix.</reason>
+      </artifact>
+      <artifact>
+        <path>modules/loqa-audio-bridge/tsconfig.json</path>
+        <kind>config</kind>
+        <symbol></symbol>
+        <lines>1-25</lines>
+        <reason>TypeScript configuration with strict mode enabled for zero-tolerance type checking.</reason>
+      </artifact>
+      <artifact>
+        <path>modules/loqa-audio-bridge/.eslintrc.js</path>
+        <kind>config</kind>
+        <symbol></symbol>
+        <lines></lines>
+        <reason>ESLint configuration that defines linting rules for code quality.</reason>
+      </artifact>
+    </code>
+    <dependencies>
+      <dev>
+        <eslint>^8.0.0</eslint>
+        <eslint-config-expo>^10.0.0</eslint-config-expo>
+        <eslint-config-prettier>^10.1.8</eslint-config-prettier>
+        <prettier>^3.0.0</prettier>
+        <typescript>^5.3.0</typescript>
+      </dev>
+    </dependencies>
+  </artifacts>
+
+  <constraints>
+- Zero warnings is mandatory requirement (FR9)
+- All platforms must achieve zero warnings before Epic 2 completion
+- Warnings indicate code quality issues that must be resolved, not suppressed
+- Suppression should be rare and documented with justification
+- iOS: No force unwrapping (!), no deprecated APIs, no unused variables
+- Android: No nullable type warnings, no unchecked casts, no redundant modifiers
+- TypeScript: Strict mode enabled, no implicit any, no missing type annotations
+- ESLint: No unused imports, no console statements, code style must match Prettier
+- Build logs must be archived as evidence of zero warnings
+- Any suppression must have comment explaining why suppression is necessary
+- Re-run all builds after fixes to ensure no new warnings introduced
+  </constraints>
+
+  <interfaces>
+    <interface>
+      <name>iOS Build Command</name>
+      <kind>xcodebuild</kind>
+      <signature>xcodebuild -workspace ios/LoqaAudioBridge.xcworkspace \
+  -scheme LoqaAudioBridge \
+  clean build \
+  ONLY_ACTIVE_ARCH=NO \
+  | tee ios-build.log
+
+# Check for warnings
+grep -i warning ios-build.log</signature>
+      <path>Command line iOS build with warning detection</path>
+    </interface>
+    <interface>
+      <name>Android Build Command</name>
+      <kind>gradle</kind>
+      <signature>./gradlew :loqaaudiobridge:clean :loqaaudiobridge:build \
+  --warning-mode all \
+  | tee android-build.log
+
+# Check for warnings
+grep -i warning android-build.log</signature>
+      <path>Command line Android build with warning detection</path>
+    </interface>
+    <interface>
+      <name>TypeScript and ESLint Commands</name>
+      <kind>npm scripts</kind>
+      <signature># TypeScript compilation
+npx tsc --noEmit --pretty
+
+# ESLint
+npm run lint
+
+# Auto-fix ESLint issues
+npm run lint -- --fix</signature>
+      <path>Command line TypeScript and linting validation</path>
+    </interface>
+    <interface>
+      <name>Expected Zero Warning Output</name>
+      <kind>Build output</kind>
+      <signature>iOS:
+** BUILD SUCCEEDED **
+Build time: 42.3 seconds
+0 warnings generated
+
+Android:
+BUILD SUCCESSFUL in 8s
+0 warnings
+
+TypeScript:
+(No output - success)
+
+ESLint:
+(No output - success)</signature>
+      <path>Expected output for all platforms with zero warnings</path>
+    </interface>
+  </interfaces>
+
+  <tests>
+    <standards>This story validates build quality across all platforms rather than functional testing. Validation uses compilation and linting tools to detect and fix warnings. Zero warnings is the acceptance criteria - all warnings must be resolved, not suppressed (except rare documented cases). Build logs serve as evidence of production-ready code quality.</standards>
+    <locations>
+- iOS warnings: Extract from xcodebuild output
+- Android warnings: Extract from gradle build output
+- TypeScript warnings: npx tsc --noEmit output
+- ESLint warnings: npm run lint output
+- Build logs: ios-build.log, android-build.log for archival
+    </locations>
+    <ideas>
+- Test that iOS build completes successfully
+- Test that iOS build output shows "0 warnings generated"
+- Test that Android build completes successfully
+- Test that Android build output shows "0 warnings"
+- Test that TypeScript compilation succeeds with no output
+- Test that ESLint passes with no output
+- Test that no unused variables exist in Swift code
+- Test that no force unwrapping (!) exists in Swift code
+- Test that no deprecated APIs are used in Swift code
+- Test that no unused variables exist in Kotlin code
+- Test that no unchecked casts exist in Kotlin code
+- Test that no nullable type warnings exist in Kotlin code
+- Test that no implicit any types exist in TypeScript code
+- Test that all functions have explicit return types in TypeScript
+- Test that no unused imports exist in TypeScript code
+- Test that no console.log statements exist (or are guarded with __DEV__)
+- Test that Prettier formatting is consistent
+- Test that any suppressions have documented justification comments
+    </ideas>
+  </tests>
+</story-context>

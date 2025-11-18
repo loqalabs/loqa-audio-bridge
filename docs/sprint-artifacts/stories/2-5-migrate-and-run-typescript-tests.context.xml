@@ -1,0 +1,240 @@
+<story-context id=".bmad/bmm/workflows/4-implementation/story-context/template" v="1.0">
+  <metadata>
+    <epicId>2</epicId>
+    <storyId>5</storyId>
+    <title>Migrate and Run TypeScript Tests</title>
+    <status>ready-for-dev</status>
+    <generatedAt>2025-11-14</generatedAt>
+    <generator>BMAD Story Context Workflow</generator>
+    <sourceStoryPath>docs/loqa-audio-bridge/sprint-artifacts/stories/2-5-migrate-and-run-typescript-tests.md</sourceStoryPath>
+  </metadata>
+
+  <story>
+    <asA>developer</asA>
+    <iWant>all TypeScript tests migrated and passing</iWant>
+    <soThat>API contracts are validated and regressions are caught</soThat>
+    <tasks>
+### Task 1: Migrate TypeScript Test Files
+- Create __tests__/ directory if not exists
+- Copy v0.2.0 __tests__/index.test.ts
+- Copy v0.2.0 __tests__/buffer-utils.test.ts
+- Copy v0.2.0 __tests__/useAudioStreaming.test.tsx
+- Copy any additional test files from v0.2.0
+
+### Task 2: Update Test Imports for Module Rename
+- Open each test file
+- Find imports referencing "VoicelineDSP"
+- Replace with "LoqaAudioBridge" or "@loqalabs/loqa-audio-bridge"
+- Update mock module names if present
+- Verify import paths resolve correctly
+
+### Task 3: Configure Jest Testing Framework
+- Add/verify jest configuration in package.json
+- Set preset: "expo"
+- Configure transformIgnorePatterns for Expo/React Native modules
+- Verify test script: "test": "jest"
+- Install missing dependencies if needed
+
+### Task 4: Install Testing Dependencies
+- Check if @testing-library/react-native installed
+- Check if @testing-library/jest-native installed
+- Check if jest installed
+- Run npm install --save-dev for missing dependencies
+- Verify versions compatible with Expo 52+
+
+### Task 5: Run Tests and Fix Failures
+- Run npm test from module root
+- Review test output for failures
+- Debug and fix failures one-by-one
+- Fix common issues: import paths, mocks, type mismatches
+- Re-run until all tests pass
+
+### Task 6: Validate Test Coverage Baseline
+- Verify API contract tests (startAudioStream, stopAudioStream, listeners)
+- Verify buffer utilities tests
+- Verify React hook tests (lifecycle)
+- Ensure coverage matches v0.2.0 baseline
+
+### Task 7: Verify Test Exclusion from Distribution
+- Confirm .npmignore includes __tests__/
+- Confirm .npmignore includes *.test.ts, *.test.tsx
+- Confirm tsconfig.json excludes __tests__/
+- Run npm pack and verify __tests__/ not in tarball
+</tasks>
+  </story>
+
+  <acceptanceCriteria>
+1. All test files copied from v0.2.0 to __tests__/
+2. All imports updated (VoicelineDSP → LoqaAudioBridge)
+3. Jest configuration in package.json with expo preset
+4. transformIgnorePatterns configured
+5. Testing dependencies installed (@testing-library/react-native, jest)
+6. npm test executes all tests successfully
+7. All tests pass with 0 failures
+8. API contract tests validated (7 functions)
+9. Buffer utilities tests validated
+10. React hook tests validated (lifecycle)
+11. Test coverage meets v0.2.0 baseline
+12. .npmignore includes __tests__/ exclusion
+13. tsconfig.json excludes __tests__/
+14. npm pack tarball contains zero test files
+  </acceptanceCriteria>
+
+  <artifacts>
+    <docs>
+      <doc>
+        <path>docs/loqa-audio-bridge/sprint-artifacts/tech-spec-epic-2.md</path>
+        <title>Epic Technical Specification: Code Migration & Quality Fixes</title>
+        <section>Test Strategy Summary - Layer 1: TypeScript Unit Tests</section>
+        <snippet>Jest with @testing-library/react-native tests API contracts (startAudioStream, stopAudioStream, listeners), buffer utilities, and React hook lifecycle. 100% pass rate required with tests excluded from npm via .npmignore and tsconfig.json.</snippet>
+      </doc>
+      <doc>
+        <path>docs/loqa-audio-bridge/sprint-artifacts/tech-spec-epic-2.md</path>
+        <title>Epic Technical Specification: Code Migration & Quality Fixes</title>
+        <section>Workflows and Sequencing - Story 2.5</section>
+        <snippet>Copy __tests__/*.test.ts files, update imports for new module name, configure Jest in package.json with expo preset, run npm test for zero failures validation.</snippet>
+      </doc>
+      <doc>
+        <path>docs/loqa-audio-bridge/architecture.md</path>
+        <title>Architecture Document: @loqalabs/loqa-audio-bridge v0.3.0</title>
+        <section>Decision 3: Test Architecture - Layer 3 & 4</section>
+        <snippet>Layer 3 (.npmignore) excludes __tests__/, *.test.ts from package. Layer 4 (tsconfig.json) excludes test patterns from TypeScript compilation. Both provide redundant defense against test file shipping.</snippet>
+      </doc>
+    </docs>
+    <code>
+      <artifact>
+        <path>modules/loqa-audio-bridge/tsconfig.json</path>
+        <kind>config</kind>
+        <symbol></symbol>
+        <lines>1-25</lines>
+        <reason>TypeScript configuration with strict mode enabled. Already excludes __tests__, **/*.test.ts, **/*.spec.ts (Layer 4 test exclusion).</reason>
+      </artifact>
+      <artifact>
+        <path>modules/loqa-audio-bridge/.npmignore</path>
+        <kind>config</kind>
+        <symbol></symbol>
+        <lines>1-15</lines>
+        <reason>npm package exclusion configuration. Already includes __tests__ exclusion (Layer 3 test exclusion).</reason>
+      </artifact>
+      <artifact>
+        <path>modules/loqa-audio-bridge/src/index.ts</path>
+        <kind>typescript</kind>
+        <symbol></symbol>
+        <lines></lines>
+        <reason>Main API entry point that exports functions and types tested by test suite.</reason>
+      </artifact>
+      <artifact>
+        <path>modules/loqa-audio-bridge/src/buffer-utils.ts</path>
+        <kind>typescript</kind>
+        <symbol></symbol>
+        <lines></lines>
+        <reason>Buffer utilities module that has dedicated test file buffer-utils.test.ts.</reason>
+      </artifact>
+      <artifact>
+        <path>modules/loqa-audio-bridge/package.json</path>
+        <kind>config</kind>
+        <symbol></symbol>
+        <lines>12</lines>
+        <reason>Already has test script configured: "test": "jest". Jest configuration section may need to be added.</reason>
+      </artifact>
+    </code>
+    <dependencies>
+      <dev>
+        <jest>^29.0.0</jest>
+        <@testing-library/react-native>^12.0.0</@testing-library/react-native>
+        <@testing-library/jest-native>^5.0.0</@testing-library/jest-native>
+        <typescript>^5.3.0</typescript>
+        <expo>^54.0.18</expo>
+      </dev>
+    </dependencies>
+  </artifacts>
+
+  <constraints>
+- Jest preset must be "expo" for React Native module transformation
+- transformIgnorePatterns must include Expo and React Native modules for transpilation
+- Test files must use .test.ts or .test.tsx extension
+- All imports must reference new module name: LoqaAudioBridge or @loqalabs/loqa-audio-bridge
+- Native module mocks required (no actual audio recording during tests)
+- All v0.2.0 tests must pass without modification (only module name updates)
+- Zero test failures required (100% pass rate)
+- Test coverage baseline from v0.2.0 must be maintained
+- __tests__/ directory must be excluded from npm package (Layer 3)
+- Test files must be excluded from TypeScript compilation (Layer 4)
+- Testing dependencies should be devDependencies only
+  </constraints>
+
+  <interfaces>
+    <interface>
+      <name>Jest Configuration</name>
+      <kind>package.json config</kind>
+      <signature>{
+  "jest": {
+    "preset": "expo",
+    "transformIgnorePatterns": [
+      "node_modules/(?!((jest-)?react-native|@react-native(-community)?)|expo(nent)?|@expo(nent)?/.*|@expo-google-fonts/.*|react-navigation|@react-navigation/.*|@unimodules/.*|unimodules|sentry-expo|native-base|react-native-svg)"
+    ],
+    "collectCoverageFrom": [
+      "src/**/*.{ts,tsx}",
+      "hooks/**/*.{ts,tsx}",
+      "!**/*.d.ts"
+    ]
+  }
+}</signature>
+      <path>package.json</path>
+    </interface>
+    <interface>
+      <name>Native Module Mock</name>
+      <kind>Jest mock</kind>
+      <signature>jest.mock('../src/LoqaAudioBridgeModule', () => ({
+  startAudioStream: jest.fn(() => Promise.resolve(true)),
+  stopAudioStream: jest.fn(() => true),
+  isStreaming: jest.fn(() => false),
+  addListener: jest.fn(),
+  removeListeners: jest.fn(),
+}));</signature>
+      <path>Test files require native module mocking</path>
+    </interface>
+    <interface>
+      <name>React Hook Testing</name>
+      <kind>@testing-library/react-native</kind>
+      <signature>import { renderHook, act } from '@testing-library/react-native';
+import { useAudioStreaming } from '../hooks/useAudioStreaming';
+
+const { result } = renderHook(() => useAudioStreaming());
+await act(async () => {
+  await result.current.start();
+});
+expect(result.current.isStreaming).toBe(true);</signature>
+      <path>useAudioStreaming.test.tsx pattern</path>
+    </interface>
+  </interfaces>
+
+  <tests>
+    <standards>Jest testing framework with expo preset for React Native/Expo module transpilation. Tests use @testing-library/react-native for React hook testing. Native modules are mocked to prevent actual audio recording during tests. All tests from v0.2.0 must pass unchanged (except module name updates) to validate feature parity.</standards>
+    <locations>
+- TypeScript tests: __tests__/ directory (excluded from npm and compilation)
+- Test execution: Run npm test from module root
+- Coverage report: npm test -- --coverage
+    </locations>
+    <ideas>
+- Test that index.test.ts file exists and tests API contracts
+- Test that buffer-utils.test.ts file exists and tests buffer utilities
+- Test that useAudioStreaming.test.tsx file exists and tests React hook
+- Test that all imports use new module name (no "VoicelineDSP" references)
+- Test that native module is properly mocked in all test files
+- Test that npm test command executes successfully
+- Test that all tests pass (0 failures reported)
+- Test that startAudioStream function is tested
+- Test that stopAudioStream function is tested
+- Test that isStreaming function is tested
+- Test that event listener subscriptions are tested
+- Test that buffer format conversions are tested
+- Test that React hook initialization is tested
+- Test that React hook lifecycle (mount/unmount) is tested
+- Test that __tests__/ is listed in .npmignore
+- Test that __tests__ is listed in tsconfig.json exclude
+- Test that *.test.ts pattern is in .npmignore
+- Test that npm pack tarball contains zero __tests__/ files
+    </ideas>
+  </tests>
+</story-context>

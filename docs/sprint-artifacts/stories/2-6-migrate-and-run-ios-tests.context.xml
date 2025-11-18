@@ -1,0 +1,198 @@
+<story-context id=".bmad/bmm/workflows/4-implementation/story-context/template" v="1.0">
+  <metadata>
+    <epicId>2</epicId>
+    <storyId>6</storyId>
+    <title>Migrate and Run iOS Tests</title>
+    <status>ready-for-dev</status>
+    <generatedAt>2025-11-14</generatedAt>
+    <generator>BMAD Story Context Workflow</generator>
+    <sourceStoryPath>docs/loqa-audio-bridge/sprint-artifacts/stories/2-6-migrate-and-run-ios-tests.md</sourceStoryPath>
+  </metadata>
+
+  <story>
+    <asA>developer</asA>
+    <iWant>iOS Swift tests migrated and passing</iWant>
+    <soThat>native iOS functionality is validated</soThat>
+    <tasks>
+### Task 1: Migrate iOS Test Files
+- Create ios/Tests/ directory if not exists
+- Copy v0.2.0 VoicelineDSPTests.swift → modules/loqa-audio-bridge/ios/Tests/LoqaAudioBridgeTests.swift
+- Copy v0.2.0 VoicelineDSPIntegrationTests.swift → modules/loqa-audio-bridge/ios/Tests/LoqaAudioBridgeIntegrationTests.swift
+
+### Task 2: Update Test Class Names and Imports
+- Rename test classes: VoicelineDSPTests → LoqaAudioBridgeTests
+- Update module import: @testable import VoicelineDSP → @testable import LoqaAudioBridge
+- Update class instantiations: VoicelineDSPModule() → LoqaAudioBridgeModule()
+
+### Task 3: Verify Podspec test_spec Configuration
+- Confirm test_spec section exists (created in Story 2.3)
+- Confirm Quick/Nimble dependencies present
+- Confirm test_spec.source_files includes ios/Tests/
+
+### Task 4: Install Test Dependencies
+- Navigate to ios/ directory
+- Run pod install to install Quick and Nimble
+- Open LoqaAudioBridge.xcworkspace
+
+### Task 5: Run Tests and Fix Failures
+- Run xcodebuild test or Product → Test (Cmd+U)
+- Review test results for failures
+- Fix failures one-by-one
+- Re-run until all tests pass
+
+### Task 6: Validate Test Coverage
+- Verify audio session configuration tests
+- Verify AVAudioEngine instantiation tests
+- Verify RMS calculation accuracy tests
+- Verify battery monitoring tests
+- Verify event emission tests
+
+### Task 7: Verify Test Exclusion from Distribution
+- Confirm podspec has s.exclude_files for ios/Tests/
+- Confirm .npmignore includes ios/Tests/
+- Run npm pack and verify ios/Tests/ not in tarball
+</tasks>
+  </story>
+
+  <acceptanceCriteria>
+1. All test files copied from v0.2.0 to ios/Tests/
+2. Test class names updated (VoicelineDSP → LoqaAudioBridge)
+3. Module imports updated (@testable import LoqaAudioBridge)
+4. Podspec test_spec verified (Quick/Nimble dependencies present)
+5. pod install completed successfully
+6. xcodebuild test executes all tests
+7. All tests pass with 0 failures
+8. Audio session configuration tests validated
+9. AVAudioEngine instantiation tests validated
+10. RMS calculation accuracy tests validated
+11. Battery monitoring tests validated
+12. Event emission tests validated
+13. Test coverage matches v0.2.0 baseline
+14. Tests excluded from npm package
+  </acceptanceCriteria>
+
+  <artifacts>
+    <docs>
+      <doc>
+        <path>docs/loqa-audio-bridge/sprint-artifacts/tech-spec-epic-2.md</path>
+        <title>Epic Technical Specification: Code Migration & Quality Fixes</title>
+        <section>Test Strategy Summary - Layer 2: iOS Native Tests</section>
+        <snippet>XCTest with Quick/Nimble tests audio session configuration, AVAudioEngine instantiation, RMS calculation, battery monitoring, and event emission. 100% pass rate required with tests excluded from CocoaPods via podspec exclude_files.</snippet>
+      </doc>
+      <doc>
+        <path>docs/loqa-audio-bridge/architecture.md</path>
+        <title>Architecture Document: @loqalabs/loqa-audio-bridge v0.3.0</title>
+        <section>Decision 3: Test Architecture - Layer 1 (test_spec)</section>
+        <snippet>test_spec section in podspec provides Quick/Nimble dependencies for development testing without distributing them to clients. Tests run during development but excluded from client builds.</snippet>
+      </doc>
+    </docs>
+    <code>
+      <artifact>
+        <path>modules/loqa-audio-bridge/ios/LoqaAudioBridgeModule.swift</path>
+        <kind>swift</kind>
+        <symbol>LoqaAudioBridgeModule</symbol>
+        <lines></lines>
+        <reason>Main iOS implementation being tested. Contains audio streaming, VAD, and battery monitoring logic.</reason>
+      </artifact>
+    </code>
+    <dependencies>
+      <ios>
+        <Quick>~> 7.0</Quick>
+        <Nimble>~> 12.0</Nimble>
+        <ExpoModulesCore>*</ExpoModulesCore>
+        <AVFoundation>System framework</AVFoundation>
+        <UIKit>System framework</UIKit>
+      </ios>
+    </dependencies>
+  </artifacts>
+
+  <constraints>
+- Tests use Quick (BDD framework) and Nimble (matchers) for expressive specifications
+- Test files must be in ios/Tests/ directory
+- Test classes must inherit from QuickSpec
+- Module import must use @testable for accessing internal members
+- All v0.2.0 tests must pass unchanged (except module name updates)
+- Zero test failures required (100% pass rate)
+- Tests run on iOS Simulator (iPhone 15 recommended)
+- Some integration tests may use mocks for audio capture (simulator limitation)
+- Tests excluded from CocoaPods distribution via podspec exclude_files
+- Tests excluded from npm package via .npmignore
+- xcodebuild test command requires .xcworkspace not .xcodeproj
+- pod install must be run after podspec test_spec configuration
+  </constraints>
+
+  <interfaces>
+    <interface>
+      <name>Quick/Nimble Test Structure</name>
+      <kind>BDD Testing Framework</kind>
+      <signature>import Quick
+import Nimble
+@testable import LoqaAudioBridge
+
+class LoqaAudioBridgeTests: QuickSpec {
+    override func spec() {
+        describe("Audio streaming") {
+            var module: LoqaAudioBridgeModule!
+
+            beforeEach {
+                module = LoqaAudioBridgeModule()
+            }
+
+            it("starts successfully") {
+                let result = module.startAudioStream(config: testConfig)
+                expect(result).to(beTrue())
+            }
+        }
+    }
+}</signature>
+      <path>ios/Tests/LoqaAudioBridgeTests.swift</path>
+    </interface>
+    <interface>
+      <name>RMS Calculation Test</name>
+      <kind>Unit Test</kind>
+      <signature>it("calculates RMS accurately") {
+    let samples: [Float] = [0.1, 0.2, 0.1, 0.2]
+    let rms = module.calculateRMS(samples: samples)
+    let expected = sqrt((0.1*0.1 + 0.2*0.2 + 0.1*0.1 + 0.2*0.2) / 4.0)
+    expect(rms).to(beCloseTo(expected, within: 0.001))
+}</signature>
+      <path>Validates VAD calculation accuracy</path>
+    </interface>
+    <interface>
+      <name>xcodebuild Test Command</name>
+      <kind>Build command</kind>
+      <signature>xcodebuild test \
+  -workspace ios/LoqaAudioBridge.xcworkspace \
+  -scheme LoqaAudioBridge \
+  -destination 'platform=iOS Simulator,name=iPhone 15'</signature>
+      <path>Command line test execution</path>
+    </interface>
+  </interfaces>
+
+  <tests>
+    <standards>iOS tests use Quick (BDD framework like RSpec) and Nimble (expressive matchers) for readable specifications. Tests validate audio session configuration, AVAudioEngine initialization, RMS calculation accuracy (VAD), battery monitoring, and event emission. All v0.2.0 tests must pass unchanged to validate feature parity and prevent regressions. Tests run on iOS Simulator with zero failures required.</standards>
+    <locations>
+- iOS unit tests: ios/Tests/LoqaAudioBridgeTests.swift
+- iOS integration tests: ios/Tests/LoqaAudioBridgeIntegrationTests.swift
+- Test execution: Run from Xcode (Cmd+U) or xcodebuild command
+- Test dependencies: Installed via pod install (Quick, Nimble)
+    </locations>
+    <ideas>
+- Test that audio session configures correctly (category, mode, options)
+- Test that AVAudioEngine can be instantiated
+- Test that audio format is configured correctly
+- Test that buffer size calculation is correct
+- Test that start/stop lifecycle works
+- Test that isStreaming status is accurate
+- Test that RMS calculation is mathematically correct (VAD)
+- Test that battery level monitoring works (0.0-1.0 range)
+- Test that event emission to JavaScript works
+- Test that error handling works (invalid config, permission denied)
+- Test that all test classes inherit from QuickSpec
+- Test that @testable import LoqaAudioBridge is used
+- Test that Quick/Nimble dependencies are installed
+- Test that ios/Tests/ directory is excluded from podspec
+- Test that ios/Tests/ directory is excluded from npm package
+    </ideas>
+  </tests>
+</story-context>

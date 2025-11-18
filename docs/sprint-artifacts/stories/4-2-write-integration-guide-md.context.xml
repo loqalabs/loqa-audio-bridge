@@ -1,0 +1,188 @@
+<story-context id=".bmad/bmm/workflows/4-implementation/story-context/template" v="1.0">
+  <metadata>
+    <epicId>4</epicId>
+    <storyId>4.2</storyId>
+    <title>Write INTEGRATION_GUIDE.md</title>
+    <status>drafted</status>
+    <generatedAt>2025-11-17</generatedAt>
+    <generator>BMAD Story Context Workflow</generator>
+    <sourceStoryPath>docs/loqa-audio-bridge/sprint-artifacts/stories/4-2-write-integration-guide-md.md</sourceStoryPath>
+  </metadata>
+
+  <story>
+    <asA>a developer integrating this package</asA>
+    <iWant>step-by-step instructions covering edge cases</iWant>
+    <soThat>I can complete integration without external support</soThat>
+    <tasks>
+- Create INTEGRATION_GUIDE.md structure (AC: 1, 9)
+  - Add table of contents
+  - Create prerequisites section
+  - Organize with clear hierarchical headings
+- Write installation steps (AC: 2)
+  - Document package installation command
+  - Add prebuild steps with clean flag
+  - Include verification with expo-doctor
+  - Show expected terminal output
+- Document platform configuration (AC: 3, 4)
+  - iOS: NSMicrophoneUsageDescription setup
+  - iOS: Explain App Store requirements
+  - Android: RECORD_AUDIO permission
+  - Android: Runtime permission handling code
+- Write basic usage section (AC: 5, 10)
+  - Full code example with error handling
+  - Permission request patterns (both platforms)
+  - Listener lifecycle (setup and cleanup)
+  - Configuration options reference
+  - Expected outcome for each step
+- Create testing guidance (AC: 6)
+  - iOS simulator limitations documented
+  - Android emulator setup instructions
+  - Expected behavior checklist
+- Build troubleshooting section (AC: 7, 11)
+  - Review v0.2.0 integration feedback for pain points
+  - Document common errors with exact messages
+  - Provide step-by-step solutions
+  - Add validation steps for each fix
+- Add advanced topics (AC: 8)
+  - VAD configuration and use cases
+  - Battery optimization explanation
+  - Buffer size tuning guide
+  - Stereo configuration example
+- Validate guide completeness (AC: 12)
+  - Time fresh installation following guide (&lt;30 min target)
+  - Test on both iOS and Android
+  - Verify all steps work as documented
+    </tasks>
+  </story>
+
+  <acceptanceCriteria>
+1. **Prerequisites Section** includes Expo version requirements (52+), React Native version requirements (0.72+), macOS requirements for iOS development, Android Studio requirements for Android development
+2. **Step 1: Installation** includes command `npx expo install @loqalabs/loqa-audio-bridge`, rebuild command `npx expo prebuild --clean`, verification command `npx expo-doctor`, expected output documented
+3. **Step 2: iOS Configuration** includes microphone permission in app.json with NSMicrophoneUsageDescription, explanation of why required (App Store rejection risk), example of customizing permission message
+4. **Step 3: Android Configuration** includes microphone permission in app.json (RECORD_AUDIO), runtime permission handling explanation (Android 6.0+), code example for requesting permissions
+5. **Step 4: Basic Usage** includes full code example with error handling, permission request code for both platforms, listener setup and cleanup patterns, common configuration options explained (sample rate, buffer size, VAD)
+6. **Step 5: Testing** includes iOS simulator limitation (no microphone - use device), Android emulator virtual microphone setup, expected behavior checklist
+7. **Troubleshooting Section** covers "Cannot find native module", iOS CocoaPods errors, Android Gradle "Duplicate class", microphone permission denied, audio events not firing - all with actionable solutions
+8. **Advanced Topics Section** includes Voice Activity Detection (VAD) configuration, battery optimization behavior explanation, buffer size tuning (latency vs. CPU tradeoff), multi-channel (stereo) configuration
+9. **Guide is organized** with clear headings and table of contents
+10. **Each step includes expected outcome** validation criteria
+11. **Troubleshooting covers 90% of common issues** (based on v0.2.0 feedback)
+12. **Guide enables &lt;30 minute integration** (timed on fresh install)
+  </acceptanceCriteria>
+
+  <artifacts>
+    <docs>
+- **path**: docs/loqa-audio-bridge/PRD.md
+  **title**: Product Requirements Document
+  **section**: Success Criteria - Zero Manual Steps
+  **snippet**: No manual Podfile edits, no manual ExpoModulesProvider.swift modifications, no post-prebuild scripts. Autolinking works seamlessly on both iOS and Android.
+
+- **path**: docs/loqa-audio-bridge/collaboration/loqa-integration-feedback.md
+  **title**: v0.2.0 Integration Feedback
+  **section**: Pain Points
+  **snippet**: 9-hour integration process including manual Podfile edits, ExpoModulesProvider.swift modifications, Swift compilation errors (missing `required` keyword), test file exclusion issues, deprecated Bluetooth API.
+
+- **path**: docs/loqa-audio-bridge/sprint-artifacts/tech-spec-epic-4.md
+  **title**: Epic 4 Technical Specification
+  **section**: INTEGRATION_GUIDE.md Structure
+  **snippet**: Prerequisites, installation steps (detailed), iOS configuration, Android configuration, basic usage, testing section, troubleshooting section, advanced topics (VAD, battery optimization, performance tuning).
+
+- **path**: docs/loqa-audio-bridge/architecture.md
+  **title**: Architecture Document
+  **section**: Decision 2 - Autolinking Focus
+  **snippet**: Documentation emphasizes zero-configuration setup enabled by expo-module.config.json and proper podspec/gradle configuration.
+    </docs>
+    <code>
+- **path**: modules/loqa-audio-bridge/src/types.ts
+  **kind**: type definitions
+  **symbol**: StreamConfig, StreamErrorCode
+  **lines**: 59-136
+  **reason**: Configuration options for basic usage section. Shows sampleRate, bufferSize, vadEnabled, adaptiveProcessing options with defaults and documentation. Error codes for troubleshooting section.
+
+- **path**: modules/loqa-audio-bridge/package.json
+  **kind**: package manifest
+  **symbol**: peerDependencies
+  **lines**: 45-50
+  **reason**: Platform version requirements for prerequisites section (Expo >=52.0.0, React Native >=0.72.0)
+
+- **path**: modules/loqa-audio-bridge/expo-module.config.json
+  **kind**: configuration
+  **symbol**: autolinking config
+  **lines**: ALL
+  **reason**: Explains how autolinking works and why manual Podfile edits are not needed (for advanced topics section)
+    </code>
+    <dependencies>
+- **Platform**: macOS with Xcode 14+ for iOS development
+- **Platform**: Android Studio (latest stable) for Android development
+- **npm**: expo (>=52.0.0) - Framework requirement
+- **npm**: react-native (>=0.72.0) - Platform requirement
+- **Tools**: `expo-doctor` for installation verification
+- **iOS**: NSMicrophoneUsageDescription in Info.plist (app.json plugins)
+- **Android**: RECORD_AUDIO permission in AndroidManifest (app.json permissions)
+    </dependencies>
+  </artifacts>
+
+  <constraints>
+- Integration must be completable in &lt;30 minutes following guide (NFR1 from PRD)
+- Troubleshooting must cover all v0.2.0 pain points: manual Podfile edits, ExpoModulesProvider.swift errors, Swift compilation warnings, test file exclusion, deprecated APIs
+- Each step must include "expected outcome" validation (AC10)
+- iOS and Android get equal coverage (platform parity per NFR-DOC-7)
+- Examples must use same configuration values as README for consistency (sampleRate: 16000, bufferSize: 2048)
+- Permission handling must show proper error checking (not silent failures per NFR-DOC-4)
+- Guide organized with table of contents for easy navigation (AC9)
+- All code examples must compile and work without modification
+  </constraints>
+
+  <interfaces>
+- **name**: startAudioStream
+  **kind**: Promise-based function
+  **signature**: startAudioStream(config?: StreamConfig): Promise&lt;void&gt;
+  **path**: modules/loqa-audio-bridge/src/LoqaAudioBridgeModule.ts
+
+- **name**: stopAudioStream
+  **kind**: Promise-based function
+  **signature**: stopAudioStream(): Promise&lt;void&gt;
+  **path**: modules/loqa-audio-bridge/src/LoqaAudioBridgeModule.ts
+
+- **name**: addAudioSamplesListener
+  **kind**: Event listener registration
+  **signature**: addAudioSamplesListener(callback: (event: AudioSampleEvent) => void): Subscription
+  **path**: modules/loqa-audio-bridge/src/LoqaAudioBridgeModule.ts
+
+- **name**: addStreamErrorListener
+  **kind**: Event listener registration
+  **signature**: addStreamErrorListener(callback: (event: StreamErrorEvent) => void): Subscription
+  **path**: modules/loqa-audio-bridge/src/LoqaAudioBridgeModule.ts
+
+- **name**: StreamConfig
+  **kind**: Configuration interface
+  **signature**: { sampleRate?: number; bufferSize?: number; channels?: number; vadEnabled?: boolean; adaptiveProcessing?: boolean }
+  **path**: modules/loqa-audio-bridge/src/types.ts
+
+- **name**: StreamErrorEvent
+  **kind**: Error event payload
+  **signature**: { error: StreamErrorCode; message: string; platform?: 'ios' | 'android'; timestamp: number }
+  **path**: modules/loqa-audio-bridge/src/types.ts
+  </interfaces>
+
+  <tests>
+    <standards>
+Manual validation and usability testing for documentation:
+- Fresh Expo project integration test following guide (timed, target &lt;30 minutes)
+- Code example extraction and TypeScript compilation
+- Platform coverage verification (iOS and Android parity)
+- Troubleshooting coverage audit (all v0.2.0 issues addressed)
+    </standards>
+    <locations>
+N/A - Documentation file, not code
+    </locations>
+    <ideas>
+- **Usability Test 1**: Fresh Integration Test - Developer with Expo experience but unfamiliar with package integrates following only INTEGRATION_GUIDE.md. Time from `npx expo install` to working audio stream must be &lt;30 minutes. (validates AC12, NFR1)
+- **Manual Test 2**: Platform Parity Check - Count iOS-specific sections vs Android-specific sections, verify equal depth of coverage (validates NFR-DOC-7, AC3, AC4)
+- **Manual Test 3**: Troubleshooting Coverage Audit - Review v0.2.0 integration feedback document, verify all pain points have corresponding troubleshooting entry with actionable solution (validates AC7, AC11)
+- **Manual Test 4**: Code Example Compilation - Extract all code snippets from guide, compile with TypeScript, run on both iOS simulator and Android emulator (validates AC5)
+- **Manual Test 5**: Expected Outcome Validation - Review each numbered step, verify it includes "you should see..." or similar validation criteria (validates AC10)
+- **Manual Test 6**: Permission Handling Validation - Verify iOS and Android permission request examples include error checking and user-friendly error messages (validates NFR-DOC-4 secure example code)
+    </ideas>
+  </tests>
+</story-context>

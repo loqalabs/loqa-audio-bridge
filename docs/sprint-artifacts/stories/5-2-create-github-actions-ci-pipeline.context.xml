@@ -1,0 +1,186 @@
+<story-context id=".bmad/bmm/workflows/4-implementation/story-context/template" v="1.0">
+  <metadata>
+    <epicId>5</epicId>
+    <storyId>5.2</storyId>
+    <title>Create GitHub Actions CI Pipeline</title>
+    <status>drafted</status>
+    <generatedAt>2025-11-17</generatedAt>
+    <generator>BMAD Story Context Workflow</generator>
+    <sourceStoryPath>docs/loqa-audio-bridge/sprint-artifacts/stories/5-2-create-github-actions-ci-pipeline.md</sourceStoryPath>
+  </metadata>
+
+  <story>
+    <asA>package maintainer</asA>
+    <iWant>automated CI validation on every PR and push</iWant>
+    <soThat>code quality is maintained and regressions are caught early</soThat>
+    <tasks>
+- [ ] Create .github/workflows/ci.yml (AC: 1)
+- [ ] Implement Lint Job (AC: 2)
+- [ ] Implement TypeScript Tests Job (AC: 3)
+- [ ] Implement iOS Build Job (AC: 4)
+- [ ] Implement Android Build Job (AC: 5)
+- [ ] Implement Package Validation Job (AC: 6)
+- [ ] Configure branch protection (AC: 7)
+- [ ] Add CI badge to README (AC: 8)
+- [ ] Optimize workflow performance (AC: 9)
+    </tasks>
+  </story>
+
+  <acceptanceCriteria>
+1. **Workflow triggers** on PR to main and pushes to main
+2. **Lint Job**: checkout, setup Node.js, npm ci, npm run lint, npm run format --check
+3. **TypeScript Tests Job**: npm test and npm run build
+4. **iOS Build Job**: macos-latest, CocoaPods, xcodebuild clean build, zero warnings
+5. **Android Build Job**: ubuntu-latest, Java 17 (Temurin), Gradle clean build, zero warnings
+6. **Package Validation Job**: npm pack, extract tarball, validate no test files/directories, fail if found
+7. **All jobs must pass** for PR merge
+8. **CI badge** added to README
+9. **Workflow completes** in <10 minutes
+  </acceptanceCriteria>
+
+  <artifacts>
+    <docs>
+      <doc>
+        <path>docs/loqa-audio-bridge/sprint-artifacts/tech-spec-epic-5.md</path>
+        <title>Epic 5 Technical Specification</title>
+        <section>Architecture Alignment → Decision 3 Layer 4 (CI Validation)</section>
+        <snippet>Story 5.2 implements Layer 4 of multi-layer test exclusion via package validation job in CI. Automated validation runs on every PR/push to prevent test files shipping to production.</snippet>
+      </doc>
+      <doc>
+        <path>docs/loqa-audio-bridge/sprint-artifacts/tech-spec-epic-5.md</path>
+        <title>Epic 5 Technical Specification</title>
+        <section>Services → GitHub Actions CI Pipeline</section>
+        <snippet>CI workflow includes lint, test, iOS build (macOS), Android build (Linux), and package validation jobs. All run in parallel for <10 minute execution time (NFR-P1).</snippet>
+      </doc>
+      <doc>
+        <path>docs/loqa-audio-bridge/sprint-artifacts/tech-spec-epic-5.md</path>
+        <title>Epic 5 Technical Specification</title>
+        <section>APIs → GitHub Actions Workflow Events</section>
+        <snippet>CI trigger contract: on pull_request (branches: [main]) and on push (branches: [main]). Runs on ubuntu-latest and macos-latest runners.</snippet>
+      </doc>
+      <doc>
+        <path>docs/loqa-audio-bridge/sprint-artifacts/stories/5-1-configure-npm-package-for-publishing.md</path>
+        <title>Story 5.1: Configure npm Package</title>
+        <section>Integration</section>
+        <snippet>Package validation job uses npm pack from Story 5.1 to validate .npmignore and files array configuration. Ensures test exclusion strategy works correctly.</snippet>
+      </doc>
+    </docs>
+    <code>
+      <artifact>
+        <path>.github/workflows/ci.yml</path>
+        <kind>workflow</kind>
+        <symbol>existing CI workflow</symbol>
+        <lines>1-50</lines>
+        <reason>Reference for existing CI patterns in Loqa monorepo (can use similar structure for loqa-audio-bridge)</reason>
+      </artifact>
+      <artifact>
+        <path>modules/loqa-audio-bridge/package.json</path>
+        <kind>configuration</kind>
+        <symbol>scripts</symbol>
+        <lines>7-17</lines>
+        <reason>Defines npm scripts that CI will execute: build, lint, format, test</reason>
+      </artifact>
+      <artifact>
+        <path>modules/loqa-audio-bridge/ios</path>
+        <kind>directory</kind>
+        <symbol>iOS native module</symbol>
+        <lines>-</lines>
+        <reason>iOS build job will run pod install and xcodebuild in this directory</reason>
+      </artifact>
+      <artifact>
+        <path>modules/loqa-audio-bridge/android</path>
+        <kind>directory</kind>
+        <symbol>Android native module</symbol>
+        <lines>-</lines>
+        <reason>Android build job will run ./gradlew clean build in this directory</reason>
+      </artifact>
+    </code>
+    <dependencies>
+      <npm>
+        <package name="typescript" version="^5.3.0" scope="devDependencies" />
+        <package name="eslint" version="^8.0.0" scope="devDependencies" />
+        <package name="prettier" version="^3.0.0" scope="devDependencies" />
+        <package name="expo-module-scripts" version="^5.0.7" scope="devDependencies" />
+      </npm>
+      <github-actions>
+        <action name="actions/checkout" version="v4" purpose="Clone repository" />
+        <action name="actions/setup-node" version="v4" purpose="Install Node.js" />
+        <action name="actions/setup-java" version="v4" purpose="Install JDK for Android builds" />
+      </github-actions>
+    </dependencies>
+  </artifacts>
+
+  <constraints>
+- **Parallel job execution**: Lint, test, iOS build, Android build, package validation must run in parallel for <10 min completion (NFR-P1)
+- **Runner selection**: iOS builds require macos-latest, all other jobs use ubuntu-latest
+- **Java version**: Android builds require JDK 17 (Temurin distribution)
+- **Dependency caching**: Use actions/cache for npm and CocoaPods to speed up builds
+- **Zero warnings enforcement**: iOS and Android build jobs must verify zero compilation warnings (Story 2.8 requirement)
+- **Layer 4 validation**: Package validation job implements Architecture Decision 3 Layer 4 (automated test exclusion checks)
+- **Branch protection**: All status checks must pass before PR merge (configured in GitHub repository settings)
+- **Workflow location**: Must create .github/workflows/ci.yml in repository root (not in modules/ subdirectory)
+  </constraints>
+
+  <interfaces>
+    <interface>
+      <name>GitHub Actions Workflow Trigger</name>
+      <kind>Event-driven</kind>
+      <signature>on: pull_request (branches: [main]), push (branches: [main])</signature>
+      <path>.github/workflows/ci.yml</path>
+      <description>Webhook-based triggers for CI workflow execution</description>
+    </interface>
+    <interface>
+      <name>npm scripts</name>
+      <kind>CLI commands</kind>
+      <signature>npm run lint, npm run format -- --check, npm test, npm run build</signature>
+      <path>modules/loqa-audio-bridge/package.json</path>
+      <description>Node.js scripts executed by CI jobs</description>
+    </interface>
+    <interface>
+      <name>xcodebuild</name>
+      <kind>Build tool</kind>
+      <signature>xcodebuild -workspace ios/LoqaAudioBridge.xcworkspace -scheme LoqaAudioBridge clean build</signature>
+      <path>-</path>
+      <description>Xcode command-line build tool for iOS native module validation</description>
+    </interface>
+    <interface>
+      <name>Gradle</name>
+      <kind>Build tool</kind>
+      <signature>./gradlew clean build</signature>
+      <path>modules/loqa-audio-bridge/android</path>
+      <description>Gradle wrapper for Android native module validation</description>
+    </interface>
+    <interface>
+      <name>Package validation script</name>
+      <kind>Shell script</kind>
+      <signature>find . -name "*.test.ts" -o -name "*.spec.ts" | grep . && exit 1</signature>
+      <path>.github/workflows/ci.yml (inline script)</path>
+      <description>Validation logic to detect test files in npm package tarball</description>
+    </interface>
+  </interfaces>
+
+  <tests>
+    <standards>
+CI workflow testing is done via live execution on GitHub Actions. Test by creating intentional failures (lint error, failing test, test file in package) to verify jobs fail correctly. Validate parallel execution and timing. No unit tests for workflow YAML itself, validation is integration-level.
+    </standards>
+    <locations>
+- Workflow definition: .github/workflows/ci.yml
+- CI execution logs: GitHub Actions tab in repository
+- Status badges: README.md (visual CI status indicator)
+- Branch protection: Repository Settings → Branches → main → Require status checks
+    </locations>
+    <ideas>
+- **AC1 Test**: Create PR, verify workflow triggers automatically
+- **AC2 Test**: Add lint error, push, verify lint job fails
+- **AC3 Test**: Add failing test, verify test job fails
+- **AC4 Test**: Break iOS Swift code, verify iOS build job fails
+- **AC5 Test**: Break Android Kotlin code, verify Android build job fails
+- **AC6 Test**: Temporarily add test file to package files array, verify package validation job fails with clear error message
+- **AC7 Test**: Document branch protection setup in repository settings
+- **AC8 Test**: Verify CI badge in README shows correct status (passing/failing)
+- **AC9 Test**: Measure workflow execution time on successful run, verify <10 minutes
+- **Regression Test**: After CI setup, run full workflow on clean main branch, verify all jobs pass
+- **Cache Test**: Run workflow twice, verify second run faster due to dependency caching
+    </ideas>
+  </tests>
+</story-context>

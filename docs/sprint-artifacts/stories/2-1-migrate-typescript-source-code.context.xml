@@ -1,0 +1,263 @@
+<story-context id=".bmad/bmm/workflows/4-implementation/story-context/template" v="1.0">
+  <metadata>
+    <epicId>2</epicId>
+    <storyId>2.1</storyId>
+    <title>Migrate TypeScript Source Code</title>
+    <status>ready-for-dev</status>
+    <generatedAt>2025-11-14</generatedAt>
+    <generator>BMAD Story Context Workflow</generator>
+    <sourceStoryPath>docs/loqa-audio-bridge/sprint-artifacts/stories/2-1-migrate-typescript-source-code.md</sourceStoryPath>
+  </metadata>
+
+  <story>
+    <asA>developer</asA>
+    <iWant>all TypeScript source files migrated from v0.2.0</iWant>
+    <soThat>the JavaScript API layer is available in the new structure</soThat>
+    <tasks>
+      <task id="1" title="Migrate Core TypeScript Files">
+        <item>Copy v0.2.0 index.ts → modules/loqa-audio-bridge/index.ts</item>
+        <item>Update imports in index.ts for new module paths</item>
+        <item>Copy v0.2.0 src/VoicelineDSPModule.ts → modules/loqa-audio-bridge/src/LoqaAudioBridgeModule.ts</item>
+        <item>Rename all "VoicelineDSP" → "LoqaAudioBridge" in module file</item>
+        <item>Copy v0.2.0 src/types.ts → modules/loqa-audio-bridge/src/types.ts</item>
+        <item>Copy v0.2.0 src/buffer-utils.ts → modules/loqa-audio-bridge/src/buffer-utils.ts</item>
+      </task>
+      <task id="2" title="Migrate React Hook">
+        <item>Create hooks/ directory if not exists</item>
+        <item>Copy v0.2.0 hooks/useAudioStreaming.tsx → modules/loqa-audio-bridge/hooks/useAudioStreaming.tsx</item>
+        <item>Update imports to reference new module name (LoqaAudioBridge)</item>
+        <item>Verify hook imports resolve correctly</item>
+      </task>
+      <task id="3" title="Update Module Name References">
+        <item>Find all "VoicelineDSP" string references in TypeScript files</item>
+        <item>Replace with "LoqaAudioBridge" (case-sensitive)</item>
+        <item>Update native module import: NativeModules.VoicelineDSP → NativeModules.LoqaAudioBridge</item>
+        <item>Update EventEmitter subscriptions to use new module name</item>
+        <item>Verify no hardcoded module name strings remain</item>
+      </task>
+      <task id="4" title="Verify Imports and Compilation">
+        <item>Open project in VS Code</item>
+        <item>Check for red squiggles (unresolved imports)</item>
+        <item>Run npx tsc to compile TypeScript</item>
+        <item>Fix any compilation errors (missing types, import paths)</item>
+        <item>Ensure zero TypeScript errors</item>
+      </task>
+      <task id="5" title="Validate API Surface Preservation">
+        <item>Verify index.ts exports all v0.2.0 functions: startAudioStream, stopAudioStream, isStreaming, addAudioSamplesListener, addStreamStatusListener, addStreamErrorListener, useAudioStreaming</item>
+        <item>Verify type definitions export: AudioConfig, AudioSampleEvent, StreamStatusEvent, StreamErrorEvent</item>
+        <item>Compare against v0.2.0 API.md to confirm no breaking changes</item>
+      </task>
+    </tasks>
+  </story>
+
+  <acceptanceCriteria>
+    <criterion id="AC1">
+      Given Story 2.0 validation passed
+      When I copy all TypeScript files from v0.2.0 into new structure (index.ts, src/LoqaAudioBridgeModule.ts, src/types.ts, src/buffer-utils.ts, hooks/useAudioStreaming.tsx)
+      Then all imports resolve correctly (no red squiggles in VS Code)
+    </criterion>
+    <criterion id="AC2">
+      Running npx tsc compiles successfully with zero errors
+    </criterion>
+    <criterion id="AC3">
+      TypeScript types match v0.2.0 API surface (no breaking changes)
+    </criterion>
+    <criterion id="AC4">
+      Module exports include: startAudioStream, stopAudioStream, isStreaming, addAudioSamplesListener, addStreamStatusListener, addStreamErrorListener, useAudioStreaming hook
+    </criterion>
+    <criterion id="AC5">
+      All type definitions export correctly: AudioConfig, AudioSample, StreamStatus, StreamError
+    </criterion>
+  </acceptanceCriteria>
+
+  <artifacts>
+    <docs>
+      <doc>
+        <path>docs/loqa-audio-bridge/sprint-artifacts/tech-spec-epic-2.md</path>
+        <title>Epic 2 Technical Specification</title>
+        <section>Services and Modules</section>
+        <snippet>Defines the TypeScript module structure: index.ts (main API), LoqaAudioBridgeModule.ts (native bindings), types.ts (TypeScript types), buffer-utils.ts (audio utilities), useAudioStreaming.tsx (React hook). Migration strategy is direct file copy from v0.2.0 with systematic VoicelineDSP → LoqaAudioBridge renaming.</snippet>
+      </doc>
+      <doc>
+        <path>docs/loqa-audio-bridge/sprint-artifacts/tech-spec-epic-2.md</path>
+        <title>Epic 2 Technical Specification</title>
+        <section>Data Models and Contracts</section>
+        <snippet>Specifies TypeScript interfaces: AudioConfig (stream configuration), AudioSampleEvent (audio data payload), StreamStatusEvent (stream status), StreamErrorEvent (error handling). All types must be preserved exactly from v0.2.0 to maintain API compatibility (FR19).</snippet>
+      </doc>
+      <doc>
+        <path>docs/loqa-audio-bridge/sprint-artifacts/tech-spec-epic-2.md</path>
+        <title>Epic 2 Technical Specification</title>
+        <section>APIs and Interfaces</section>
+        <snippet>Public JavaScript API exported from index.ts includes core functions (startAudioStream, stopAudioStream, isStreaming), event listeners (addAudioSamplesListener, addStreamStatusListener, addStreamErrorListener), and React hook (useAudioStreaming). EventEmitter pattern used for native-to-JS communication.</snippet>
+      </doc>
+      <doc>
+        <path>docs/loqa-audio-bridge/PRD.md</path>
+        <title>Product Requirements Document</title>
+        <section>FR19 - Maintain TypeScript Types</section>
+        <snippet>Functional requirement FR19 mandates 100% TypeScript type preservation from v0.2.0. All function signatures, interfaces, and type definitions must remain unchanged to ensure API compatibility and prevent breaking changes for existing consumers.</snippet>
+      </doc>
+      <doc>
+        <path>docs/loqa-audio-bridge/architecture.md</path>
+        <title>Architecture Document</title>
+        <section>Decision 5: TypeScript Configuration</section>
+        <snippet>TypeScript configured with strict mode enabled, target ES2020, module ESNext, declaration files generated. Compiler excludes test files from build output. All types must be explicitly defined with no implicit any types allowed.</snippet>
+      </doc>
+    </docs>
+    <code>
+      <artifact>
+        <path>modules/loqa-audio-bridge/src/LoqaAudioBridgeModule.ts</path>
+        <kind>module</kind>
+        <symbol>LoqaAudioBridgeModule</symbol>
+        <lines>1-50</lines>
+        <reason>Current scaffolded module file created by Epic 1. This will be replaced with v0.2.0 implementation during migration, maintaining the same file location.</reason>
+      </artifact>
+      <artifact>
+        <path>modules/loqa-audio-bridge/src/buffer-utils.ts</path>
+        <kind>utility</kind>
+        <symbol>buffer utilities</symbol>
+        <lines>all</lines>
+        <reason>Existing scaffolded file. Will be replaced with v0.2.0 buffer manipulation utilities that handle audio format conversions and validations.</reason>
+      </artifact>
+      <artifact>
+        <path>modules/loqa-audio-bridge/tsconfig.json</path>
+        <kind>config</kind>
+        <symbol>TypeScript configuration</symbol>
+        <lines>all</lines>
+        <reason>TypeScript compiler configuration created in Story 1.3. Defines strict mode, ES2020 target, test file exclusions. Must be used for compilation validation.</reason>
+      </artifact>
+      <artifact>
+        <path>modules/loqa-audio-bridge/package.json</path>
+        <kind>config</kind>
+        <symbol>package metadata</symbol>
+        <lines>all</lines>
+        <reason>Package configuration created in Story 1.2. Contains build scripts, dependencies, and metadata. TypeScript build command: npm run build or npx tsc.</reason>
+      </artifact>
+      <artifact>
+        <path>modules/voiceline-dsp/</path>
+        <kind>source</kind>
+        <symbol>v0.2.0 implementation</symbol>
+        <lines>all</lines>
+        <reason>v0.2.0 VoicelineDSP source code directory. Contains the original TypeScript files to be copied: index.ts, src/VoicelineDSPModule.ts, src/types.ts, src/buffer-utils.ts, hooks/useAudioStreaming.tsx. Source for migration.</reason>
+      </artifact>
+    </code>
+    <dependencies>
+      <node>
+        <package name="expo-modules-core" version="*" usage="Native module bridge, EventEmitter"/>
+        <package name="react" version=">=18.0.0" usage="React hooks (useAudioStreaming)"/>
+        <package name="react-native" version=">=0.72.0" usage="Platform runtime"/>
+        <package name="typescript" version="^5.3.0" usage="Type checking and compilation" devDependency="true"/>
+        <package name="@types/react" version="^18.0.0" usage="React type definitions" devDependency="true"/>
+      </node>
+    </dependencies>
+  </artifacts>
+
+  <constraints>
+    <constraint id="C1" type="module-renaming">
+      All "VoicelineDSP" references must be renamed to "LoqaAudioBridge" (case-sensitive). This includes class names, module names, import statements, and native module references.
+    </constraint>
+    <constraint id="C2" type="api-compatibility">
+      100% API surface preservation required (FR19). All function signatures, type definitions, and event contracts from v0.2.0 must remain unchanged. No breaking changes allowed.
+    </constraint>
+    <constraint id="C3" type="compilation">
+      TypeScript must compile with zero errors using strict mode (tsconfig.json configuration from Story 1.3). Run: npx tsc
+    </constraint>
+    <constraint id="C4" type="import-resolution">
+      All imports must resolve correctly. Update file paths to match new scaffolded structure. Verify no red squiggles in VS Code.
+    </constraint>
+    <constraint id="C5" type="eventemitter">
+      EventEmitter subscriptions must use expo-modules-core API (validated in Story 2.0). Pattern: const emitter = new EventEmitter(LoqaAudioBridgeModule);
+    </constraint>
+    <constraint id="C6" type="file-structure">
+      Maintain scaffolded structure from Epic 1: index.ts at root, src/ directory for module files, hooks/ directory for React hooks.
+    </constraint>
+  </constraints>
+
+  <interfaces>
+    <interface>
+      <name>startAudioStream</name>
+      <kind>function</kind>
+      <signature>function startAudioStream(config: AudioConfig): Promise&lt;boolean&gt;</signature>
+      <path>modules/loqa-audio-bridge/index.ts</path>
+    </interface>
+    <interface>
+      <name>stopAudioStream</name>
+      <kind>function</kind>
+      <signature>function stopAudioStream(): boolean</signature>
+      <path>modules/loqa-audio-bridge/index.ts</path>
+    </interface>
+    <interface>
+      <name>isStreaming</name>
+      <kind>function</kind>
+      <signature>function isStreaming(): boolean</signature>
+      <path>modules/loqa-audio-bridge/index.ts</path>
+    </interface>
+    <interface>
+      <name>addAudioSamplesListener</name>
+      <kind>function</kind>
+      <signature>function addAudioSamplesListener(callback: (event: AudioSampleEvent) =&gt; void): Subscription</signature>
+      <path>modules/loqa-audio-bridge/index.ts</path>
+    </interface>
+    <interface>
+      <name>addStreamStatusListener</name>
+      <kind>function</kind>
+      <signature>function addStreamStatusListener(callback: (event: StreamStatusEvent) =&gt; void): Subscription</signature>
+      <path>modules/loqa-audio-bridge/index.ts</path>
+    </interface>
+    <interface>
+      <name>addStreamErrorListener</name>
+      <kind>function</kind>
+      <signature>function addStreamErrorListener(callback: (event: StreamErrorEvent) =&gt; void): Subscription</signature>
+      <path>modules/loqa-audio-bridge/index.ts</path>
+    </interface>
+    <interface>
+      <name>useAudioStreaming</name>
+      <kind>hook</kind>
+      <signature>function useAudioStreaming(config?: AudioConfig): { isStreaming: boolean; start: () =&gt; Promise&lt;void&gt;; stop: () =&gt; void; samples: AudioSampleEvent | null; error: StreamErrorEvent | null; }</signature>
+      <path>modules/loqa-audio-bridge/hooks/useAudioStreaming.tsx</path>
+    </interface>
+    <interface>
+      <name>AudioConfig</name>
+      <kind>interface</kind>
+      <signature>interface AudioConfig { sampleRate: number; bufferSize: number; channels: number; enableVAD?: boolean; vadThreshold?: number; enableBatterySaver?: boolean; }</signature>
+      <path>modules/loqa-audio-bridge/src/types.ts</path>
+    </interface>
+    <interface>
+      <name>AudioSampleEvent</name>
+      <kind>interface</kind>
+      <signature>interface AudioSampleEvent { samples: number[]; sampleRate: number; frameLength: number; timestamp: number; rms: number; }</signature>
+      <path>modules/loqa-audio-bridge/src/types.ts</path>
+    </interface>
+    <interface>
+      <name>StreamStatusEvent</name>
+      <kind>interface</kind>
+      <signature>interface StreamStatusEvent { status: 'streaming' | 'stopped' | 'paused' | 'battery_optimized'; }</signature>
+      <path>modules/loqa-audio-bridge/src/types.ts</path>
+    </interface>
+    <interface>
+      <name>StreamErrorEvent</name>
+      <kind>interface</kind>
+      <signature>interface StreamErrorEvent { code: string; message: string; platform: 'ios' | 'android'; timestamp: number; }</signature>
+      <path>modules/loqa-audio-bridge/src/types.ts</path>
+    </interface>
+  </interfaces>
+
+  <tests>
+    <standards>
+      Testing framework: Jest with Expo preset. TypeScript tests use @testing-library/react-native for hook testing. Tests mock native module calls (no actual audio recording). Coverage baseline from v0.2.0: API contracts, buffer utilities, React hook lifecycle. Tests excluded from npm package via .npmignore and tsconfig.json exclusions.
+    </standards>
+    <locations>
+      <location>modules/loqa-audio-bridge/__tests__/</location>
+      <location>modules/loqa-audio-bridge/**/*.test.ts</location>
+      <location>modules/loqa-audio-bridge/**/*.test.tsx</location>
+    </locations>
+    <ideas>
+      <idea ac="AC1,AC2">Test that index.ts imports resolve and module compiles without errors</idea>
+      <idea ac="AC4">Test that all 7 API functions are exported from index.ts</idea>
+      <idea ac="AC5">Test that all 4 type definitions are exported from types.ts</idea>
+      <idea ac="AC3">Test API signatures match v0.2.0 baseline (function parameter counts, return types)</idea>
+      <idea ac="AC4">Test EventEmitter subscriptions return Subscription objects with remove() method</idea>
+      <idea ac="AC3">Test buffer-utils functions handle edge cases (empty arrays, invalid formats)</idea>
+      <idea ac="AC4">Test useAudioStreaming hook lifecycle (mount, unmount, cleanup)</idea>
+    </ideas>
+  </tests>
+</story-context>

@@ -1,0 +1,213 @@
+<story-context id=".bmad/bmm/workflows/4-implementation/story-context/template" v="1.0">
+  <metadata>
+    <epicId>5</epicId>
+    <storyId>5.1</storyId>
+    <title>Configure npm Package for Publishing</title>
+    <status>drafted</status>
+    <generatedAt>2025-11-17</generatedAt>
+    <generator>BMAD Story Context Workflow</generator>
+    <sourceStoryPath>docs/loqa-audio-bridge/sprint-artifacts/stories/5-1-configure-npm-package-for-publishing.md</sourceStoryPath>
+  </metadata>
+
+  <story>
+    <asA>package maintainer</asA>
+    <iWant>the package configured for npm publishing</iWant>
+    <soThat>users can install via `npx expo install`</soThat>
+    <tasks>
+- [ ] Configure package.json for npm publishing (AC: 1)
+  - [ ] Set name to @loqalabs/loqa-audio-bridge
+  - [ ] Set version to 0.3.0
+  - [ ] Add description field
+  - [ ] Set main to build/index.js
+  - [ ] Set types to build/index.d.ts
+  - [ ] Add files whitelist array
+  - [ ] Add publishConfig with access: public
+
+- [ ] Create .npmignore file (AC: 2)
+  - [ ] Add test directories and files
+  - [ ] Add example/ directory
+  - [ ] Add .github/ directory
+  - [ ] Add config files (tsconfig, eslint, prettier)
+  - [ ] Add iOS test directories
+  - [ ] Add Android test directories
+  - [ ] Add build artifacts (*.tgz, node_modules)
+
+- [ ] Test package creation (AC: 3)
+  - [ ] Run npm pack
+  - [ ] Verify tarball created successfully
+  - [ ] Check tarball size (<500 KB target)
+
+- [ ] Validate package contents (AC: 4)
+  - [ ] Extract tarball: `tar -xzf loqalabs-loqa-audio-bridge-*.tgz`
+  - [ ] Verify build/ directory present
+  - [ ] Verify src/ directory present
+  - [ ] Verify ios/ directory present (no Tests/)
+  - [ ] Verify android/ directory present (no test dirs)
+  - [ ] Verify documentation files present
+  - [ ] Confirm test files absent
+  - [ ] Confirm example/ absent
+  - [ ] Confirm .github/ absent
+  - [ ] Confirm no Swift test files
+
+- [ ] Document package configuration (AC: 1, 2, 3, 4)
+  - [ ] Add comments to package.json files array
+  - [ ] Document .npmignore purpose
+  - [ ] Create validation checklist for future releases
+    </tasks>
+  </story>
+
+  <acceptanceCriteria>
+1. **package.json includes complete npm metadata**:
+   - "main" points to "build/index.js"
+   - "types" points to "build/index.d.ts"
+   - "files" array includes: build/, src/, ios/, android/, hooks/, expo-module.config.json, LoqaAudioBridge.podspec, README.md, API.md, INTEGRATION_GUIDE.md, CHANGELOG.md, LICENSE
+   - "publishConfig.access" is "public"
+
+2. **.npmignore includes all test/development files**:
+   - __tests__/, example/, .github/ excluded
+   - Test files (*.test.ts, *.spec.ts) excluded
+   - iOS test directories (ios/Tests/) excluded
+   - Android test directories (android/src/test/, android/src/androidTest/) excluded
+   - Config files (tsconfig.json, .eslintrc.js, .prettierrc) excluded
+
+3. **Running `npm pack` creates tarball**:
+   - Tarball created: `loqalabs-loqa-audio-bridge-0.3.0.tgz`
+   - Tarball size <500 KB (excluding node_modules)
+
+4. **Tarball inspection shows correct contents**:
+   - ✅ build/, src/, ios/ (no Tests/), android/ (no test dirs) present
+   - ✅ Documentation files present
+   - ❌ __tests__/, example/, .github/ absent
+   - ❌ No test files present
+  </acceptanceCriteria>
+
+  <artifacts>
+    <docs>
+      <doc>
+        <path>docs/loqa-audio-bridge/sprint-artifacts/tech-spec-epic-5.md</path>
+        <title>Epic 5: Distribution & CI/CD Technical Specification</title>
+        <section>Architecture Alignment → Multi-Layered Test Exclusion (Decision 3)</section>
+        <snippet>Epic 5 implements Layer 3 (.npmignore exclusions) and Layer 4 (CI validation) of the four-layer test exclusion strategy to prevent test files from shipping to production. Story 5.1 creates .npmignore as defensive exclusion.</snippet>
+      </doc>
+      <doc>
+        <path>docs/loqa-audio-bridge/sprint-artifacts/tech-spec-epic-5.md</path>
+        <title>Epic 5 Technical Specification</title>
+        <section>Data Models → npm Package Metadata</section>
+        <snippet>Defines complete package.json structure including name (@loqalabs/loqa-audio-bridge), version (0.3.0), main/types entry points, files whitelist, and publishConfig for public scoped package access.</snippet>
+      </doc>
+      <doc>
+        <path>docs/loqa-audio-bridge/sprint-artifacts/tech-spec-epic-5.md</path>
+        <title>Epic 5 Technical Specification</title>
+        <section>Data Models → npm Package Contents Contract</section>
+        <snippet>MUST include: build/, src/, ios/, android/, configuration files, documentation. MUST exclude: test files, development files (__tests__/, example/, .github/), build artifacts (node_modules/, *.tgz).</snippet>
+      </doc>
+      <doc>
+        <path>docs/loqa-audio-bridge/sprint-artifacts/stories/2-3-implement-ios-podspec-test-exclusions.md</path>
+        <title>Story 2.3: iOS Podspec Test Exclusions</title>
+        <section>Implementation Reference</section>
+        <snippet>Implemented Layer 1 (podspec exclude_files) of multi-layer test exclusion strategy. Excludes ios/Tests/, **/*Tests.swift, **/*Test.swift from CocoaPods distribution.</snippet>
+      </doc>
+    </docs>
+    <code>
+      <artifact>
+        <path>modules/loqa-audio-bridge/package.json</path>
+        <kind>configuration</kind>
+        <symbol>package metadata</symbol>
+        <lines>1-51</lines>
+        <reason>Current package.json that needs files array and publishConfig added for AC1</reason>
+      </artifact>
+      <artifact>
+        <path>modules/loqa-audio-bridge/LoqaAudioBridge.podspec</path>
+        <kind>configuration</kind>
+        <symbol>exclude_files</symbol>
+        <lines>19-24</lines>
+        <reason>Reference for iOS test exclusion patterns already implemented in Layer 1 (Story 2.3)</reason>
+      </artifact>
+      <artifact>
+        <path>modules/loqa-audio-bridge/expo-module.config.json</path>
+        <kind>configuration</kind>
+        <symbol>module config</symbol>
+        <lines>-</lines>
+        <reason>Must be included in package.json files array for Expo autolinking</reason>
+      </artifact>
+    </code>
+    <dependencies>
+      <npm>
+        <package name="expo" version="^54.0.18" scope="devDependencies" />
+        <package name="expo-modules-core" version="*" scope="peerDependencies" />
+        <package name="expo-module-scripts" version="^5.0.7" scope="devDependencies" />
+        <package name="typescript" version="^5.3.0" scope="devDependencies" />
+        <package name="react" version=">=18.0.0" scope="peerDependencies" />
+        <package name="react-native" version=">=0.72.0" scope="peerDependencies" />
+      </npm>
+    </dependencies>
+  </artifacts>
+
+  <constraints>
+- **Multi-layer test exclusion strategy (Architecture Decision 3)**:
+  - Layer 1: iOS podspec exclude_files (implemented in Story 2.3)
+  - Layer 2: Android Gradle auto-exclusion (existing)
+  - Layer 3: .npmignore (this story)
+  - Layer 4: CI validation (Story 5.2)
+- **Files whitelist approach**: Use package.json "files" array to ensure only intended files ship
+- **Defense in depth**: Both .npmignore and files array provide redundant protection
+- **Expo autolinking compatibility**: Must include expo-module.config.json and LoqaAudioBridge.podspec in package
+- **Documentation requirements**: README.md, API.md, INTEGRATION_GUIDE.md must be included (from Epic 4)
+- **Monorepo context**: Package located in modules/loqa-audio-bridge/ subdirectory of Loqa monorepo
+  </constraints>
+
+  <interfaces>
+    <interface>
+      <name>npm pack</name>
+      <kind>CLI command</kind>
+      <signature>npm pack [--dry-run]</signature>
+      <path>-</path>
+      <description>Creates tarball from package.json files array and .npmignore rules</description>
+    </interface>
+    <interface>
+      <name>tar extraction</name>
+      <kind>Shell command</kind>
+      <signature>tar -xzf loqalabs-loqa-audio-bridge-*.tgz</signature>
+      <path>-</path>
+      <description>Extracts tarball for manual inspection of package contents</description>
+    </interface>
+    <interface>
+      <name>package.json files field</name>
+      <kind>npm configuration</kind>
+      <signature>"files": ["build/", "src/", "ios/", ...]</signature>
+      <path>modules/loqa-audio-bridge/package.json</path>
+      <description>Whitelist of files/directories to include in npm package (primary exclusion mechanism)</description>
+    </interface>
+    <interface>
+      <name>.npmignore patterns</name>
+      <kind>npm configuration</kind>
+      <signature>Glob patterns like __tests__/, *.test.ts, example/</signature>
+      <path>modules/loqa-audio-bridge/.npmignore</path>
+      <description>Blacklist of files/patterns to exclude from npm package (defense in depth)</description>
+    </interface>
+  </interfaces>
+
+  <tests>
+    <standards>
+Testing for this story is primarily validation-based rather than unit testing. Manual validation uses npm pack to create tarball, then tar extraction to inspect contents. Automated validation will be added in Story 5.2 (CI package validation job). Validation must confirm no test files present using grep/find commands and directory listing.
+    </standards>
+    <locations>
+- Manual validation: Command line (npm pack, tar -xzf, ls, grep)
+- Automated validation (Story 5.2): .github/workflows/ci.yml package-validation job
+- Package output: modules/loqa-audio-bridge/*.tgz (temporary, not committed)
+- Extracted package: package/ directory (temporary inspection)
+    </locations>
+    <ideas>
+- **AC1 Test**: Validate package.json has "files" array with all required entries and publishConfig.access="public"
+- **AC2 Test**: Create .npmignore, run npm pack, extract tarball, verify __tests__/, example/, .github/, ios/Tests/ absent
+- **AC2 Test**: grep -r "*.test.ts" "*.spec.ts" in extracted package returns no results
+- **AC2 Test**: find extracted package for *Tests.swift *Test.swift files returns empty
+- **AC3 Test**: Run npm pack, check tarball filename matches loqalabs-loqa-audio-bridge-0.3.0.tgz
+- **AC3 Test**: Check tarball size with ls -lh, verify <500 KB
+- **AC4 Test**: Extract tarball, verify build/ src/ ios/ android/ directories present
+- **AC4 Test**: Verify documentation files present: README.md, API.md, INTEGRATION_GUIDE.md, CHANGELOG.md
+- **AC4 Test**: Verify expo-module.config.json and LoqaAudioBridge.podspec present (autolinking requirement)
+- **Regression Test**: After changes, run npm run build && npm test to ensure package.json modifications don't break build
+    </ideas>
+  </tests>
+</story-context>

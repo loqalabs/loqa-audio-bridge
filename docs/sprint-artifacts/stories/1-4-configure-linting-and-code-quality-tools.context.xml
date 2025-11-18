@@ -1,0 +1,136 @@
+<story-context id=".bmad/bmm/workflows/4-implementation/story-context/template" v="1.0">
+  <metadata>
+    <epicId>1</epicId>
+    <storyId>4</storyId>
+    <title>Configure Linting and Code Quality Tools</title>
+    <status>drafted</status>
+    <generatedAt>2025-11-13</generatedAt>
+    <generator>BMAD Story Context Workflow</generator>
+    <sourceStoryPath>docs/loqa-audio-bridge/sprint-artifacts/stories/1-4-configure-linting-and-code-quality-tools.md</sourceStoryPath>
+  </metadata>
+
+  <story>
+    <asA>developer</asA>
+    <iWant>ESLint and Prettier configured</iWant>
+    <soThat>code style is consistent and quality issues are caught automatically</soThat>
+    <tasks>
+      - Install linting dependencies: Verify eslint and prettier from Story 1.2, install @expo/eslint-config and eslint-config-prettier
+      - Create .eslintrc.js configuration: Add extends ['expo', 'prettier'], configure parser options for TypeScript
+      - Create .prettierrc configuration: Set semi: true, trailingComma "es5", singleQuote: true, printWidth: 100, tabWidth: 2
+      - Add linting scripts to package.json: Add "lint": "eslint . --ext .ts,.tsx", "format": "prettier --write \"**/*.{ts,tsx,json,md}\""
+      - Validate linting setup: Run npm run lint (zero errors), run npm run format (formats consistently)
+      - Test code quality enforcement: Create test file with violations, verify lint catches them, verify format auto-fixes
+    </tasks>
+  </story>
+
+  <acceptanceCriteria>
+    1. ESLint Configuration: .eslintrc.js extends ['expo', 'prettier'] for Expo-specific rules and Prettier integration
+    2. Prettier Configuration: .prettierrc specifies semi: true, trailingComma "es5", singleQuote: true, printWidth: 100, tabWidth: 2
+    3. Linting Scripts: package.json scripts include "lint": "eslint . --ext .ts,.tsx", "format": "prettier --write \"**/*.{ts,tsx,json,md}\""
+    4. Validation: Running npm run lint on scaffolded code shows zero errors, npm run format formats all files consistently
+  </acceptanceCriteria>
+
+  <artifacts>
+    <docs>
+      <doc>
+        <path>docs/loqa-audio-bridge/epics.md</path>
+        <title>Epic 1 - Story 1.4</title>
+        <section>Technical Notes</section>
+        <snippet>Aligns with architecture Decision 6 (linting strategy). Use @expo/eslint-config for Expo-specific rules. Pre-commit hooks optional for v0.3.0 (defer to v0.4.0). ESLint focuses on code quality, Prettier handles formatting, must not conflict.</snippet>
+      </doc>
+      <doc>
+        <path>docs/loqa-audio-bridge/sprint-artifacts/stories/1-2-configure-package-metadata-and-dependencies.md</path>
+        <title>Story 1.2 Context</title>
+        <section>Learnings</section>
+        <snippet>ESLint (^8.0.0) and Prettier (^3.0.0) added as devDependencies in Story 1.2. This story configures how these tools will be used.</snippet>
+      </doc>
+      <doc>
+        <path>docs/loqa-audio-bridge/sprint-artifacts/stories/1-3-configure-typescript-build-system.md</path>
+        <title>Story 1.3 Context</title>
+        <section>Learnings</section>
+        <snippet>TypeScript strict mode enabled in tsconfig.json. ESLint needs to work harmoniously with TypeScript's strict checking without duplicate/conflicting rules. All three tools (ESLint, TypeScript, Prettier) work together without conflicts.</snippet>
+      </doc>
+    </docs>
+    <code>
+      <artifact>
+        <path>package.json</path>
+        <kind>npm package manifest</kind>
+        <symbol>devDependencies: eslint, prettier</symbol>
+        <lines>devDependencies section</lines>
+        <reason>ESLint and Prettier installed in Story 1.2, need configuration files created</reason>
+      </artifact>
+      <artifact>
+        <path>tsconfig.json</path>
+        <kind>TypeScript configuration</kind>
+        <symbol>strict: true</symbol>
+        <lines>compilerOptions</lines>
+        <reason>TypeScript strict mode from Story 1.3 - ESLint must complement, not conflict</reason>
+      </artifact>
+    </code>
+    <dependencies>
+      <node>
+        <devDependencies>
+          <eslint>^8.0.0 (from Story 1.2)</eslint>
+          <prettier>^3.0.0 (from Story 1.2)</prettier>
+          <expo-eslint-config>latest (to be installed)</expo-eslint-config>
+          <eslint-config-prettier>latest (to be installed)</eslint-config-prettier>
+        </devDependencies>
+      </node>
+    </dependencies>
+  </artifacts>
+
+  <constraints>
+    - ESLint/Prettier integration: Must not conflict, eslint-config-prettier disables conflicting rules
+    - Execution order: Run Prettier first, ESLint second (use npm run format && npm run lint for full check)
+    - TypeScript compatibility: ESLint must understand TypeScript (@expo/eslint-config includes TypeScript support)
+    - File extensions: Lint both .ts and .tsx files (.ts for pure TypeScript, .tsx for React components with JSX)
+    - Expo-specific rules: @expo/eslint-config provides React Native and Expo best practices
+    - Formatting consistency: Prettier config must produce consistent output across all developers
+  </constraints>
+
+  <interfaces>
+    <interface>
+      <name>.eslintrc.js</name>
+      <kind>ESLint configuration</kind>
+      <signature>JavaScript module exporting config object with extends array and parser options</signature>
+      <path>.eslintrc.js (root of module)</path>
+    </interface>
+    <interface>
+      <name>.prettierrc</name>
+      <kind>Prettier configuration</kind>
+      <signature>JSON with formatting options (semi, trailingComma, singleQuote, printWidth, tabWidth)</signature>
+      <path>.prettierrc (root of module)</path>
+    </interface>
+    <interface>
+      <name>eslint CLI</name>
+      <kind>Code quality linter</kind>
+      <signature>eslint . --ext .ts,.tsx - lint TypeScript files</signature>
+      <path>External tool - ESLint from node_modules</path>
+    </interface>
+    <interface>
+      <name>prettier CLI</name>
+      <kind>Code formatter</kind>
+      <signature>prettier --write "**/*.{ts,tsx,json,md}" - format files</signature>
+      <path>External tool - Prettier from node_modules</path>
+    </interface>
+  </interfaces>
+
+  <tests>
+    <standards>
+      Validation-focused testing: Verify .eslintrc.js has valid JavaScript syntax. Verify .prettierrc has valid JSON syntax. Test npm run lint executes without errors on scaffolded code. Test npm run format formats files consistently. Verify no conflicts between ESLint and Prettier. Test both tools respect tsconfig.json paths.
+    </standards>
+    <locations>
+      - Module root: .eslintrc.js, .prettierrc
+      - Source files to be linted: src/, index.ts, hooks/ (from previous stories)
+      - Package scripts: package.json (lint and format scripts)
+    </locations>
+    <ideas>
+      AC#1: Validate ESLint configuration - Test: Verify .eslintrc.js extends array includes 'expo' and 'prettier'
+      AC#2: Validate Prettier configuration - Test: Parse .prettierrc and verify all formatting options set correctly
+      AC#3: Validate linting scripts - Test: Verify package.json scripts include "lint" and "format" commands with correct arguments
+      AC#4: Validate linting execution - Test: Run npm run lint on scaffolded code, expect exit code 0 (zero errors), run npm run format, verify files formatted
+      Additional: Test conflict resolution - Create test file with intentional style violations, run lint (should fail), run format (should fix), run lint again (should pass)
+      Epic completion check: All 4 stories done means Epic 1 foundation complete, ready for Epic 2 code migration
+    </ideas>
+  </tests>
+</story-context>

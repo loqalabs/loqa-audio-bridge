@@ -1,0 +1,154 @@
+<story-context id=".bmad/bmm/workflows/4-implementation/story-context/template" v="1.0">
+  <metadata>
+    <epicId>4</epicId>
+    <storyId>4.1</storyId>
+    <title>Write README.md with Quick Start</title>
+    <status>drafted</status>
+    <generatedAt>2025-11-17</generatedAt>
+    <generator>BMAD Story Context Workflow</generator>
+    <sourceStoryPath>docs/loqa-audio-bridge/sprint-artifacts/stories/4-1-write-readme-md-with-quick-start.md</sourceStoryPath>
+  </metadata>
+
+  <story>
+    <asA>a developer encountering this package</asA>
+    <iWant>a README that gets me started in &lt;5 minutes</iWant>
+    <soThat>I can quickly evaluate if the package meets my needs</soThat>
+    <tasks>
+- Create README.md in module root (AC: 1, 2, 3, 4, 5, 6, 7)
+  - Write header section with package name and description
+  - Add npm version and license badges
+  - Create features list highlighting key capabilities
+  - Write installation section with single command
+  - Add quick start code example (5-10 lines)
+  - Include links to comprehensive documentation
+  - Add platform requirements section
+  - Add license section (MIT)
+- Validate README quality (AC: 8, 9, 10)
+  - Verify line count &lt;200 lines
+  - Test code examples compile without modification
+  - Verify badges link to correct URLs
+  - Review for clarity and scannability
+- Cross-reference with example app (AC: 4)
+  - Ensure code examples match example app patterns
+  - Verify imports and usage are consistent
+    </tasks>
+  </story>
+
+  <acceptanceCriteria>
+1. **Header Section** includes package name @loqalabs/loqa-audio-bridge, one-line description, npm version badge, license badge (MIT)
+2. **Features List** includes real-time audio streaming (8kHz-48kHz), Voice Activity Detection (VAD) for battery optimization, cross-platform (iOS + Android), TypeScript support with full type definitions, zero manual configuration (autolinking works out-of-the-box)
+3. **Installation Section** shows single command: `npx expo install @loqalabs/loqa-audio-bridge` with note that autolinking handles the rest
+4. **Quick Start Code Example** (5-10 lines) demonstrates importing, starting audio stream with config, adding listener for audio samples
+5. **Links to Comprehensive Docs** section includes links to INTEGRATION_GUIDE.md, API.md, example app
+6. **Platform Requirements** lists iOS 13.4+, Android API 24+, Expo 52+, React Native 0.72+
+7. **License**: MIT
+8. **README is &lt;200 lines** (scannable in &lt;2 minutes)
+9. **Code examples are copy-pasteable** and work without modification
+10. **Badges link** to npm registry and GitHub repository
+  </acceptanceCriteria>
+
+  <artifacts>
+    <docs>
+- **path**: docs/loqa-audio-bridge/PRD.md
+  **title**: Product Requirements Document
+  **section**: Success Criteria - Developer Confidence
+  **snippet**: README enables package evaluation in &lt;5 minutes. Developer can determine feature fit and compatibility without deep research.
+
+- **path**: docs/loqa-audio-bridge/architecture.md
+  **title**: Architecture Document
+  **section**: Decision 1 - Foundation Strategy
+  **snippet**: Use create-expo-module as starter template. Official Expo scaffolding ensures correct structure and autolinking configuration.
+
+- **path**: docs/loqa-audio-bridge/sprint-artifacts/tech-spec-epic-4.md
+  **title**: Epic 4 Technical Specification
+  **section**: README.md Structure
+  **snippet**: Header with package name and badges, features list (5-7 bullet points), installation (single command), quick-start code example (5-10 lines), documentation links, platform requirements, license declaration.
+
+- **path**: docs/loqa-audio-bridge/collaboration/voicelinedsp-v0.2.0-api-spec.md
+  **title**: v0.2.0 API Specification
+  **section**: Overview
+  **snippet**: Real-time audio streaming from device microphone, event-driven architecture using Expo EventEmitter, cross-platform consistency with type-safe TypeScript interfaces.
+    </docs>
+    <code>
+- **path**: modules/loqa-audio-bridge/package.json
+  **kind**: package manifest
+  **symbol**: package metadata
+  **lines**: 1-51
+  **reason**: Source for package name (@loqalabs/loqa-audio-bridge), description, version (0.3.0), keywords, repository URLs, license (MIT), peer dependencies for platform requirements
+
+- **path**: modules/loqa-audio-bridge/src/index.ts
+  **kind**: entry point
+  **symbol**: module exports
+  **lines**: 1-6
+  **reason**: Shows public API surface - what functions/types are exported for quick-start example
+
+- **path**: modules/loqa-audio-bridge/src/types.ts
+  **kind**: type definitions
+  **symbol**: StreamConfig, AudioSampleEvent
+  **lines**: 1-136
+  **reason**: TypeScript interfaces for StreamConfig and AudioSampleEvent used in quick-start code example. Shows sampleRate, bufferSize defaults and event payload structure.
+    </code>
+    <dependencies>
+- **npm**: expo (>=52.0.0) - Required peer dependency for Expo framework
+- **npm**: expo-modules-core (*) - Required for Expo module infrastructure
+- **npm**: react (>=18.0.0) - React peer dependency
+- **npm**: react-native (>=0.72.0) - React Native peer dependency
+- **Platform**: iOS 13.4+ (from LoqaAudioBridge.podspec deployment target)
+- **Platform**: Android API 24+ (from build.gradle minSdkVersion)
+    </dependencies>
+  </artifacts>
+
+  <constraints>
+- README must be &lt;200 lines to enable scannable evaluation in &lt;5 minutes (NFR9 from PRD)
+- Quick-start code example must compile without errors when copied directly (AC9)
+- Use consistent package name @loqalabs/loqa-audio-bridge (not VoicelineDSP from v0.2.0)
+- Installation must be single command: `npx expo install @loqalabs/loqa-audio-bridge` (no manual steps)
+- Code examples must match example app patterns from Epic 3 for consistency
+- Badge URLs must link to npm registry and GitHub repository (https://github.com/loqalabs/loqa)
+- Platform requirements must match podspec (iOS 13.4+) and gradle (Android API 24+)
+- License must be MIT per package.json and architecture decisions
+  </constraints>
+
+  <interfaces>
+- **name**: startAudioStream
+  **kind**: Promise-based function
+  **signature**: startAudioStream(config?: StreamConfig): Promise&lt;void&gt;
+  **path**: modules/loqa-audio-bridge/src/LoqaAudioBridgeModule.ts
+
+- **name**: addAudioSamplesListener
+  **kind**: Event listener registration
+  **signature**: addAudioSamplesListener(callback: (event: AudioSampleEvent) => void): Subscription
+  **path**: modules/loqa-audio-bridge/src/LoqaAudioBridgeModule.ts
+
+- **name**: StreamConfig
+  **kind**: TypeScript interface
+  **signature**: { sampleRate?: number; bufferSize?: number; channels?: number; vadEnabled?: boolean; adaptiveProcessing?: boolean }
+  **path**: modules/loqa-audio-bridge/src/types.ts
+
+- **name**: AudioSampleEvent
+  **kind**: TypeScript interface
+  **signature**: { samples: number[]; sampleRate: number; frameLength: number; timestamp: number; rms: number }
+  **path**: modules/loqa-audio-bridge/src/types.ts
+  </interfaces>
+
+  <tests>
+    <standards>
+No automated tests required for README.md as it is markdown documentation. Manual validation includes:
+- Line count check (&lt;200 lines)
+- Code example extraction and TypeScript compilation
+- Link validation (internal and external links resolve)
+- Readability review (scannable in 2-3 minutes)
+- Badge URL verification (npm, GitHub links work)
+    </standards>
+    <locations>
+N/A - Documentation file, not code
+    </locations>
+    <ideas>
+- **Manual Test 1**: Extract quick-start code example, save as test.ts, run `npx tsc test.ts` to verify it compiles without errors (validates AC9)
+- **Manual Test 2**: Time-tracked evaluation test with external developer unfamiliar with package - can they determine package suitability in &lt;5 minutes? (validates NFR9, AC8)
+- **Manual Test 3**: Verify badge links resolve correctly - npm version badge links to https://www.npmjs.com/package/@loqalabs/loqa-audio-bridge, license badge shows MIT (validates AC10)
+- **Manual Test 4**: Word count / line count validation - README &lt;200 lines (validates AC8)
+- **Manual Test 5**: Cross-reference quick-start example with example app code (from Epic 3) to ensure consistency in usage patterns (validates AC4 cross-reference task)
+    </ideas>
+  </tests>
+</story-context>

@@ -1,0 +1,157 @@
+<story-context id=".bmad/bmm/workflows/4-implementation/story-context/template" v="1.0">
+  <metadata>
+    <epicId>5</epicId>
+    <storyId>5.5</storyId>
+    <title>Create CHANGELOG.md and Release Process Documentation</title>
+    <status>drafted</status>
+    <generatedAt>2025-11-17</generatedAt>
+    <generator>BMAD Story Context Workflow</generator>
+    <sourceStoryPath>docs/loqa-audio-bridge/sprint-artifacts/stories/5-5-create-changelog-md-and-release-process-documentation.md</sourceStoryPath>
+  </metadata>
+
+  <story>
+    <asA>package maintainer</asA>
+    <iWant>a changelog and release process documented</iWant>
+    <soThat>version history is tracked and releases are consistent</soThat>
+    <tasks>
+- [ ] Create CHANGELOG.md structure (AC: 1)
+- [ ] Document v0.3.0 release (AC: 2)
+- [ ] Document v0.2.0 release (AC: 3)
+- [ ] Create RELEASING.md (AC: 4)
+- [ ] Document Semantic Versioning rules (AC: 5)
+- [ ] Create Pre-Release Checklist (AC: 6)
+- [ ] Document Release Steps (AC: 7)
+- [ ] Create Post-Release Validation checklist (AC: 8)
+- [ ] Update package.json metadata (AC: 9)
+- [ ] Add LICENSE file (AC: 10)
+    </tasks>
+  </story>
+
+  <acceptanceCriteria>
+1. **CHANGELOG.md format**: Follows Keep a Changelog spec with links to standards
+2. **v0.3.0 entry**: Complete with Added, Fixed, Changed sections and migration link
+3. **v0.2.0 entry**: Documents Voiceline deployment with known issues
+4. **RELEASING.md**: Comprehensive process docs (versioning, checklist, steps, validation)
+5. **Semantic Versioning**: MAJOR/MINOR/PATCH rules clearly documented
+6. **Pre-Release Checklist**: Tests, changelog, version, docs, example testing
+7. **Release Steps**: npm version, git push, automation, verification
+8. **Post-Release Validation**: Installation test, integration test, example verification
+9. **package.json metadata**: repository, bugs, homepage URLs
+10. **LICENSE**: MIT license file present
+  </acceptanceCriteria>
+
+  <artifacts>
+    <docs>
+      <doc>
+        <path>docs/loqa-audio-bridge/sprint-artifacts/tech-spec-epic-5.md</path>
+        <title>Epic 5 Technical Specification</title>
+        <section>Data Models → CHANGELOG.md Format Contract</section>
+        <snippet>Follows Keep a Changelog format: version header with date, subsections for Added/Changed/Deprecated/Removed/Fixed/Security. Links to migration guides for major versions.</snippet>
+      </doc>
+      <doc>
+        <path>docs/loqa-audio-bridge/sprint-artifacts/tech-spec-epic-5.md</path>
+        <title>Epic 5 Technical Specification</title>
+        <section>NFR-O4: Release Audit Trail</section>
+        <snippet>Git tags for every release, GitHub Releases with auto-generated notes, CHANGELOG.md for human-readable history, provenance linking commit hash to published version.</snippet>
+      </doc>
+      <doc>
+        <path>docs/loqa-audio-bridge/sprint-artifacts/tech-spec-epic-5.md</path>
+        <title>Epic 5 Technical Specification</title>
+        <section>NFR-R4: Rollback Capability</section>
+        <snippet>npm deprecate command for rollback, deprecation notice within 4 hours, patch release within 24 hours. Process documented in RELEASING.md.</snippet>
+      </doc>
+      <doc>
+        <path>docs/loqa-audio-bridge/sprint-artifacts/stories/5-3-create-automated-npm-publishing-workflow.md</path>
+        <title>Story 5.3: Publishing Workflow</title>
+        <section>Release Automation</section>
+        <snippet>Git tag-based publishing: npm version → git tag → push → automated publish. Release steps documented in RELEASING.md align with workflow.</snippet>
+      </doc>
+    </docs>
+    <code>
+      <artifact>
+        <path>modules/loqa-audio-bridge/package.json</path>
+        <kind>configuration</kind>
+        <symbol>metadata fields</symbol>
+        <lines>27-33</lines>
+        <reason>Needs repository, bugs, homepage URLs added for AC9</reason>
+      </artifact>
+    </code>
+    <dependencies>
+      <external-specs>
+        <spec name="Keep a Changelog" url="https://keepachangelog.com/en/1.0.0/" purpose="Changelog format standard" />
+        <spec name="Semantic Versioning" url="https://semver.org/spec/v2.0.0.html" purpose="Version numbering standard" />
+      </external-specs>
+    </dependencies>
+  </artifacts>
+
+  <constraints>
+- **Changelog format compliance**: Must follow Keep a Changelog spec exactly (version headers, section names)
+- **Semantic versioning adherence**: Version numbering must follow semver (MAJOR.MINOR.PATCH)
+- **Release date format**: Use ISO 8601 date format (YYYY-MM-DD) in changelog entries
+- **Changelog updates required**: Every release must update CHANGELOG.md before tagging
+- **Migration guide linking**: Major version changes must link to migration documentation
+- **License requirement**: MIT license required (matches package.json license field)
+- **Package metadata completeness**: repository, bugs, homepage required for npm registry display
+- **RELEASING.md is internal**: For maintainers only, not end-user facing
+  </constraints>
+
+  <interfaces>
+    <interface>
+      <name>npm version</name>
+      <kind>CLI command</kind>
+      <signature>npm version [major|minor|patch|premajor|preminor|prepatch|prerelease]</signature>
+      <path>-</path>
+      <description>Bumps version in package.json, creates git commit and tag automatically</description>
+    </interface>
+    <interface>
+      <name>npm deprecate</name>
+      <kind>CLI command</kind>
+      <signature>npm deprecate @loqalabs/loqa-audio-bridge@VERSION "deprecation message"</signature>
+      <path>-</path>
+      <description>Marks npm package version as deprecated with warning message for rollback scenarios</description>
+    </interface>
+    <interface>
+      <name>CHANGELOG.md format</name>
+      <kind>Markdown document</kind>
+      <signature>## [VERSION] - YYYY-MM-DD with Added/Changed/Fixed/etc subsections</signature>
+      <path>modules/loqa-audio-bridge/CHANGELOG.md</path>
+      <description>Human-readable version history following Keep a Changelog specification</description>
+    </interface>
+    <interface>
+      <name>GitHub repository URLs</name>
+      <kind>package.json metadata</kind>
+      <signature>repository, bugs, homepage fields pointing to GitHub</signature>
+      <path>modules/loqa-audio-bridge/package.json</path>
+      <description>Metadata displayed on npm registry package page for user navigation</description>
+    </interface>
+  </interfaces>
+
+  <tests>
+    <standards>
+Testing is primarily manual review and validation. Verify CHANGELOG.md format matches Keep a Changelog spec. Validate RELEASING.md completeness by following process dry-run. Check package.json metadata displays correctly on npm registry. Ensure LICENSE file contains valid MIT license text.
+    </standards>
+    <locations>
+- CHANGELOG.md: modules/loqa-audio-bridge/CHANGELOG.md
+- RELEASING.md: modules/loqa-audio-bridge/RELEASING.md
+- LICENSE: modules/loqa-audio-bridge/LICENSE
+- package.json: modules/loqa-audio-bridge/package.json (metadata updates)
+- npm registry: https://www.npmjs.com/package/@loqalabs/loqa-audio-bridge (metadata display)
+    </locations>
+    <ideas>
+- **AC1 Test**: Validate CHANGELOG.md header links to Keep a Changelog and Semantic Versioning specs
+- **AC2 Test**: Review v0.3.0 entry completeness (Added, Fixed, Changed sections populated, migration link present)
+- **AC3 Test**: Review v0.2.0 entry documents Voiceline deployment and known issues
+- **AC4 Test**: Read RELEASING.md end-to-end, verify all sections present and comprehensive
+- **AC5 Test**: Validate semantic versioning rules include examples (e.g., "Breaking change = MAJOR bump")
+- **AC6 Test**: Review pre-release checklist, verify covers tests, changelog, version, docs, example
+- **AC7 Test**: Follow release steps dry-run (without actual publish), verify process works
+- **AC8 Test**: Validate post-release checklist includes installation test, integration test, example verification
+- **AC9 Test**: Check npm registry page shows repository, bugs, homepage links correctly after publish
+- **AC10 Test**: Validate LICENSE file contains MIT license text with correct year and copyright holder
+- **Format Test**: Run markdown linter on CHANGELOG.md and RELEASING.md, verify no formatting errors
+- **Link Test**: Verify all links in CHANGELOG.md and RELEASING.md are valid (Keep a Changelog, semver.org)
+- **Completeness Test**: Compare v0.3.0 changelog to Epic 1-5 deliverables, ensure nothing major missing
+- **Semantic Version Test**: Document examples of what triggers MAJOR (breaking API), MINOR (new feature), PATCH (bug fix)
+    </ideas>
+  </tests>
+</story-context>

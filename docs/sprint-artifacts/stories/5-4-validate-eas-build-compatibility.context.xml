@@ -1,0 +1,170 @@
+<story-context id=".bmad/bmm/workflows/4-implementation/story-context/template" v="1.0">
+  <metadata>
+    <epicId>5</epicId>
+    <storyId>5.4</storyId>
+    <title>Validate EAS Build Compatibility</title>
+    <status>drafted</status>
+    <generatedAt>2025-11-17</generatedAt>
+    <generator>BMAD Story Context Workflow</generator>
+    <sourceStoryPath>docs/loqa-audio-bridge/sprint-artifacts/stories/5-4-validate-eas-build-compatibility.md</sourceStoryPath>
+  </metadata>
+
+  <story>
+    <asA>developer using EAS Build</asA>
+    <iWant>the package to work with Expo Application Services</iWant>
+    <soThat>cloud builds succeed without special configuration</soThat>
+    <tasks>
+- [ ] Set up EAS Build test environment (AC: 1)
+- [ ] Create eas.json configuration (AC: 2)
+- [ ] Test iOS EAS Build (AC: 3)
+- [ ] Test Android EAS Build (AC: 4)
+- [ ] Validate standard configuration works (AC: 5)
+- [ ] Document EAS Build compatibility (AC: 6)
+- [ ] Capture build logs (AC: 3, 4)
+    </tasks>
+  </story>
+
+  <acceptanceCriteria>
+1. **Test project created**: Fresh Expo app with package installed from npm
+2. **EAS configured**: Standard eas.json with development and production profiles
+3. **iOS EAS Build succeeds**: Cloud build completes, IPA installs, audio streaming works
+4. **Android EAS Build succeeds**: Cloud build completes, APK installs, audio streaming works
+5. **No special config**: Standard eas.json sufficient, no custom plugins/hooks
+6. **Documentation updated**: EAS Build section added to README and INTEGRATION_GUIDE
+  </acceptanceCriteria>
+
+  <artifacts>
+    <docs>
+      <doc>
+        <path>docs/loqa-audio-bridge/sprint-artifacts/tech-spec-epic-5.md</path>
+        <title>Epic 5 Technical Specification</title>
+        <section>Architecture Alignment → EAS Build Compatibility</section>
+        <snippet>Package works in EAS remote build environment (macOS for iOS, Linux for Android). No custom eas.json config required. Autolinking functions identically to local builds. Validates FR38.</snippet>
+      </doc>
+      <doc>
+        <path>docs/loqa-audio-bridge/sprint-artifacts/tech-spec-epic-5.md</path>
+        <title>Epic 5 Technical Specification</title>
+        <section>Workflows → Workflow 3 (EAS Build Validation)</section>
+        <snippet>Complete EAS validation workflow: create test app → install package → eas build → download artifacts → device testing. Validates cloud build environment compatibility.</snippet>
+      </doc>
+      <doc>
+        <path>docs/loqa-audio-bridge/sprint-artifacts/tech-spec-epic-5.md</path>
+        <title>Epic 5 Technical Specification</title>
+        <section>APIs → EAS Build API</section>
+        <snippet>Command: eas build --platform ios|android --profile development. Remote macOS (iOS), remote Linux (Android). Output: .ipa/.apk. Module must autolink without special eas.json config.</snippet>
+      </doc>
+      <doc>
+        <path>docs/loqa-audio-bridge/sprint-artifacts/stories/3-1-validate-ios-autolinking-in-fresh-expo-project.md</path>
+        <title>Story 3.1: iOS Autolinking</title>
+        <section>Local Autolinking Baseline</section>
+        <snippet>Validated that Expo autolinking works locally for iOS. EAS Build should work identically in cloud environment using same autolinking mechanism.</snippet>
+      </doc>
+      <doc>
+        <path>docs/loqa-audio-bridge/sprint-artifacts/stories/3-2-validate-android-autolinking-in-fresh-expo-project.md</path>
+        <title>Story 3.2: Android Autolinking</title>
+        <section>Local Autolinking Baseline</section>
+        <snippet>Validated that Expo autolinking works locally for Android. EAS Build should work identically in cloud environment.</snippet>
+      </doc>
+    </docs>
+    <code>
+      <artifact>
+        <path>modules/loqa-audio-bridge/expo-module.config.json</path>
+        <kind>configuration</kind>
+        <symbol>Expo module config</symbol>
+        <lines>-</lines>
+        <reason>Required for Expo autolinking in EAS Build. Published in npm package (from Story 5.1).</reason>
+      </artifact>
+      <artifact>
+        <path>modules/loqa-audio-bridge/LoqaAudioBridge.podspec</path>
+        <kind>configuration</kind>
+        <symbol>CocoaPods spec</symbol>
+        <lines>-</lines>
+        <reason>Used by EAS Build iOS for CocoaPods dependency resolution in cloud environment</reason>
+      </artifact>
+      <artifact>
+        <path>modules/loqa-audio-bridge/android/build.gradle</path>
+        <kind>configuration</kind>
+        <symbol>Android build config</symbol>
+        <lines>-</lines>
+        <reason>Used by EAS Build Android for Gradle builds in cloud environment</reason>
+      </artifact>
+    </code>
+    <dependencies>
+      <npm>
+        <package name="@loqalabs/loqa-audio-bridge" version="0.3.0" scope="test installation target" />
+        <package name="expo" version=">=52.0.0" scope="test project" />
+      </npm>
+      <eas>
+        <service name="EAS Build" purpose="Cloud build service" />
+        <account name="Loqa Labs Expo account" purpose="Authentication for eas build" />
+      </eas>
+    </dependencies>
+  </artifacts>
+
+  <constraints>
+- **Package must be published to npm**: EAS Build installs from npm registry (or test with local tarball)
+- **Physical device testing recommended**: Simulators work but device is real-world validation
+- **Both platforms required**: Must test iOS and Android EAS builds
+- **Standard eas.json only**: No custom Expo config plugins, no build hooks, no special environment variables
+- **FR38 compliance**: Works with EAS Build without special configuration
+- **Compatibility validation**: Confirms Expo 52+, React Native 0.72+ work in cloud environment
+- **Cost consideration**: EAS Build has free tier with limited builds per month
+  </constraints>
+
+  <interfaces>
+    <interface>
+      <name>eas build</name>
+      <kind>CLI command</kind>
+      <signature>eas build --platform ios|android --profile development|production</signature>
+      <path>-</path>
+      <description>Triggers cloud build in EAS Build service. Returns build ID and URL for monitoring.</description>
+    </interface>
+    <interface>
+      <name>EAS Build Dashboard</name>
+      <kind>Web interface</kind>
+      <signature>https://expo.dev/accounts/[account]/projects/[project]/builds</signature>
+      <path>-</path>
+      <description>Web dashboard for monitoring build progress and downloading artifacts (.ipa/.apk)</description>
+    </interface>
+    <interface>
+      <name>eas.json configuration</name>
+      <kind>JSON configuration</kind>
+      <signature>build profiles: development, production with platform-specific settings</signature>
+      <path>test-project/eas.json</path>
+      <description>EAS Build configuration file defining build profiles and distribution methods</description>
+    </interface>
+    <interface>
+      <name>npx expo install</name>
+      <kind>CLI command</kind>
+      <signature>npx expo install @loqalabs/loqa-audio-bridge</signature>
+      <path>-</path>
+      <description>Installs package from npm with Expo-compatible version resolution</description>
+    </interface>
+  </interfaces>
+
+  <tests>
+    <standards>
+Testing is manual integration testing in live EAS Build cloud environment. Create test project, install package, trigger builds, download artifacts, install on physical devices, test functionality. Document build logs showing successful autolinking. Validation is pass/fail based on build success and runtime functionality.
+    </standards>
+    <locations>
+- Test project: Temporary directory (e.g., /tmp/eas-test or ~/Desktop/eas-test)
+- EAS Build logs: https://expo.dev build dashboard
+- Build artifacts: Downloaded .ipa (iOS) and .apk (Android) files
+- Device testing: Physical iOS and Android devices
+- Documentation: README.md and INTEGRATION_GUIDE.md EAS Build sections
+    </locations>
+    <ideas>
+- **AC1 Test**: npx create-expo-app eas-test, then npx expo install @loqalabs/loqa-audio-bridge, verify in package.json
+- **AC2 Test**: eas build:configure, verify eas.json created with development and production profiles
+- **AC3 iOS Test**: eas build --platform ios --profile development, monitor logs, download IPA, install on device, test audio streaming
+- **AC4 Android Test**: eas build --platform android --profile development, monitor logs, download APK, install on device, test audio streaming
+- **AC5 Config Test**: Review eas.json, verify no custom plugins or buildConfiguration for loqa-audio-bridge
+- **AC6 Docs Test**: Add EAS Build section to README and INTEGRATION_GUIDE with example eas.json
+- **Autolinking Verification**: Check build logs for "Found LoqaAudioBridge" or similar autolinking confirmation
+- **Pod Install Test (iOS)**: Check logs for successful pod install with LoqaAudioBridge pod
+- **Gradle Build Test (Android)**: Check logs for successful Gradle build including loqa-audio-bridge module
+- **Runtime Test**: On installed app, call LoqaAudioBridge.startRecording(), verify audio streams correctly
+- **Regression Test**: Compare EAS Build behavior to local builds from Epic 3 (should be identical)
+    </ideas>
+  </tests>
+</story-context>

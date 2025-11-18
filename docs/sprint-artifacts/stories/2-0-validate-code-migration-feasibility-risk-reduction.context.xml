@@ -1,0 +1,390 @@
+<story-context id=".bmad/bmm/workflows/4-implementation/story-context/template" v="1.0">
+  <metadata>
+    <epicId>2</epicId>
+    <storyId>2.0</storyId>
+    <title>Validate Code Migration Feasibility (Risk Reduction)</title>
+    <status>drafted</status>
+    <generatedAt>2025-11-14</generatedAt>
+    <generator>BMAD Story Context Workflow</generator>
+    <sourceStoryPath>docs/loqa-audio-bridge/sprint-artifacts/stories/2-0-validate-code-migration-feasibility-risk-reduction.md</sourceStoryPath>
+  </metadata>
+
+  <story>
+    <asA>a developer</asA>
+    <iWant>to validate that v0.2.0 code can be migrated cleanly</iWant>
+    <soThat>I catch architectural mismatches early before committing to full migration</soThat>
+    <tasks>
+### Task 1: Validate TypeScript Migration Feasibility
+- [ ] Locate v0.2.0 buffer-utils.ts file
+- [ ] Copy buffer-utils.ts to modules/loqa-audio-bridge/src/
+- [ ] Verify imports resolve in VS Code (no red squiggles)
+- [ ] Run `npx tsc` to compile
+- [ ] Document any TypeScript errors or import issues
+- [ ] If blocked: Document issue and escalate
+
+### Task 2: Validate iOS Swift Migration Feasibility
+- [ ] Locate v0.2.0 VoicelineDSPModule.swift
+- [ ] Copy a representative Swift function (audio capture setup) into ios/LoqaAudioBridgeModule.swift
+- [ ] Verify Swift imports (AVFoundation, ExpoModulesCore)
+- [ ] Run `xcodebuild -workspace ios/LoqaAudioBridge.xcworkspace -scheme LoqaAudioBridge build`
+- [ ] Document any Swift compilation errors
+- [ ] Check for Expo Modules Core API changes (module definition, events)
+- [ ] If blocked: Document issue and escalate
+
+### Task 3: Validate Android Kotlin Migration Feasibility
+- [ ] Locate v0.2.0 VoicelineDSPModule.kt
+- [ ] Copy a representative Kotlin function (AudioRecord setup) into android/src/main/java/expo/modules/loqaaudiobridge/LoqaAudioBridgeModule.kt
+- [ ] Verify Kotlin imports (AudioRecord, ExpoModulesCore)
+- [ ] Run `cd modules/loqa-audio-bridge/android && ./gradlew build`
+- [ ] Document any Kotlin compilation errors
+- [ ] Check for Expo Modules Core API changes (module definition, events)
+- [ ] If blocked: Document issue and escalate
+
+### Task 4: Document Findings and Make Go/No-Go Decision
+- [ ] Create migration feasibility report (findings document)
+- [ ] List all discovered issues (TypeScript, Swift, Kotlin)
+- [ ] Categorize issues: blockers vs. fixable warnings
+- [ ] If blockers exist: Escalate to architect, HALT Epic 2
+- [ ] If no blockers: Document green light to proceed to Story 2.1
+    </tasks>
+  </story>
+
+  <acceptanceCriteria>
+**AC1: TypeScript Migration Validation**
+- Given Epic 1 scaffolding is complete
+- When I copy one representative module (buffer-utils.ts) from v0.2.0 into src/
+- Then TypeScript imports resolve correctly
+- And the module compiles with `npx tsc` without errors
+- And Expo Modules Core API imports work (no breaking changes)
+
+**AC2: iOS Swift Migration Validation**
+- When I copy one Swift file (basic audio capture logic) into ios/
+- Then Swift imports resolve (AVFoundation, ExpoModulesCore)
+- And Xcode compiles the file without errors
+
+**AC3: Android Kotlin Migration Validation**
+- When I copy one Kotlin file (basic audio record logic) into android/src/main/
+- Then Kotlin imports resolve (AudioRecord, ExpoModulesCore)
+- And Gradle compiles the file without errors
+
+**AC4: Blocker Handling Protocol**
+- Given any blocker issues are found during validation
+- Then the issue is documented clearly
+- And escalation to architect (Winston) is performed
+- And remaining Epic 2 stories are NOT proceeded with until resolved
+  </acceptanceCriteria>
+
+  <artifacts>
+    <docs>
+<!-- PRD: Product Requirements -->
+<doc>
+  <path>docs/loqa-audio-bridge/PRD.md</path>
+  <title>loqa-audio-bridge Product Requirements Document</title>
+  <section>FR6: Fix Swift Required Keyword</section>
+  <snippet>Swift init methods must include `required` keyword for protocol conformance. This was identified as a compilation blocker in v0.2.0 integration feedback.</snippet>
+</doc>
+
+<doc>
+  <path>docs/loqa-audio-bridge/PRD.md</path>
+  <title>loqa-audio-bridge Product Requirements Document</title>
+  <section>FR7: Update Deprecated Bluetooth API</section>
+  <snippet>Replace deprecated `.allowBluetooth` with `.allowBluetoothA2DP` in AVAudioSession configuration to prevent iOS compilation warnings.</snippet>
+</doc>
+
+<doc>
+  <path>docs/loqa-audio-bridge/PRD.md</path>
+  <title>loqa-audio-bridge Product Requirements Document</title>
+  <section>FR14-FR20: Feature Parity Requirements</section>
+  <snippet>All v0.2.0 capabilities must be preserved: real-time streaming API, VAD, adaptive battery optimization, event architecture, React hooks, TypeScript types, and all tests must pass.</snippet>
+</doc>
+
+<!-- Tech Spec Epic 2 -->
+<doc>
+  <path>docs/loqa-audio-bridge/sprint-artifacts/tech-spec-epic-2.md</path>
+  <title>Epic 2 Technical Specification</title>
+  <section>Story 2.0 Workflow: Migration Feasibility Validation (GATE)</section>
+  <snippet>Workflow defines validation sequence: copy buffer-utils.ts → compile TypeScript, copy Swift audio capture → compile iOS, copy Kotlin AudioRecord → compile Android. If ANY failures: HALT and escalate.</snippet>
+</doc>
+
+<doc>
+  <path>docs/loqa-audio-bridge/sprint-artifacts/tech-spec-epic-2.md</path>
+  <title>Epic 2 Technical Specification</title>
+  <section>Data Models and Contracts: TypeScript Interfaces</section>
+  <snippet>AudioConfig, AudioSampleEvent, StreamStatusEvent, StreamErrorEvent interfaces define v0.2.0 API surface that must remain compatible during migration validation.</snippet>
+</doc>
+
+<doc>
+  <path>docs/loqa-audio-bridge/sprint-artifacts/tech-spec-epic-2.md</path>
+  <title>Epic 2 Technical Specification</title>
+  <section>Risks: R1 - Expo Modules Core API Breaking Changes</section>
+  <snippet>Medium probability, high impact risk. Story 2.0 (GATE story) validates API compatibility early with representative code samples. If blockers found, escalate to architect for API upgrade strategy.</snippet>
+</doc>
+
+<!-- Architecture -->
+<doc>
+  <path>docs/loqa-audio-bridge/architecture.md</path>
+  <title>loqa-audio-bridge Architecture Document</title>
+  <section>ADR-001: Foundation Strategy (create-expo-module)</section>
+  <snippet>Epic 1 created scaffolding via create-expo-module. Epic 2 populates this structure with v0.2.0 code. Story 2.0 validates that v0.2.0 code is compatible with Expo 52+ scaffolding.</snippet>
+</doc>
+
+<doc>
+  <path>docs/loqa-audio-bridge/architecture.md</path>
+  <title>loqa-audio-bridge Architecture Document</title>
+  <section>System Architecture: Section 1.3 - Production Architecture</section>
+  <snippet>React Native → Expo Modules Core → iOS AVAudioEngine / Android AudioRecord. EventEmitter-based event delivery. Story 2.0 validates Expo Modules Core EventEmitter API compatibility.</snippet>
+</doc>
+
+<!-- Epics -->
+<doc>
+  <path>docs/loqa-audio-bridge/epics.md</path>
+  <title>Epic 2: Code Migration & Quality Fixes</title>
+  <section>Story 2.0 - Technical Notes</section>
+  <snippet>GATE story—must pass before continuing Epic 2. Focus on API compatibility (expo-modules-core v1.x changes). Check for deprecated methods that need updates.</snippet>
+</doc>
+    </docs>
+
+    <code>
+<!-- Existing scaffolded files that v0.2.0 code will integrate with -->
+<artifact>
+  <path>modules/loqa-audio-bridge/src/LoqaAudioBridgeModule.ts</path>
+  <kind>module_binding</kind>
+  <symbol>LoqaAudioBridgeModule</symbol>
+  <lines>all</lines>
+  <reason>Generated Expo module binding from Epic 1. Story 2.0 will test if v0.2.0 TypeScript code can integrate with this scaffolded file structure.</reason>
+</artifact>
+
+<artifact>
+  <path>modules/loqa-audio-bridge/ios/LoqaAudioBridgeModule.swift</path>
+  <kind>native_module</kind>
+  <symbol>LoqaAudioBridgeModule</symbol>
+  <lines>all</lines>
+  <reason>Scaffolded iOS Swift module from Epic 1. Story 2.0 will copy representative v0.2.0 Swift code into this file to validate compilation and API compatibility.</reason>
+</artifact>
+
+<artifact>
+  <path>modules/loqa-audio-bridge/android/src/main/java/expo/modules/loqaaudiobridge/LoqaAudioBridgeModule.kt</path>
+  <kind>native_module</kind>
+  <symbol>LoqaAudioBridgeModule</symbol>
+  <lines>all</lines>
+  <reason>Scaffolded Android Kotlin module from Epic 1. Story 2.0 will copy representative v0.2.0 Kotlin code into this file to validate compilation and API compatibility.</reason>
+</artifact>
+
+<!-- v0.2.0 source locations (assumption) -->
+<artifact>
+  <path>modules/voiceline-dsp/src/buffer-utils.ts</path>
+  <kind>utility</kind>
+  <symbol>buffer-utils</symbol>
+  <lines>all</lines>
+  <reason>Representative v0.2.0 TypeScript file for migration feasibility testing. Will be copied to src/ and compiled with `npx tsc`.</reason>
+</artifact>
+
+<artifact>
+  <path>modules/voiceline-dsp/ios/VoicelineDSPModule.swift</path>
+  <kind>native_module</kind>
+  <symbol>VoicelineDSPModule</symbol>
+  <lines>all</lines>
+  <reason>v0.2.0 iOS Swift implementation. Representative audio capture logic will be extracted and tested for compilation compatibility.</reason>
+</artifact>
+
+<artifact>
+  <path>modules/voiceline-dsp/android/src/main/java/expo/modules/voicelinedsp/VoicelineDSPModule.kt</path>
+  <kind>native_module</kind>
+  <symbol>VoicelineDSPModule</symbol>
+  <lines>all</lines>
+  <reason>v0.2.0 Android Kotlin implementation. Representative AudioRecord logic will be extracted and tested for compilation compatibility.</reason>
+</artifact>
+
+<!-- Configuration files from Epic 1 -->
+<artifact>
+  <path>modules/loqa-audio-bridge/tsconfig.json</path>
+  <kind>config</kind>
+  <symbol>TypeScript Configuration</symbol>
+  <lines>all</lines>
+  <reason>TypeScript compiler configuration from Epic 1. Story 2.0 validates buffer-utils.ts compiles with this configuration.</reason>
+</artifact>
+
+<artifact>
+  <path>modules/loqa-audio-bridge/package.json</path>
+  <kind>config</kind>
+  <symbol>Package Manifest</symbol>
+  <lines>all</lines>
+  <reason>Dependencies and dev dependencies from Epic 1. Story 2.0 validates Expo Modules Core version compatibility with v0.2.0 code patterns.</reason>
+</artifact>
+
+<artifact>
+  <path>modules/loqa-audio-bridge/LoqaAudioBridge.podspec</path>
+  <kind>config</kind>
+  <symbol>iOS Podspec</symbol>
+  <lines>all</lines>
+  <reason>iOS CocoaPods specification from Epic 1. Story 2.0 validates Swift code compiles with ExpoModulesCore dependency.</reason>
+</artifact>
+
+<artifact>
+  <path>modules/loqa-audio-bridge/android/build.gradle</path>
+  <kind>config</kind>
+  <symbol>Android Gradle Build</symbol>
+  <lines>all</lines>
+  <reason>Android build configuration from Epic 1. Story 2.0 validates Kotlin code compiles with expo-modules-core dependency.</reason>
+</artifact>
+    </code>
+
+    <dependencies>
+<!-- From Epic 1 scaffolding, relevant to Story 2.0 validation -->
+<typescript>
+  - expo: ">=52.0.0" (peer dependency - Expo Modules Core framework)
+  - react: ">=18.0.0" (peer dependency)
+  - react-native: ">=0.72.0" (peer dependency)
+  - typescript: "^5.3.0" (dev dependency - compiler version for validation)
+</typescript>
+
+<ios>
+  - ExpoModulesCore (CocoaPods dependency)
+  - AVFoundation (iOS system framework for audio)
+  - UIKit (iOS system framework for battery monitoring)
+</ios>
+
+<android>
+  - expo-modules-core (Gradle dependency)
+  - android.media.AudioRecord (Android system API)
+  - android.os.BatteryManager (Android system API)
+</android>
+    </dependencies>
+  </artifacts>
+
+  <constraints>
+**GATE Story Constraint:**
+- This is a mandatory validation gate. If ANY platform fails validation (TypeScript, Swift, or Kotlin), Epic 2 must HALT immediately.
+- No proceeding to Stories 2.1-2.8 until blockers are resolved.
+- Escalation to architect (Winston) required for blocker resolution strategy.
+
+**Compilation Requirements:**
+- TypeScript: Must compile with `npx tsc` without errors (warnings acceptable)
+- iOS Swift: Must compile with `xcodebuild build` without errors (warnings acceptable for Story 2.0)
+- Android Kotlin: Must compile with `./gradlew build` without errors (warnings acceptable for Story 2.0)
+
+**API Compatibility Focus:**
+- Expo Modules Core EventEmitter API must be compatible with v0.2.0 patterns
+- Module definition syntax (ModuleDefinition, Name, AsyncFunction, Events) must be unchanged
+- AVFoundation and AudioRecord system APIs must work with current iOS 13.4+ and Android 21+ targets
+
+**Time Constraint:**
+- Expected completion: 1-2 hours for representative code testing
+- If blockers found: Escalate immediately, do not spend excessive time debugging
+
+**Code Modification Constraint:**
+- Story 2.0 only COPIES representative code samples for testing
+- Do NOT perform full migration or extensive code modifications
+- Goal is validation only, not implementation
+  </constraints>
+
+  <interfaces>
+**Expo Modules Core EventEmitter (Critical for validation):**
+```typescript
+// v0.2.0 pattern - verify compatibility
+EventEmitter.sendEvent(eventName: string, params: any): void
+EventEmitter.addListener(eventName: string, listener: Function): Subscription
+```
+
+**iOS Module Definition (Swift - verify syntax unchanged):**
+```swift
+public func definition() -> ModuleDefinition {
+  Name("LoqaAudioBridge")
+
+  AsyncFunction("startAudioStream") { (config: AudioConfig) -> Bool in
+    // Implementation
+  }
+
+  Events("onAudioSamples", "onStreamStatusChange", "onStreamError")
+}
+```
+
+**Android Module Definition (Kotlin - verify syntax unchanged):**
+```kotlin
+override fun definition() = ModuleDefinition {
+  Name("LoqaAudioBridge")
+
+  AsyncFunction("startAudioStream") { config: Map<String, Any> ->
+    // Implementation
+  }
+
+  Events("onAudioSamples", "onStreamStatusChange", "onStreamError")
+}
+```
+
+**AVAudioEngine Audio Tap (iOS - verify AVFoundation API):**
+```swift
+audioEngine.inputNode.installTap(
+  onBus: 0,
+  bufferSize: AVAudioFrameCount(bufferSize),
+  format: inputFormat
+) { buffer, time in
+  // Audio processing
+}
+```
+
+**AudioRecord Initialization (Android - verify android.media API):**
+```kotlin
+val audioRecord = AudioRecord(
+  MediaRecorder.AudioSource.MIC,
+  sampleRate,
+  channelConfig,
+  audioFormat,
+  minBufferSize
+)
+```
+  </interfaces>
+
+  <tests>
+    <standards>
+**Testing Framework Context (from Epic 1):**
+- TypeScript: Jest with @testing-library/react-native configured in package.json
+- iOS: XCTest framework with Quick/Nimble for BDD-style tests
+- Android: JUnit 4 + Mockito for unit tests, Espresso for instrumented tests
+
+**Story 2.0 Testing Approach:**
+- No formal test execution required for Story 2.0 (validation story)
+- Focus is on compilation success, not test pass rates
+- Test migration happens in Stories 2.5-2.7
+
+**Validation Method:**
+- Manual compilation via command-line tools (npx tsc, xcodebuild, gradlew)
+- Visual verification in IDE (VS Code, Xcode, Android Studio)
+- Success = zero compilation errors for representative code samples
+    </standards>
+
+    <locations>
+<!-- Test locations not directly relevant to Story 2.0, but documented for context -->
+- TypeScript tests: `__tests__/**/*.test.ts`, `__tests__/**/*.test.tsx`
+- iOS tests: `ios/Tests/**/*.swift`
+- Android unit tests: `android/src/test/`
+- Android instrumented tests: `android/src/androidTest/`
+    </locations>
+
+    <ideas>
+**Story 2.0 Validation Ideas (not formal tests, but validation checkpoints):**
+
+**AC1 - TypeScript Validation:**
+1. Copy buffer-utils.ts → Verify no import errors in VS Code (red squiggles check)
+2. Run `npx tsc` → Exit code 0 check
+3. Check for Expo Modules Core import errors specifically
+
+**AC2 - iOS Swift Validation:**
+1. Copy Swift audio capture code → Verify AVFoundation import resolves
+2. Verify ExpoModulesCore import resolves
+3. Run `xcodebuild build` → Exit code 0 check
+4. Check for module definition API errors
+
+**AC3 - Android Kotlin Validation:**
+1. Copy Kotlin AudioRecord code → Verify android.media import resolves
+2. Verify expo.modules.kotlin import resolves
+3. Run `./gradlew build` → Exit code 0 check
+4. Check for ModuleDefinition API errors
+
+**AC4 - Blocker Handling:**
+1. If any compilation fails → Document error message and stack trace
+2. Categorize: API breaking change vs. dependency issue vs. syntax incompatibility
+3. Escalate with clear reproduction steps and error details
+    </ideas>
+  </tests>
+</story-context>

@@ -1,0 +1,234 @@
+<story-context id="bmad/bmm/workflows/4-implementation/story-context/template" v="1.0">
+  <metadata>
+    <epicId>3</epicId>
+    <storyId>3.4</storyId>
+    <title>Implement Example App Audio Streaming Demo</title>
+    <status>drafted</status>
+    <generatedAt>2025-11-17</generatedAt>
+    <generator>BMAD Story Context Workflow</generator>
+    <sourceStoryPath>docs/loqa-audio-bridge/sprint-artifacts/stories/3-4-implement-example-app-audio-streaming-demo.md</sourceStoryPath>
+  </metadata>
+
+  <story>
+    <asA>developer</asA>
+    <iWant>the example app to demonstrate basic audio streaming with visualization</iWant>
+    <soThat>consumers understand how to use the module (FR30, FR33)</soThat>
+    <tasks>
+      - Task 1: Set up component structure and state (imports, state management)
+      - Task 2: Implement permission handling (request microphone permission)
+      - Task 3: Implement start streaming function (configure and start audio stream)
+      - Task 4: Implement stop streaming function (stop audio stream)
+      - Task 5: Implement audio sample listener (real-time RMS visualization)
+      - Task 6: Create UI layout (title, status, buttons, RMS display)
+      - Task 7: Add styles (clean, readable design)
+      - Task 8: Add expo-av dependency (permission handling library)
+      - Task 9: Test on iOS simulator (streaming, permission, RMS visualization)
+      - Task 10: Test on Android emulator (streaming, permission, RMS visualization)
+    </tasks>
+  </story>
+
+  <acceptanceCriteria>
+    AC1: App.tsx imports module with clear comments
+    AC2: Permission handling implemented for both platforms
+    AC3: Start/Stop buttons functional
+    AC4: RMS visualization updates in real-time (~8 Hz)
+    AC5: Configuration display shows sample rate and buffer size
+    AC6: Code includes clear explanatory comments (FR33)
+    AC7: No crashes when starting/stopping streaming
+  </acceptanceCriteria>
+
+  <artifacts>
+    <docs>
+      <doc>
+        <path>docs/loqa-audio-bridge/sprint-artifacts/tech-spec-epic-3.md</path>
+        <title>Epic 3 Technical Specification: Autolinking & Integration Proof</title>
+        <section>Story 3.4: Example App Implementation Workflow</section>
+        <snippet>Story 3.4 implements the audio streaming demo in App.tsx with permission handling, start/stop controls, and real-time RMS visualization. All code includes clear explanatory comments per FR33.</snippet>
+      </doc>
+      <doc>
+        <path>docs/loqa-audio-bridge/sprint-artifacts/tech-spec-epic-3.md</path>
+        <title>Epic 3 Technical Specification</title>
+        <section>APIs and Interfaces - Module Methods</section>
+        <snippet>Module provides startAudioStream(config), stopAudioStream(), and isStreaming() methods. Event listeners include addAudioSamplesListener for real-time audio samples with RMS values at ~8 Hz event rate.</snippet>
+      </doc>
+      <doc>
+        <path>docs/loqa-audio-bridge/sprint-artifacts/tech-spec-epic-3.md</path>
+        <title>Epic 3 Technical Specification</title>
+        <section>Data Models and Contracts - Audio Configuration</section>
+        <snippet>AudioConfig interface: sampleRate (16000), bufferSize (2048), channels (1), enableVAD (true). AudioSample event includes samples (Float32Array), rms (volume level), timestamp, and isSilent flag.</snippet>
+      </doc>
+    </docs>
+    <code>
+      <artifact>
+        <path>modules/loqa-audio-bridge/example/App.tsx</path>
+        <kind>component</kind>
+        <symbol>App.tsx</symbol>
+        <lines>all</lines>
+        <reason>Main example app component implementing audio streaming demo. This is the primary deliverable of Story 3.4 with clear code comments per FR33.</reason>
+      </artifact>
+      <artifact>
+        <path>modules/loqa-audio-bridge/index.ts</path>
+        <kind>module-api</kind>
+        <symbol>startAudioStream</symbol>
+        <lines>98-113</lines>
+        <reason>Start audio streaming function that example app calls with AudioConfig. Includes buffer size validation.</reason>
+      </artifact>
+      <artifact>
+        <path>modules/loqa-audio-bridge/index.ts</path>
+        <kind>module-api</kind>
+        <symbol>stopAudioStream</symbol>
+        <lines>127-129</lines>
+        <reason>Stop audio streaming function that example app calls to halt audio capture.</reason>
+      </artifact>
+      <artifact>
+        <path>modules/loqa-audio-bridge/index.ts</path>
+        <kind>module-api</kind>
+        <symbol>addAudioSampleListener</symbol>
+        <lines>187-191</lines>
+        <reason>Event listener registration for audio samples. Example app uses this to receive RMS values for visualization.</reason>
+      </artifact>
+      <artifact>
+        <path>modules/loqa-audio-bridge/src/types.ts</path>
+        <kind>type-definitions</kind>
+        <symbol>AudioSampleEvent</symbol>
+        <lines>14-33</lines>
+        <reason>AudioSampleEvent interface defining event payload structure with samples, sampleRate, frameLength, timestamp, and rms. Used by example app listener.</reason>
+      </artifact>
+      <artifact>
+        <path>modules/loqa-audio-bridge/src/types.ts</path>
+        <kind>type-definitions</kind>
+        <symbol>StreamConfig</symbol>
+        <lines>112-135</lines>
+        <reason>StreamConfig interface for audio stream configuration. Example app passes this to startAudioStream with sampleRate: 16000, bufferSize: 2048, channels: 1.</reason>
+      </artifact>
+      <artifact>
+        <path>modules/loqa-audio-bridge/hooks/useAudioStreaming.ts</path>
+        <kind>react-hook</kind>
+        <symbol>useAudioStreaming</symbol>
+        <lines>all</lines>
+        <reason>Optional React hook for audio streaming lifecycle management. Example app could use this instead of direct API calls (decision point from tech spec Q1).</reason>
+      </artifact>
+    </code>
+    <dependencies>
+      <node>
+        <package>@loqalabs/loqa-audio-bridge</package>
+        <version>file:..</version>
+        <reason>Local module providing audio streaming API</reason>
+      </node>
+      <node>
+        <package>expo-av</package>
+        <version>latest</version>
+        <reason>Expo Audio/Video library providing cross-platform microphone permission handling via Audio.requestPermissionsAsync()</reason>
+      </node>
+      <node>
+        <package>expo</package>
+        <version>~52.0.0</version>
+        <reason>Expo framework</reason>
+      </node>
+      <node>
+        <package>react</package>
+        <version>18.2.0</version>
+        <reason>React library for component state and hooks (useState, useEffect)</reason>
+      </node>
+      <node>
+        <package>react-native</package>
+        <version>0.74.0</version>
+        <reason>React Native components (View, Text, Button, StyleSheet)</reason>
+      </node>
+    </dependencies>
+  </artifacts>
+
+  <constraints>
+    - Must implement in modules/loqa-audio-bridge/example/App.tsx (existing file from Story 3.3)
+    - All code must include clear explanatory comments per FR33 (every import, function parameter, configuration value explained)
+    - Comment density: Every major section includes explanatory comments targeting developers new to the module
+    - Audio configuration: sampleRate 16000, bufferSize 2048, channels 1, enableVAD true (standard values per tech spec)
+    - Event rate calculation: 16000 / 2048 = ~7.8 Hz (~128ms per event)
+    - Permission handling must work on both iOS and Android using expo-av unified API
+    - RMS visualization must update in real-time with bar chart or numeric display
+    - UI must include: title, permission status, streaming status, configuration display, RMS visualization, start/stop buttons, error display
+    - Must handle permission denial gracefully (show error message, no crash)
+    - Must implement cleanup pattern (subscription.remove() on unmount, stopAudioStream() on unmount)
+    - Must use useState for component state (isStreaming, rmsLevel, permissionStatus, error)
+    - Must use useEffect for audio samples listener and permission request on mount
+  </constraints>
+
+  <interfaces>
+    <interface>
+      <name>startAudioStream</name>
+      <kind>Module Function</kind>
+      <signature>
+        async function startAudioStream(config: StreamConfig): Promise&lt;boolean&gt;
+        // config: { sampleRate: 16000, bufferSize: 2048, channels: 1, enableVAD: true }
+      </signature>
+      <path>modules/loqa-audio-bridge/index.ts</path>
+    </interface>
+    <interface>
+      <name>stopAudioStream</name>
+      <kind>Module Function</kind>
+      <signature>
+        function stopAudioStream(): boolean
+      </signature>
+      <path>modules/loqa-audio-bridge/index.ts</path>
+    </interface>
+    <interface>
+      <name>addAudioSampleListener</name>
+      <kind>Event Listener</kind>
+      <signature>
+        function addAudioSampleListener(
+          listener: (event: AudioSampleEvent) => void
+        ): EventSubscription
+        // event: { samples, sampleRate, frameLength, timestamp, rms }
+      </signature>
+      <path>modules/loqa-audio-bridge/index.ts</path>
+    </interface>
+    <interface>
+      <name>Audio.requestPermissionsAsync</name>
+      <kind>Permission API (expo-av)</kind>
+      <signature>
+        async function requestPermissionsAsync(): Promise&lt;{status: string}&gt;
+        // Returns: { status: 'granted' | 'denied' | 'undetermined' }
+      </signature>
+      <path>expo-av</path>
+    </interface>
+    <interface>
+      <name>EventSubscription</name>
+      <kind>Subscription Interface</kind>
+      <signature>
+        interface Subscription {
+          remove(): void  // Unsubscribe from events
+        }
+      </signature>
+      <path>expo-modules-core</path>
+    </interface>
+  </interfaces>
+
+  <tests>
+    <standards>
+      This is an implementation story with manual testing on both platforms. Testing approach:
+      1. Implement App.tsx with all required features (imports, state, permissions, start/stop, listener, UI, styles)
+      2. Install expo-av dependency (npx expo install expo-av)
+      3. Build and run on iOS simulator with npx expo run:ios
+      4. Test iOS: permission dialog appears, grant permission, tap Start button, verify streaming status Active, speak into Mac mic, verify RMS bar animates, tap Stop button, verify streaming stops
+      5. Build and run on Android emulator with npx expo run:android
+      6. Test Android: permission dialog appears, grant permission, tap Start button, verify streaming status Active, test with emulator mic, verify RMS bar animates, tap Stop button, verify streaming stops
+      7. Test error handling: deny permission, tap Start, verify error message appears
+      8. Test cleanup: navigate away from app while streaming, verify stopAudioStream called on unmount
+      9. Code review: verify all code has clear comments per FR33
+      Success criteria: Works on both platforms, no crashes, RMS visualizes correctly, code clearly commented.
+    </standards>
+    <locations>
+      - modules/loqa-audio-bridge/example/App.tsx (implementation)
+      - modules/loqa-audio-bridge/example/package.json (dependencies)
+    </locations>
+    <ideas>
+      - Test Idea 1 (AC1-AC2): Verify imports section has comments explaining module and expo-av, and permission handling uses Audio.requestPermissionsAsync with error handling
+      - Test Idea 2 (AC3): Verify Start button calls handleStartStreaming which configures audio with 16000/2048/1 and enableVAD:true, and Stop button calls handleStopStreaming
+      - Test Idea 3 (AC4): Verify addAudioSamplesListener callback extracts event.rms and updates state, triggering re-render of bar chart width (rmsLevel * 100%)
+      - Test Idea 4 (AC5): Verify UI displays configuration text: "Sample Rate: 16000 Hz, Buffer Size: 2048 samples, Channels: 1 (Mono), VAD: Enabled"
+      - Test Idea 5 (AC6): Code review to verify every import has comment, startAudioStream config has inline comments explaining sampleRate/bufferSize/channels/enableVAD, listener callback has comment explaining event payload structure
+      - Test Idea 6 (AC7): Test edge cases: tap Start twice (ignore second), tap Stop without Start (handle gracefully), permission denied (show error message), component unmounts while streaming (cleanup in useEffect return)
+      - Test Idea 7 (FR33 validation): Review all comments to ensure they explain "why" not just "what", target developers new to module, clarify audio concepts (sample rate, RMS, VAD)
+    </ideas>
+  </tests>
+</story-context>

@@ -1,0 +1,226 @@
+<story-context id=".bmad/bmm/workflows/4-implementation/story-context/template" v="1.0">
+  <metadata>
+    <epicId>2</epicId>
+    <storyId>7</storyId>
+    <title>Migrate and Run Android Tests</title>
+    <status>ready-for-dev</status>
+    <generatedAt>2025-11-14</generatedAt>
+    <generator>BMAD Story Context Workflow</generator>
+    <sourceStoryPath>docs/loqa-audio-bridge/sprint-artifacts/stories/2-7-migrate-and-run-android-tests.md</sourceStoryPath>
+  </metadata>
+
+  <story>
+    <asA>developer</asA>
+    <iWant>Android Kotlin tests migrated and passing</iWant>
+    <soThat>native Android functionality is validated</soThat>
+    <tasks>
+### Task 1: Migrate Android Unit Test Files
+- Create android/src/test/java/expo/modules/loqaaudiobridge/ directory
+- Copy v0.2.0 VoicelineDSPModuleTest.kt → LoqaAudioBridgeModuleTest.kt
+- Update package declaration: expo.modules.loqaaudiobridge
+- Update class name and module references
+
+### Task 2: Migrate Android Instrumented Test Files
+- Create android/src/androidTest/java/expo/modules/loqaaudiobridge/ directory
+- Copy v0.2.0 VoicelineDSPIntegrationTest.kt → LoqaAudioBridgeIntegrationTest.kt
+- Update package declaration: expo.modules.loqaaudiobridge
+- Update class name and module references
+
+### Task 3: Update Test Dependencies in build.gradle
+- Verify testImplementation dependencies (JUnit, Mockito)
+- Verify androidTestImplementation dependencies (AndroidX Test, Espresso)
+- Run ./gradlew --refresh-dependencies if needed
+
+### Task 4: Run Unit Tests and Fix Failures
+- Run ./gradlew test
+- Review test output for failures
+- Debug and fix failures one-by-one
+- Re-run until all unit tests pass
+
+### Task 5: Set Up Android Emulator for Instrumented Tests
+- Check if emulator running: adb devices
+- Start emulator if needed
+- Verify emulator connected
+
+### Task 6: Run Instrumented Tests and Fix Failures
+- Run ./gradlew connectedAndroidTest
+- Review test output for failures
+- Debug and fix failures
+- Re-run until all instrumented tests pass
+
+### Task 7: Validate Test Coverage
+- Verify AudioRecord initialization tests
+- Verify audio format configuration tests
+- Verify RMS calculation tests
+- Verify battery monitoring tests
+- Verify permission handling tests
+
+### Task 8: Verify Test Exclusion from Distribution
+- Confirm Gradle auto-excludes src/test/ and src/androidTest/
+- Confirm .npmignore includes android test directories
+- Run npm pack and verify no test files in tarball
+</tasks>
+  </story>
+
+  <acceptanceCriteria>
+1. Unit test files copied to android/src/test/java/expo/modules/loqaaudiobridge/
+2. Instrumented test files copied to android/src/androidTest/java/expo/modules/loqaaudiobridge/
+3. Package names updated (expo.modules.loqaaudiobridge)
+4. Class names updated (LoqaAudioBridgeModule)
+5. Test dependencies verified in build.gradle
+6. ./gradlew test executes all unit tests
+7. All unit tests pass with 0 failures
+8. Android emulator running
+9. ./gradlew connectedAndroidTest executes all instrumented tests
+10. All instrumented tests pass with 0 failures
+11. AudioRecord initialization tests validated
+12. RMS calculation tests validated
+13. Battery monitoring tests validated
+14. Permission handling tests validated
+15. Tests auto-excluded from AAR by Gradle convention
+16. Tests excluded from npm package
+  </acceptanceCriteria>
+
+  <artifacts>
+    <docs>
+      <doc>
+        <path>docs/loqa-audio-bridge/sprint-artifacts/tech-spec-epic-2.md</path>
+        <title>Epic Technical Specification: Code Migration & Quality Fixes</title>
+        <section>Test Strategy Summary - Layer 3: Android Native Tests</section>
+        <snippet>JUnit 4 + Mockito for unit tests (src/test/), AndroidX Test + Espresso for instrumented tests (src/androidTest/). Tests validate AudioRecord initialization, RMS calculation, battery monitoring, permissions. Gradle auto-excludes test directories from AAR builds.</snippet>
+      </doc>
+      <doc>
+        <path>docs/loqa-audio-bridge/architecture.md</path>
+        <title>Architecture Document: @loqalabs/loqa-audio-bridge v0.3.0</title>
+        <section>Decision 3: Test Architecture - Layer 2 (Gradle Convention)</section>
+        <snippet>Gradle automatically excludes src/test/ and src/androidTest/ directories through convention. No explicit configuration needed for test exclusion in Android builds.</snippet>
+      </doc>
+    </docs>
+    <code>
+      <artifact>
+        <path>modules/loqa-audio-bridge/android/src/main/java/expo/modules/loqaaudiobridge/LoqaAudioBridgeModule.kt</path>
+        <kind>kotlin</kind>
+        <symbol>LoqaAudioBridgeModule</symbol>
+        <lines></lines>
+        <reason>Main Android implementation being tested. Contains AudioRecord logic, VAD, and battery monitoring.</reason>
+      </artifact>
+      <artifact>
+        <path>modules/loqa-audio-bridge/android/build.gradle</path>
+        <kind>gradle</kind>
+        <symbol></symbol>
+        <lines>1-44</lines>
+        <reason>Build configuration that should include test dependencies for JUnit, Mockito, AndroidX Test, Espresso.</reason>
+      </artifact>
+    </code>
+    <dependencies>
+      <android>
+        <junit>4.13.2</junit>
+        <mockito-core>5.3.1</mockito-core>
+        <mockito-kotlin>5.0.0</mockito-kotlin>
+        <androidx-test-ext-junit>1.1.5</androidx-test-ext-junit>
+        <androidx-test-espresso-core>3.5.1</androidx-test-espresso-core>
+        <androidx-test-runner>1.5.2</androidx-test-runner>
+        <androidx-test-rules>1.5.0</androidx-test-rules>
+      </android>
+    </dependencies>
+  </artifacts>
+
+  <constraints>
+- Unit tests (src/test/) run without emulator, use JUnit 4 + Mockito
+- Instrumented tests (src/androidTest/) require emulator or device, use AndroidX Test + Espresso
+- Package name must be expo.modules.loqaaudiobridge (lowercase)
+- All v0.2.0 tests must pass unchanged (except package/class name updates)
+- Zero test failures required (100% pass rate for both unit and instrumented)
+- Gradle convention automatically excludes test directories from AAR builds
+- Tests also excluded from npm package via .npmignore (redundant defense)
+- Instrumented tests require RECORD_AUDIO permission in test manifest
+- Some AudioRecord tests may require real device (simulator audio limitations)
+- Test reports generated in android/build/reports/
+  </constraints>
+
+  <interfaces>
+    <interface>
+      <name>JUnit 4 Unit Test</name>
+      <kind>Unit Test Framework</kind>
+      <signature>import org.junit.Test
+import org.junit.Assert.*
+import org.mockito.Mockito.*
+
+class LoqaAudioBridgeModuleTest {
+    @Test
+    fun testRMSCalculation() {
+        val module = LoqaAudioBridgeModule()
+        val samples = floatArrayOf(0.1f, 0.2f, 0.1f, 0.2f)
+        val rms = module.calculateRMS(samples)
+        val expected = sqrt((0.1*0.1 + 0.2*0.2 + 0.1*0.1 + 0.2*0.2) / 4.0)
+        assertEquals(expected, rms, 0.001f)
+    }
+}</signature>
+      <path>android/src/test/java/expo/modules/loqaaudiobridge/LoqaAudioBridgeModuleTest.kt</path>
+    </interface>
+    <interface>
+      <name>AndroidX Instrumented Test</name>
+      <kind>Instrumented Test Framework</kind>
+      <signature>import androidx.test.ext.junit.runners.AndroidJUnit4
+import androidx.test.platform.app.InstrumentationRegistry
+import org.junit.Test
+import org.junit.runner.RunWith
+import org.junit.Assert.*
+
+@RunWith(AndroidJUnit4::class)
+class LoqaAudioBridgeIntegrationTest {
+    @Test
+    fun testAudioRecordInitialization() {
+        val context = InstrumentationRegistry.getInstrumentation().targetContext
+        val module = LoqaAudioBridgeModule()
+        val audioRecord = module.createAudioRecord(16000, 2048)
+        assertNotNull(audioRecord)
+        assertEquals(AudioRecord.STATE_INITIALIZED, audioRecord.state)
+    }
+}</signature>
+      <path>android/src/androidTest/java/expo/modules/loqaaudiobridge/LoqaAudioBridgeIntegrationTest.kt</path>
+    </interface>
+    <interface>
+      <name>Gradle Test Commands</name>
+      <kind>Build commands</kind>
+      <signature># Unit tests (no emulator)
+./gradlew test
+
+# Instrumented tests (emulator required)
+./gradlew connectedAndroidTest
+
+# View test reports
+open android/build/reports/tests/testDebugUnitTest/index.html
+open android/build/reports/androidTests/connected/index.html</signature>
+      <path>Command line test execution</path>
+    </interface>
+  </interfaces>
+
+  <tests>
+    <standards>Android testing uses two layers: Unit tests (src/test/) with JUnit 4 + Mockito for pure Kotlin logic without Android framework, and instrumented tests (src/androidTest/) with AndroidX Test + Espresso for tests requiring Android framework (AudioRecord, permissions, battery). All v0.2.0 tests must pass unchanged to validate feature parity. Gradle convention automatically excludes test directories from AAR builds.</standards>
+    <locations>
+- Android unit tests: android/src/test/java/expo/modules/loqaaudiobridge/
+- Android instrumented tests: android/src/androidTest/java/expo/modules/loqaaudiobridge/
+- Test execution: ./gradlew test (unit), ./gradlew connectedAndroidTest (instrumented)
+- Test reports: android/build/reports/tests/ and android/build/reports/androidTests/
+    </locations>
+    <ideas>
+- Test that module can be instantiated
+- Test that configuration validation works
+- Test that RMS calculation is mathematically correct (unit test, pure math)
+- Test that buffer size calculation is correct
+- Test that isRecording state flag works correctly
+- Test that AudioRecord can be initialized (instrumented, requires framework)
+- Test that audio format configuration is correct (sample rate, buffer size)
+- Test that battery level monitoring works (instrumented, requires framework)
+- Test that RECORD_AUDIO permission check works (instrumented)
+- Test that error handling works (invalid config, permission denied)
+- Test that package name is expo.modules.loqaaudiobridge
+- Test that class name is LoqaAudioBridgeModule
+- Test that JUnit/Mockito dependencies are present
+- Test that AndroidX Test/Espresso dependencies are present
+- Test that src/test/ and src/androidTest/ are excluded from AAR
+- Test that test directories are excluded from npm package
+    </ideas>
+  </tests>
+</story-context>

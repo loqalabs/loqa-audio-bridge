@@ -1,0 +1,235 @@
+<story-context id=".bmad/bmm/workflows/4-implementation/story-context/template" v="1.0">
+  <metadata>
+    <epicId>2</epicId>
+    <storyId>2.2</storyId>
+    <title>Migrate iOS Swift Implementation</title>
+    <status>ready-for-dev</status>
+    <generatedAt>2025-11-14</generatedAt>
+    <generator>BMAD Story Context Workflow</generator>
+    <sourceStoryPath>docs/loqa-audio-bridge/sprint-artifacts/stories/2-2-migrate-ios-swift-implementation.md</sourceStoryPath>
+  </metadata>
+
+  <story>
+    <asA>developer</asA>
+    <iWant>the iOS Swift code migrated with compilation errors fixed</iWant>
+    <soThat>the iOS native module compiles with zero warnings</soThat>
+    <tasks>
+      <task id="1" title="Copy and Rename Swift Implementation">
+        <item>Locate v0.2.0 VoicelineDSPModule.swift</item>
+        <item>Copy to modules/loqa-audio-bridge/ios/LoqaAudioBridgeModule.swift</item>
+        <item>Rename class: class VoicelineDSPModule → class LoqaAudioBridgeModule</item>
+        <item>Update module name in definition: Name("VoicelineDSP") → Name("LoqaAudioBridge")</item>
+        <item>Find/replace all internal references to old class name</item>
+      </task>
+      <task id="2" title="Fix FR6 - Swift Compilation Error (Missing required keyword)">
+        <item>Locate init override: override init(appContext: EXAppContext)</item>
+        <item>Add required keyword: required override init(appContext: EXAppContext)</item>
+        <item>Verify this is the only init method requiring the fix</item>
+        <item>Test compilation after fix</item>
+      </task>
+      <task id="3" title="Fix FR7 - Deprecated Bluetooth API">
+        <item>Locate AVAudioSession configuration code</item>
+        <item>Find line with .allowBluetooth option</item>
+        <item>Replace .allowBluetooth → .allowBluetoothA2DP</item>
+        <item>Expected location: audioSession.setCategory(.playAndRecord, mode: .default, options: [.allowBluetoothA2DP])</item>
+        <item>Verify no other deprecated API calls exist</item>
+      </task>
+      <task id="4" title="Verify Import Statements">
+        <item>Check import ExpoModulesCore is present</item>
+        <item>Check import AVFoundation is present</item>
+        <item>Check import UIKit if needed for battery monitoring</item>
+        <item>Remove any unused imports</item>
+        <item>Verify imports compatible with Expo 52+</item>
+      </task>
+      <task id="5" title="Build and Validate Zero Warnings">
+        <item>Open Xcode workspace: ios/LoqaAudioBridge.xcworkspace</item>
+        <item>Clean build folder (Cmd+Shift+K)</item>
+        <item>Build project (Cmd+B)</item>
+        <item>Check build log for warnings</item>
+        <item>If warnings exist: fix each one until zero warnings</item>
+        <item>Run command line build: xcodebuild -workspace ios/LoqaAudioBridge.xcworkspace -scheme LoqaAudioBridge clean build</item>
+        <item>Verify output shows Build Succeeded with 0 warnings</item>
+      </task>
+      <task id="6" title="Verify Module Definition API Surface">
+        <item>Check module definition includes: AsyncFunction("startAudioStream"), Function("stopAudioStream"), Function("isStreaming")</item>
+        <item>Check event emitters: Events("onAudioSamples", "onStreamStatusChange", "onStreamError")</item>
+        <item>Verify function signatures match TypeScript declarations</item>
+        <item>Confirm return types are correct (Bool, Promise, etc.)</item>
+      </task>
+    </tasks>
+  </story>
+
+  <acceptanceCriteria>
+    <criterion id="AC1">
+      Given TypeScript migration is complete (Story 2.1)
+      When I copy iOS Swift files from v0.2.0: VoicelineDSPModule.swift → ios/LoqaAudioBridgeModule.swift
+      Then I update the class name to LoqaAudioBridgeModule throughout
+    </criterion>
+    <criterion id="AC2">
+      I fix FR6 (Swift compilation error): Add required keyword to init override: required init(appContext: EXAppContext)
+    </criterion>
+    <criterion id="AC3">
+      I fix FR7 (deprecated iOS API): Change .allowBluetooth to .allowBluetoothA2DP in AVAudioSession configuration
+    </criterion>
+    <criterion id="AC4">
+      I update import statements: import ExpoModulesCore, import AVFoundation (verify correct for Expo 52+)
+    </criterion>
+    <criterion id="AC5">
+      Running xcodebuild -workspace ios/LoqaAudioBridge.xcworkspace -scheme LoqaAudioBridge build succeeds with zero warnings
+    </criterion>
+    <criterion id="AC6">
+      Module definition exports match TypeScript API: startAudioStream, stopAudioStream, isStreaming, Event emitters for: onAudioSamples, onStreamStatusChange, onStreamError
+    </criterion>
+  </acceptanceCriteria>
+
+  <artifacts>
+    <docs>
+      <doc>
+        <path>docs/loqa-audio-bridge/sprint-artifacts/tech-spec-epic-2.md</path>
+        <title>Epic 2 Technical Specification</title>
+        <section>Services and Modules - iOS Implementation</section>
+        <snippet>LoqaAudioBridgeModule.swift is the iOS native implementation using AVAudioEngine. Located at ios/LoqaAudioBridgeModule.swift. Handles startAudioStream(config), stopAudioStream() and emits audio sample events via EventEmitter. Migration requires class rename and two critical fixes: FR6 (add required keyword to init) and FR7 (update deprecated Bluetooth API).</snippet>
+      </doc>
+      <doc>
+        <path>docs/loqa-audio-bridge/PRD.md</path>
+        <title>Product Requirements Document</title>
+        <section>FR6 - Fix Swift Compilation Error</section>
+        <snippet>FR6 requires fixing Swift compilation error by adding required keyword to init override. Original error: init override must use required keyword when subclassing EXAppContext. Fix: change 'override init(appContext:)' to 'required override init(appContext:)'. Critical for iOS compilation success.</snippet>
+      </doc>
+      <doc>
+        <path>docs/loqa-audio-bridge/PRD.md</path>
+        <title>Product Requirements Document</title>
+        <section>FR7 - Update Deprecated iOS API</section>
+        <snippet>FR7 addresses deprecated Bluetooth API. iOS deprecated .allowBluetooth option in AVAudioSession. Must update to .allowBluetoothA2DP for iOS 13.4+ compatibility. Change required in audioSession.setCategory(.playAndRecord, mode: .default, options: [.allowBluetoothA2DP]). Prevents deprecation warnings.</snippet>
+      </doc>
+      <doc>
+        <path>docs/loqa-audio-bridge/PRD.md</path>
+        <title>Product Requirements Document</title>
+        <section>FR9 - Zero Compilation Warnings</section>
+        <snippet>FR9 mandates zero compilation warnings on both iOS and Android platforms. Build must complete with clean output. Use xcodebuild command line tool to verify. Any warnings must be addressed immediately. Production quality requirement.</snippet>
+      </doc>
+      <doc>
+        <path>docs/loqa-audio-bridge/PRD.md</path>
+        <title>Product Requirements Document</title>
+        <section>FR14-FR16 - Preserve Core Functionality</section>
+        <snippet>FR14 requires 100% feature parity with v0.2.0 (streaming API, sample rates, buffer sizes). FR15 mandates Voice Activity Detection (VAD) functionality preservation. FR16 requires Adaptive Processing (battery optimization) to remain intact. AVAudioEngine code and RMS calculation must be unchanged from v0.2.0.</snippet>
+      </doc>
+      <doc>
+        <path>docs/loqa-audio-bridge/architecture.md</path>
+        <title>Architecture Document</title>
+        <section>Section 1.3 - iOS Audio Architecture</section>
+        <snippet>iOS implementation uses AVAudioEngine with AVAudioInputNode for microphone input. Audio tap installed on input node captures PCM buffers at configured sample rate. RMS calculation performed in Swift for VAD. Battery level monitoring via UIDevice.current.batteryLevel. Event emission to JavaScript via Expo Modules Core EventEmitter.</snippet>
+      </doc>
+    </docs>
+    <code>
+      <artifact>
+        <path>modules/loqa-audio-bridge/ios/</path>
+        <kind>directory</kind>
+        <symbol>iOS implementation directory</symbol>
+        <lines>all</lines>
+        <reason>Target directory for iOS Swift implementation. Currently contains scaffolded files from Epic 1 (Story 1.1). Will receive migrated LoqaAudioBridgeModule.swift file.</reason>
+      </artifact>
+      <artifact>
+        <path>modules/voiceline-dsp/ios/VoicelineDSPModule.swift</path>
+        <kind>source</kind>
+        <symbol>VoicelineDSPModule class</symbol>
+        <lines>all</lines>
+        <reason>v0.2.0 iOS implementation source file. Contains AVAudioEngine setup, audio tap logic, RMS calculation, VAD implementation, battery monitoring. Source for migration with required fixes (FR6, FR7).</reason>
+      </artifact>
+      <artifact>
+        <path>modules/loqa-audio-bridge/ios/LoqaAudioBridge.podspec</path>
+        <kind>config</kind>
+        <symbol>CocoaPods specification</symbol>
+        <lines>all</lines>
+        <reason>iOS CocoaPods spec created in Story 1.1. Defines source_files pattern, deployment target (13.4+), and Swift version. Used for iOS dependency management and build configuration.</reason>
+      </artifact>
+      <artifact>
+        <path>modules/loqa-audio-bridge/expo-module.config.json</path>
+        <kind>config</kind>
+        <symbol>Expo module configuration</symbol>
+        <lines>all</lines>
+        <reason>Expo module config specifying iOS platform support. Created in Story 1.1. Defines module metadata and platform specifications. Referenced during iOS build.</reason>
+      </artifact>
+    </code>
+    <dependencies>
+      <ios>
+        <framework name="AVFoundation" usage="Audio engine, audio session management, PCM buffer handling"/>
+        <framework name="UIKit" usage="Battery level monitoring (UIDevice.current.batteryLevel)"/>
+        <pod name="ExpoModulesCore" usage="Native module bridge, event emitters, module definition"/>
+      </ios>
+    </dependencies>
+  </artifacts>
+
+  <constraints>
+    <constraint id="C1" type="class-renaming">
+      Rename class from VoicelineDSPModule to LoqaAudioBridgeModule throughout the Swift file. Update module name in Expo module definition: Name("VoicelineDSP") → Name("LoqaAudioBridge").
+    </constraint>
+    <constraint id="C2" type="swift-compilation-fix">
+      FR6: Add required keyword to init override. Critical fix: 'override init(appContext: EXAppContext)' → 'required override init(appContext: EXAppContext)'. Without this, Swift compilation fails.
+    </constraint>
+    <constraint id="C3" type="api-deprecation-fix">
+      FR7: Replace deprecated .allowBluetooth with .allowBluetoothA2DP in AVAudioSession.setCategory() options. Prevents iOS deprecation warnings and ensures iOS 13.4+ compatibility.
+    </constraint>
+    <constraint id="C4" type="zero-warnings">
+      FR9: Build must complete with zero warnings. Use 'xcodebuild -workspace ios/LoqaAudioBridge.xcworkspace -scheme LoqaAudioBridge clean build' to verify. Any warnings must be fixed immediately.
+    </constraint>
+    <constraint id="C5" type="feature-preservation">
+      FR14-FR16: Preserve 100% of v0.2.0 functionality. AVAudioEngine setup, audio tap configuration, RMS calculation, VAD logic, and battery monitoring code must remain unchanged except for required fixes.
+    </constraint>
+    <constraint id="C6" type="expo-modules-compatibility">
+      Verify import ExpoModulesCore works with Expo 52+. Module definition syntax must use Expo Modules Core v1.x+ API patterns. Event emitters must use Events() declaration.
+    </constraint>
+  </constraints>
+
+  <interfaces>
+    <interface>
+      <name>LoqaAudioBridgeModule</name>
+      <kind>class</kind>
+      <signature>class LoqaAudioBridgeModule: Module</signature>
+      <path>modules/loqa-audio-bridge/ios/LoqaAudioBridgeModule.swift</path>
+    </interface>
+    <interface>
+      <name>definition</name>
+      <kind>module-definition</kind>
+      <signature>
+        Name("LoqaAudioBridge")
+        AsyncFunction("startAudioStream") { (config: [String: Any]) -&gt; Bool in ... }
+        Function("stopAudioStream") { () -&gt; Bool in ... }
+        Function("isStreaming") { () -&gt; Bool in ... }
+        Events("onAudioSamples", "onStreamStatusChange", "onStreamError")
+      </signature>
+      <path>modules/loqa-audio-bridge/ios/LoqaAudioBridgeModule.swift</path>
+    </interface>
+    <interface>
+      <name>AVAudioEngine</name>
+      <kind>framework-api</kind>
+      <signature>AVAudioEngine with inputNode, installTap(onBus:bufferSize:format:block:)</signature>
+      <path>AVFoundation framework</path>
+    </interface>
+    <interface>
+      <name>AVAudioSession</name>
+      <kind>framework-api</kind>
+      <signature>setCategory(.playAndRecord, mode: .default, options: [.allowBluetoothA2DP])</signature>
+      <path>AVFoundation framework</path>
+    </interface>
+  </interfaces>
+
+  <tests>
+    <standards>
+      iOS tests use Quick/Nimble for BDD-style Swift testing. Tests validate: AVAudioSession configuration, AVAudioEngine instantiation, RMS calculation accuracy, battery level monitoring, event emission to JavaScript. Tests are excluded from CocoaPods distribution via podspec exclude_files. Run tests via: xcodebuild test -workspace ios/LoqaAudioBridge.xcworkspace -scheme LoqaAudioBridge
+    </standards>
+    <locations>
+      <location>modules/loqa-audio-bridge/ios/Tests/</location>
+      <location>modules/loqa-audio-bridge/ios/**/*Tests.swift</location>
+    </locations>
+    <ideas>
+      <idea ac="AC2">Test that init method compiles with required keyword present</idea>
+      <idea ac="AC3">Test AVAudioSession configuration uses .allowBluetoothA2DP (not deprecated .allowBluetooth)</idea>
+      <idea ac="AC5">Test that xcodebuild succeeds with zero warnings</idea>
+      <idea ac="AC6">Test module definition includes all 3 functions (startAudioStream, stopAudioStream, isStreaming)</idea>
+      <idea ac="AC6">Test event emitters configured for all 3 event types (onAudioSamples, onStreamStatusChange, onStreamError)</idea>
+      <idea ac="AC1">Test class name is LoqaAudioBridgeModule (not VoicelineDSPModule)</idea>
+      <idea ac="AC1">Test module name is "LoqaAudioBridge" in module definition</idea>
+    </ideas>
+  </tests>
+</story-context>

@@ -1,0 +1,112 @@
+<story-context id=".bmad/bmm/workflows/4-implementation/story-context/template" v="1.0">
+  <metadata>
+    <epicId>1</epicId>
+    <storyId>3</storyId>
+    <title>Configure TypeScript Build System</title>
+    <status>drafted</status>
+    <generatedAt>2025-11-13</generatedAt>
+    <generator>BMAD Story Context Workflow</generator>
+    <sourceStoryPath>docs/loqa-audio-bridge/sprint-artifacts/stories/1-3-configure-typescript-build-system.md</sourceStoryPath>
+  </metadata>
+
+  <story>
+    <asA>developer</asA>
+    <iWant>TypeScript configured with strict mode</iWant>
+    <soThat>type errors are caught early and declaration files are generated</soThat>
+    <tasks>
+      - Create/update tsconfig.json: Set strict mode, target ES2020, module ESNext, moduleResolution bundler, enable declaration and declarationMap, set outDir to ./build
+      - Configure include paths: Add src/**/*.ts, index.ts, hooks/**/*
+      - Configure exclude paths: Exclude __tests__, **/*.test.ts, **/*.spec.ts, example, ios/Tests, android test directories
+      - Validate TypeScript compilation: Run npx tsc, verify zero errors, check build/ directory created with .js, .d.ts, .d.ts.map files
+      - Test build output: Verify structure matches src/, ensure no test files in build/
+    </tasks>
+  </story>
+
+  <acceptanceCriteria>
+    1. TypeScript Compiler Configuration: tsconfig.json includes strict: true, target "ES2020", module "ESNext", moduleResolution "bundler", declaration: true, declarationMap: true, outDir "./build", skipLibCheck: true
+    2. Include Paths Configuration: include paths are ["src/**/*", "index.ts", "hooks/**/*"]
+    3. Exclude Paths Configuration: exclude paths are __tests__, **/*.test.ts, **/*.spec.ts, example, ios/Tests, android/src/test, android/src/androidTest
+    4. Compilation Validation: Running npx tsc compiles successfully with zero errors, build/ directory contains .js files, .d.ts files, .d.ts.map source maps
+  </acceptanceCriteria>
+
+  <artifacts>
+    <docs>
+      <doc>
+        <path>docs/loqa-audio-bridge/architecture.md</path>
+        <title>Architecture Document</title>
+        <section>Decision 3: Test Architecture & Build Exclusion</section>
+        <snippet>Multi-layered test exclusion strategy. Layer 2: TypeScript tsconfig.json exclude paths to ensure test files never reach build output. Exclude: __tests__, **/*.test.ts, **/*.spec.ts, example, ios/Tests, android/src/test, android/src/androidTest. This prevents test code in production builds and XCTest import errors that plagued v0.2.0.</snippet>
+      </doc>
+      <doc>
+        <path>docs/loqa-audio-bridge/architecture.md</path>
+        <title>Architecture Document</title>
+        <section>Decision 2: Version Strategy</section>
+        <snippet>ES2020 target compatible with React Native 0.72+ JavaScript engine. ESNext modules support modern import/export syntax. Bundler resolution optimized for Expo/Metro bundler. Strict mode enables maximum type safety.</snippet>
+      </doc>
+      <doc>
+        <path>docs/loqa-audio-bridge/sprint-artifacts/stories/1-2-configure-package-metadata-and-dependencies.md</path>
+        <title>Story 1.2 Context</title>
+        <section>Learnings</section>
+        <snippet>Story 1.2 added "build": "tsc" script to package.json. TypeScript (^5.3.0) was added as devDependency. This story configures tsconfig.json which the tsc command will use.</snippet>
+      </doc>
+    </docs>
+    <code>
+      <artifact>
+        <path>package.json</path>
+        <kind>npm package manifest</kind>
+        <symbol>"build": "tsc" script</symbol>
+        <lines>scripts section</lines>
+        <reason>Build script defined in Story 1.2 that will use tsconfig.json from this story</reason>
+      </artifact>
+    </code>
+    <dependencies>
+      <node>
+        <devDependencies>
+          <typescript>^5.3.0 (from Story 1.2)</typescript>
+        </devDependencies>
+      </node>
+    </dependencies>
+  </artifacts>
+
+  <constraints>
+    - Test file exclusion: Critical for preventing test code in production builds, aligns with multi-layer exclusion strategy (Layer 2 of 3)
+    - Strict mode enabled: Catches common TypeScript pitfalls (no implicit any, strict null checks, strict function types)
+    - Declaration generation: Required for npm package consumers to get type definitions and IntelliSense
+    - ES2020 target: Must be compatible with React Native 0.72+ JavaScript engine
+    - Build output location: Must use ./build directory as specified in architecture
+    - Source maps: declarationMap must be enabled for debugging support
+  </constraints>
+
+  <interfaces>
+    <interface>
+      <name>tsconfig.json</name>
+      <kind>TypeScript configuration</kind>
+      <signature>JSON with compilerOptions (strict, target, module, etc.), include array, exclude array</signature>
+      <path>tsconfig.json (root of module)</path>
+    </interface>
+    <interface>
+      <name>tsc compiler</name>
+      <kind>TypeScript compiler CLI</kind>
+      <signature>npx tsc - compiles TypeScript according to tsconfig.json</signature>
+      <path>External tool - TypeScript compiler from node_modules</path>
+    </interface>
+  </interfaces>
+
+  <tests>
+    <standards>
+      Validation-focused testing: Verify tsconfig.json has valid JSON syntax. Test npx tsc compiles without errors. Check build/ directory structure matches src/. Verify .d.ts files generated for all .ts source files. Ensure no test files appear in build/ output. Validate source maps (.d.ts.map) generated correctly.
+    </standards>
+    <locations>
+      - Module root: tsconfig.json
+      - Build output: build/ directory (generated by tsc)
+      - Source files: src/, index.ts, hooks/ (to be compiled)
+    </locations>
+    <ideas>
+      AC#1: Validate TypeScript configuration - Test: Parse tsconfig.json and verify all compiler options set correctly (strict: true, target: "ES2020", etc.)
+      AC#2: Validate include paths - Test: Verify tsconfig.json includes array contains ["src/**/*", "index.ts", "hooks/**/*"]
+      AC#3: Validate exclude paths - Test: Verify tsconfig.json exclude array contains all test directories and patterns
+      AC#4: Validate compilation output - Test: Run npx tsc, verify exit code 0 (success), check build/ directory exists, verify .js, .d.ts, .d.ts.map files generated
+      Additional: Test no test files in build/ - Scan build/ directory and ensure no files matching **/*.test.*, **/*.spec.*, **/Tests/**
+    </ideas>
+  </tests>
+</story-context>

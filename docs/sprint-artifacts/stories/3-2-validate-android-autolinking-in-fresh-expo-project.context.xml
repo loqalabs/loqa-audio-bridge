@@ -1,0 +1,219 @@
+<story-context id="bmad/bmm/workflows/4-implementation/story-context/template" v="1.0">
+  <metadata>
+    <epicId>3</epicId>
+    <storyId>3.2</storyId>
+    <title>Validate Android Autolinking in Fresh Expo Project</title>
+    <status>drafted</status>
+    <generatedAt>2025-11-17</generatedAt>
+    <generator>BMAD Story Context Workflow</generator>
+    <sourceStoryPath>docs/loqa-audio-bridge/sprint-artifacts/stories/3-2-validate-android-autolinking-in-fresh-expo-project.md</sourceStoryPath>
+  </metadata>
+
+  <story>
+    <asA>developer</asA>
+    <iWant>to verify Android autolinking works without manual build.gradle edits</iWant>
+    <soThat>Android integration matches the less than 30 minute target (FR11)</soThat>
+    <tasks>
+      - Task 1: Verify test environment from Story 3.1 (use same Expo project)
+      - Task 2: Run Expo prebuild for Android (settings.gradle generated)
+      - Task 3: Verify Gradle configuration (app/build.gradle includes dependency)
+      - Task 4: Run Gradle build (module resolves, build succeeds)
+      - Task 5: Verify module resolution (Gradle resolves LoqaAudioBridge)
+      - Task 6: Open Android Studio and verify integration (module in project structure)
+      - Task 7: Build debug APK (assembleDebug succeeds)
+      - Task 8: Document integration steps and timing (less than 5 minutes for install)
+      - Task 9: Verify autolinking configuration (FR11 validation)
+      - Task 10: Clean up and archive evidence
+    </tasks>
+  </story>
+
+  <acceptanceCriteria>
+    AC1: Same fresh Expo project from Story 3.1 used
+    AC2: `npx expo prebuild --platform android` modifies settings.gradle
+    AC3: Android Studio shows LoqaAudioBridge in project structure
+    AC4: `./gradlew assembleDebug` succeeds
+    AC5: Build output shows "Project ':loqaaudiobridge' configured"
+    AC6: Integration timing documented (less than 5 minutes)
+  </acceptanceCriteria>
+
+  <artifacts>
+    <docs>
+      <doc>
+        <path>docs/loqa-audio-bridge/sprint-artifacts/tech-spec-epic-3.md</path>
+        <title>Epic 3 Technical Specification: Autolinking & Integration Proof</title>
+        <section>Story 3.2: Android Autolinking Validation Workflow</section>
+        <snippet>Story 3.2 validates Android autolinking by using the same test project from Story 3.1, running expo prebuild for Android, and verifying Gradle automatically discovers and links the module via build.gradle configuration.</snippet>
+      </doc>
+      <doc>
+        <path>docs/loqa-audio-bridge/architecture.md</path>
+        <title>Architecture Document - v0.3.0</title>
+        <section>Section 7.1: Autolinking Configuration</section>
+        <snippet>Android autolinking via Gradle: Expo CLI modifies settings.gradle and adds module to build.gradle dependencies. Gradle links native Kotlin code automatically without manual edits.</snippet>
+      </doc>
+      <doc>
+        <path>docs/loqa-audio-bridge/architecture.md</path>
+        <title>Architecture Document - v0.3.0</title>
+        <section>Decision 3.2: Android Gradle (Auto-Exclusion)</section>
+        <snippet>Gradle automatically excludes src/test/ and src/androidTest/ directories from AAR builds. No explicit exclusion configuration needed unlike iOS podspec.</snippet>
+      </doc>
+    </docs>
+    <code>
+      <artifact>
+        <path>modules/loqa-audio-bridge/android/build.gradle</path>
+        <kind>configuration</kind>
+        <symbol>build.gradle</symbol>
+        <lines>all</lines>
+        <reason>Gradle build configuration for Android module. Expo CLI scans this file during prebuild to auto-configure settings.gradle and app dependencies.</reason>
+      </artifact>
+      <artifact>
+        <path>modules/loqa-audio-bridge/expo-module.config.json</path>
+        <kind>configuration</kind>
+        <symbol>expo-module.config.json</symbol>
+        <lines>all</lines>
+        <reason>Expo autolinking configuration declaring Android platform support with compileSdkVersion 34 and minSdkVersion 24. Required for Expo CLI to discover the module.</reason>
+      </artifact>
+      <artifact>
+        <path>modules/loqa-audio-bridge/package.json</path>
+        <kind>configuration</kind>
+        <symbol>package.json</symbol>
+        <lines>1-51</lines>
+        <reason>Module metadata used by npm install for local file path installation. Same package installed in Story 3.1.</reason>
+      </artifact>
+      <artifact>
+        <path>modules/loqa-audio-bridge/android/src/main/java/expo/modules/loqaaudiobridge/LoqaAudioBridgeModule.kt</path>
+        <kind>native-module</kind>
+        <symbol>LoqaAudioBridgeModule</symbol>
+        <lines>all</lines>
+        <reason>Android native module implementation in Kotlin. This is the code that Gradle will link to the Android app when autolinking succeeds.</reason>
+      </artifact>
+      <artifact>
+        <path>modules/loqa-audio-bridge/index.ts</path>
+        <kind>module-entry</kind>
+        <symbol>index.ts</symbol>
+        <lines>1-50</lines>
+        <reason>Module main entry point exporting API. Validates module is importable after Android autolinking.</reason>
+      </artifact>
+    </code>
+    <dependencies>
+      <node>
+        <package>expo</package>
+        <version>>=52.0.0</version>
+        <reason>Expo framework providing autolinking CLI for Android</reason>
+      </node>
+      <node>
+        <package>expo-modules-core</package>
+        <version>*</version>
+        <reason>Core native module bridge for Android Kotlin modules</reason>
+      </node>
+      <node>
+        <package>react-native</package>
+        <version>>=0.72.0</version>
+        <reason>React Native runtime for Android</reason>
+      </node>
+    </dependencies>
+    <platform>
+      <tool>Android Studio</tool>
+      <version>Flamingo+</version>
+      <reason>Android development environment for building and testing module integration</reason>
+    </platform>
+    <platform>
+      <tool>Gradle</tool>
+      <version>8.x</version>
+      <reason>Android build system that reads build.gradle and links native Kotlin code</reason>
+    </platform>
+    <platform>
+      <tool>JDK</tool>
+      <version>17</version>
+      <reason>Java Development Kit required for Gradle 8.x</reason>
+    </platform>
+    <platform>
+      <tool>Node.js</tool>
+      <version>18+</version>
+      <reason>JavaScript runtime for npm and Expo CLI</reason>
+    </platform>
+  </artifacts>
+
+  <constraints>
+    - Must reuse same test environment from Story 3.1 (same Expo project, package already installed)
+    - Android minSdkVersion must be 24+ (Android 7.0, configured in expo-module.config.json)
+    - Android compileSdkVersion must be 34 (Android 14)
+    - Build must complete with zero errors and zero warnings (Epic 2 quality standard)
+    - No manual settings.gradle edits allowed (autolinking must handle all configuration)
+    - No manual app/build.gradle dependency additions allowed (auto-generated by Expo CLI)
+    - Integration timing must be under 5 minutes from prebuild to Gradle build success
+    - Test files in src/test/ and src/androidTest/ must be auto-excluded by Gradle (no explicit configuration needed)
+  </constraints>
+
+  <interfaces>
+    <interface>
+      <name>android/build.gradle</name>
+      <kind>Gradle Build Configuration</kind>
+      <signature>
+        android {
+          namespace "expo.modules.loqaaudiobridge"
+          compileSdkVersion 34
+          minSdkVersion 24
+        }
+        dependencies {
+          implementation project(':expo-modules-core')
+        }
+      </signature>
+      <path>modules/loqa-audio-bridge/android/build.gradle</path>
+    </interface>
+    <interface>
+      <name>expo-module.config.json</name>
+      <kind>Expo Module Configuration</kind>
+      <signature>
+        {
+          "platforms": ["ios", "android"],
+          "android": {
+            "compileSdkVersion": 34,
+            "minSdkVersion": 24
+          }
+        }
+      </signature>
+      <path>modules/loqa-audio-bridge/expo-module.config.json</path>
+    </interface>
+    <interface>
+      <name>Expo CLI Autolinking (Android)</name>
+      <kind>Build Tool Integration</kind>
+      <signature>npx expo prebuild --platform android</signature>
+      <path>n/a</path>
+    </interface>
+    <interface>
+      <name>Gradle Build</name>
+      <kind>Build System</kind>
+      <signature>./gradlew assembleDebug</signature>
+      <path>n/a</path>
+    </interface>
+  </interfaces>
+
+  <tests>
+    <standards>
+      This is an integration validation story for Android platform. Testing approach is manual validation:
+      1. Use same Expo project from Story 3.1 (package already installed)
+      2. Run expo prebuild --platform android
+      3. Verify settings.gradle includes loqaaudiobridge module
+      4. Verify app/build.gradle includes loqaaudiobridge dependency
+      5. Run ./gradlew :app:build and verify "Project ':loqaaudiobridge' configured"
+      6. Open Android Studio and verify module in project structure
+      7. Run ./gradlew assembleDebug and verify APK builds successfully
+      8. Document timing at each step
+      9. Collect screenshots and logs as evidence
+      Success criteria: Build succeeds with zero manual configuration steps in under 5 minutes.
+    </standards>
+    <locations>
+      - Same test directory from Story 3.1 (e.g., /tmp/loqa-audio-bridge-test-3-1/test-install)
+      - Evidence archive: docs/loqa-audio-bridge/sprint-artifacts/stories/evidence/3-2/
+    </locations>
+    <ideas>
+      - Test Idea 1 (AC1-AC2): Run expo prebuild for Android and verify settings.gradle auto-generated with loqaaudiobridge module inclusion and correct path to node_modules
+      - Test Idea 2 (AC2): Verify app/build.gradle auto-generated with implementation project(':loqaaudiobridge') dependency
+      - Test Idea 3 (AC4-AC5): Run ./gradlew :app:build and verify terminal output shows "Project ':loqaaudiobridge' configured", confirming Gradle discovered the module
+      - Test Idea 4 (AC3): Open Android Studio, trigger Gradle sync, and verify loqaaudiobridge appears in project structure with Kotlin source files visible
+      - Test Idea 5 (AC4): Run ./gradlew assembleDebug and verify build output shows "BUILD SUCCESSFUL" with zero errors and zero warnings (validates Epic 2 Story 2.8)
+      - Test Idea 6 (AC6): Document timing from expo prebuild through assembleDebug and verify total time is under 5 minutes
+      - Test Idea 7 (Cross-platform validation): Compare iOS autolinking (Story 3.1) with Android autolinking (Story 3.2) to confirm both platforms achieve zero-configuration integration
+    </ideas>
+  </tests>
+</story-context>

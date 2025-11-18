@@ -1,0 +1,221 @@
+<story-context id=".bmad/bmm/workflows/4-implementation/story-context/template" v="1.0">
+  <metadata>
+    <epicId>2</epicId>
+    <storyId>4</storyId>
+    <title>Migrate Android Kotlin Implementation</title>
+    <status>ready-for-dev</status>
+    <generatedAt>2025-11-14</generatedAt>
+    <generator>BMAD Story Context Workflow</generator>
+    <sourceStoryPath>docs/loqa-audio-bridge/sprint-artifacts/stories/2-4-migrate-android-kotlin-implementation.md</sourceStoryPath>
+  </metadata>
+
+  <story>
+    <asA>developer</asA>
+    <iWant>the Android Kotlin code migrated into the new module structure</iWant>
+    <soThat>the Android native module compiles with zero warnings</soThat>
+    <tasks>
+### Task 1: Copy and Rename Kotlin Implementation
+- Locate v0.2.0 VoicelineDSPModule.kt
+- Create directory: modules/loqa-audio-bridge/android/src/main/java/expo/modules/loqaaudiobridge/
+- Copy VoicelineDSPModule.kt as LoqaAudioBridgeModule.kt
+- Update package declaration: expo.modules.loqaaudiobridge
+- Rename class: VoicelineDSPModule → LoqaAudioBridgeModule
+- Update module name: Name("VoicelineDSP") → Name("LoqaAudioBridge")
+
+### Task 2: Update android/build.gradle Configuration
+- Set namespace: expo.modules.loqaaudiobridge
+- Verify compileSdkVersion: 34+
+- Verify minSdkVersion: 24
+- Verify Kotlin version: 1.8+
+- Verify expo-modules-core dependency present
+
+### Task 3: Verify Import Statements
+- Check Expo Modules Core imports (Module, Promise, Coroutine)
+- Check Android audio imports (AudioRecord, AudioFormat, MediaRecorder)
+- Check battery monitoring imports (BatteryManager)
+- Check coroutine imports if used
+
+### Task 4: Build and Validate Zero Warnings
+- Run ./gradlew clean
+- Run ./gradlew :loqaaudiobridge:build
+- Check for warnings in output
+- Fix warnings until zero warnings achieved
+
+### Task 5: Verify Module Definition API Surface
+- Check startAudioStream, stopAudioStream, isStreaming functions
+- Check event emitters: onAudioSamples, onStreamStatusChange, onStreamError
+- Verify function signatures match TypeScript declarations
+
+### Task 6: Verify Feature Preservation (FR14-FR16)
+- Confirm AudioRecord initialization unchanged
+- Confirm audio format configuration unchanged
+- Confirm RMS calculation (VAD) logic unchanged
+- Confirm battery monitoring code unchanged
+- Confirm coroutine-based audio read loop unchanged
+</tasks>
+  </story>
+
+  <acceptanceCriteria>
+1. VoicelineDSPModule.kt copied to android/src/main/java/expo/modules/loqaaudiobridge/LoqaAudioBridgeModule.kt
+2. Package name updated: expo.modules.loqaaudiobridge
+3. Class renamed: LoqaAudioBridgeModule
+4. Module name updated: Name("LoqaAudioBridge")
+5. android/build.gradle namespace updated
+6. Kotlin version 1.8+ configured
+7. SDK versions correct (compileSdk 34+, minSdk 24)
+8. All imports verified (Module, Promise, AudioRecord, BatteryManager)
+9. ./gradlew build succeeds with 0 warnings
+10. Module definition exports all required functions
+11. Event emitters configured correctly
+12. AudioRecord logic preserved (no behavioral changes)
+13. VAD (RMS calculation) preserved
+14. Battery monitoring preserved
+  </acceptanceCriteria>
+
+  <artifacts>
+    <docs>
+      <doc>
+        <path>docs/loqa-audio-bridge/sprint-artifacts/tech-spec-epic-2.md</path>
+        <title>Epic Technical Specification: Code Migration & Quality Fixes</title>
+        <section>APIs and Interfaces - Android Kotlin</section>
+        <snippet>Android implementation uses AudioRecord API for audio capture with coroutine-based read loop. Module definition exposes startAudioStream (async), stopAudioStream, isStreaming functions and three event emitters. Package migrated from expo.modules.voicelinedsp to expo.modules.loqaaudiobridge.</snippet>
+      </doc>
+      <doc>
+        <path>docs/loqa-audio-bridge/sprint-artifacts/tech-spec-epic-2.md</path>
+        <title>Epic Technical Specification: Code Migration & Quality Fixes</title>
+        <section>Workflows and Sequencing - Story 2.4</section>
+        <snippet>Copy VoicelineDSPModule.kt to new directory structure, update package name to expo.modules.loqaaudiobridge, update build.gradle configuration, verify zero warnings, preserve FR14-FR16 features (AudioRecord, VAD, battery monitoring).</snippet>
+      </doc>
+      <doc>
+        <path>docs/loqa-audio-bridge/architecture.md</path>
+        <title>Architecture Document: @loqalabs/loqa-audio-bridge v0.3.0</title>
+        <section>Decision 3: Test Architecture - Layer 2 (Android Gradle)</section>
+        <snippet>Gradle automatically excludes src/test/ and src/androidTest/ directories through convention. No explicit configuration needed for test exclusion in Android builds.</snippet>
+      </doc>
+    </docs>
+    <code>
+      <artifact>
+        <path>modules/loqa-audio-bridge/android/build.gradle</path>
+        <kind>gradle</kind>
+        <symbol></symbol>
+        <lines>1-44</lines>
+        <reason>Android build configuration with namespace, SDK versions, and Kotlin setup. Currently has namespace expo.modules.loqaaudiobridge and compileSdk 36, minSdk 24.</reason>
+      </artifact>
+      <artifact>
+        <path>modules/loqa-audio-bridge/android/src/main/java/expo/modules/loqaaudiobridge/LoqaAudioBridgeModule.kt</path>
+        <kind>kotlin</kind>
+        <symbol>LoqaAudioBridgeModule</symbol>
+        <lines></lines>
+        <reason>Existing Kotlin module implementation that needs to be updated with v0.2.0 code. Currently exists but may be scaffold template code.</reason>
+      </artifact>
+      <artifact>
+        <path>modules/loqa-audio-bridge/package.json</path>
+        <kind>config</kind>
+        <symbol></symbol>
+        <lines>1-52</lines>
+        <reason>Package metadata showing module name @loqalabs/loqa-audio-bridge and version 0.3.0.</reason>
+      </artifact>
+    </code>
+    <dependencies>
+      <android>
+        <expo-modules-core>*</expo-modules-core>
+        <android-media>Built-in (AudioRecord, AudioFormat, MediaRecorder)</android-media>
+        <android-battery>Built-in (BatteryManager)</android-battery>
+        <kotlinx-coroutines>For coroutine-based audio read loop</kotlinx-coroutines>
+      </android>
+      <build>
+        <kotlin>1.8+</kotlin>
+        <compileSdk>34+</compileSdk>
+        <minSdk>24</minSdk>
+      </build>
+    </dependencies>
+  </artifacts>
+
+  <constraints>
+- Package name MUST be expo.modules.loqaaudiobridge (lowercase, matches namespace)
+- Module name in definition() MUST be "LoqaAudioBridge" (PascalCase, matches iOS/TypeScript)
+- Kotlin version must be 1.8+ (from Epic 1)
+- compileSdkVersion must be 34+ (from Epic 1, currently 36)
+- minSdkVersion must be 24 (from Epic 1)
+- Zero warnings required (FR9)
+- No behavioral changes to AudioRecord logic (FR14)
+- No changes to VAD (RMS calculation) logic (FR15)
+- No changes to battery monitoring logic (FR16)
+- Gradle module name is loqaaudiobridge (lowercase, no hyphens)
+- Build must succeed with ./gradlew :loqaaudiobridge:build
+- Test files in src/test/ and src/androidTest/ are auto-excluded by Gradle convention
+  </constraints>
+
+  <interfaces>
+    <interface>
+      <name>LoqaAudioBridgeModule</name>
+      <kind>Expo Modules Kotlin DSL</kind>
+      <signature>class LoqaAudioBridgeModule : Module() {
+  override fun definition() = ModuleDefinition {
+    Name("LoqaAudioBridge")
+
+    AsyncFunction("startAudioStream") { config: Map&lt;String, Any&gt; -&gt;
+      // Initialize AudioRecord with config
+      true
+    }
+
+    Function("stopAudioStream") {
+      // Stop recording
+      true
+    }
+
+    Function("isStreaming") {
+      isRecording
+    }
+
+    Events("onAudioSamples", "onStreamStatusChange", "onStreamError")
+  }
+}</signature>
+      <path>android/src/main/java/expo/modules/loqaaudiobridge/LoqaAudioBridgeModule.kt</path>
+    </interface>
+    <interface>
+      <name>AudioRecord Configuration</name>
+      <kind>Android Audio API</kind>
+      <signature>val bufferSize = AudioRecord.getMinBufferSize(sampleRate, channelConfig, audioFormat) * 2
+audioRecord = AudioRecord(
+  MediaRecorder.AudioSource.MIC,
+  sampleRate,
+  channelConfig,
+  audioFormat,
+  bufferSize
+)</signature>
+      <path>Preserved from v0.2.0 implementation</path>
+    </interface>
+    <interface>
+      <name>RMS Calculation (VAD)</name>
+      <kind>Function</kind>
+      <signature>fun calculateRMS(samples: FloatArray): Float {
+  val sum = samples.fold(0f) { acc, sample -&gt; acc + sample * sample }
+  return sqrt(sum / samples.size)
+}</signature>
+      <path>Voice Activity Detection logic to preserve</path>
+    </interface>
+  </interfaces>
+
+  <tests>
+    <standards>Android testing uses JUnit 4 for unit tests (src/test/) and Espresso for instrumented tests (src/androidTest/). Tests verify AudioRecord initialization, RMS calculation, battery monitoring, and permissions. Gradle convention automatically excludes test directories from AAR builds. This story focuses on migration and compilation; test migration happens in Story 2.7.</standards>
+    <locations>
+- Android unit tests: android/src/test/ (auto-excluded from distribution)
+- Android instrumented tests: android/src/androidTest/ (auto-excluded from distribution)
+- Build validation: Run from modules/loqa-audio-bridge/android/ directory
+    </locations>
+    <ideas>
+- Test that ./gradlew build completes successfully
+- Test that build output shows 0 warnings
+- Test that namespace is expo.modules.loqaaudiobridge
+- Test that compileSdkVersion is 34+
+- Test that minSdkVersion is 24
+- Test that module name in definition() is "LoqaAudioBridge"
+- Test that all three functions (startAudioStream, stopAudioStream, isStreaming) are defined
+- Test that all three events are configured
+- Test that AudioRecord initialization code is unchanged from v0.2.0
+- Test that RMS calculation logic is unchanged from v0.2.0
+- Test that battery monitoring logic is unchanged from v0.2.0
+    </ideas>
+  </tests>
+</story-context>

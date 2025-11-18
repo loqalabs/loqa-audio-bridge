@@ -1,0 +1,148 @@
+<story-context id=".bmad/bmm/workflows/4-implementation/story-context/template" v="1.0">
+  <metadata>
+    <epicId>2</epicId>
+    <storyId>3</storyId>
+    <title>Implement iOS Podspec Test Exclusions</title>
+    <status>ready-for-dev</status>
+    <generatedAt>2025-11-14</generatedAt>
+    <generator>BMAD Story Context Workflow</generator>
+    <sourceStoryPath>docs/loqa-audio-bridge/sprint-artifacts/stories/2-3-implement-ios-podspec-test-exclusions.md</sourceStoryPath>
+  </metadata>
+
+  <story>
+    <asA>developer</asA>
+    <iWant>test files excluded from the iOS podspec</iWant>
+    <soThat>XCTest imports don't cause client build failures (v0.2.0 bug fix)</soThat>
+    <tasks>
+### Task 1: Update Podspec with Test Exclusions
+- Create/update LoqaAudioBridge.podspec with s.exclude_files array
+- Add test patterns: ios/Tests/**, ios/**/*Tests.swift, ios/**/*Test.swift
+- Verify Ruby syntax is correct
+
+### Task 2: Add test_spec Section for Development
+- Add s.test_spec 'Tests' block after main spec
+- Configure test_spec.source_files to include ios/Tests/
+- Add Quick dependency: test_spec.dependency 'Quick', '~> 7.0'
+- Add Nimble dependency: test_spec.dependency 'Nimble', '~> 12.0'
+
+### Task 3: Validate Podspec Syntax
+- Run pod spec lint LoqaAudioBridge.podspec from module root
+- Fix any syntax errors reported
+- Verify lint passes with no warnings
+
+### Task 4: Test npm Package Exclusion
+- Run npm pack from module root
+- Extract and inspect tarball
+- Verify ios/LoqaAudioBridgeModule.swift IS present
+- Verify ios/Tests/ directory is NOT present
+- Verify no *Tests.swift or *Test.swift files exist
+
+### Task 5: Document Multi-Layer Test Exclusion
+- Verify Layer 1 (podspec exclude_files) implemented
+- Verify Layer 3 (.npmignore) includes ios/Tests/
+- Verify Layer 4 (tsconfig.json) excludes ios/Tests/
+- Update story notes with confirmation of 4-layer defense</tasks>
+  </story>
+
+  <acceptanceCriteria>
+1. LoqaAudioBridge.podspec updated with s.exclude_files array
+2. exclude_files includes: ios/Tests/**, ios/**/*Tests.swift, ios/**/*Test.swift
+3. test_spec section added with Quick/Nimble dependencies
+4. pod spec lint passes validation
+5. npm pack tarball shows ios/LoqaAudioBridgeModule.swift present
+6. npm pack tarball shows ios/Tests/ absent
+7. npm pack tarball shows zero *Tests.swift files
+8. Multi-layer test exclusion documented (4 layers confirmed)
+  </acceptanceCriteria>
+
+  <artifacts>
+    <docs>
+      <doc>
+        <path>docs/loqa-audio-bridge/sprint-artifacts/tech-spec-epic-2.md</path>
+        <title>Epic Technical Specification: Code Migration & Quality Fixes</title>
+        <section>System Architecture Alignment - Layer 1 (iOS Podspec)</section>
+        <snippet>Implements Architecture Decision 3 (Multi-Layered Test Exclusion) through s.exclude_files preventing CocoaPods from including test files in client projects. Separates development tests via test_spec which are not distributed.</snippet>
+      </doc>
+      <doc>
+        <path>docs/loqa-audio-bridge/architecture.md</path>
+        <title>Architecture Document: @loqalabs/loqa-audio-bridge v0.3.0</title>
+        <section>Decision 3: Test Architecture & Build Exclusion - Layer 1</section>
+        <snippet>Layer 1 podspec exclusion prevents v0.2.0 bug where test files shipped to clients causing XCTest import errors. Includes s.exclude_files array and test_spec section for development-only test dependencies.</snippet>
+      </doc>
+    </docs>
+    <code>
+      <artifact>
+        <path>modules/loqa-audio-bridge/ios/LoqaAudioBridgeModule.swift</path>
+        <kind>swift</kind>
+        <symbol>LoqaAudioBridgeModule</symbol>
+        <lines></lines>
+        <reason>Main iOS implementation file that should be included in podspec source_files (production code)</reason>
+      </artifact>
+      <artifact>
+        <path>modules/loqa-audio-bridge/package.json</path>
+        <kind>config</kind>
+        <symbol></symbol>
+        <lines>1-52</lines>
+        <reason>Contains version (0.3.0) that must match podspec version</reason>
+      </artifact>
+    </code>
+    <dependencies>
+      <ios>
+        <ExpoModulesCore>*</ExpoModulesCore>
+        <Quick>~> 7.0</Quick>
+        <Nimble>~> 12.0</Nimble>
+      </ios>
+      <dev>
+        <expo-module-scripts>^5.0.7</expo-module-scripts>
+      </dev>
+    </dependencies>
+  </artifacts>
+
+  <constraints>
+- Podspec version must match package.json version (0.3.0)
+- iOS deployment target must be 13.4 (from Epic 1)
+- Swift version must be 5.4 (from Epic 1)
+- Podspec must follow CocoaPods naming convention (PascalCase: LoqaAudioBridge)
+- Ruby syntax must be valid for pod spec lint
+- test_spec is for development only and not distributed to clients
+- All test exclusion patterns must be defensive (catch multiple naming conventions)
+- .npmignore must also exclude ios/Tests/ as redundant Layer 3 defense
+  </constraints>
+
+  <interfaces>
+    <interface>
+      <name>LoqaAudioBridge.podspec</name>
+      <kind>CocoaPods specification</kind>
+      <signature>Pod::Spec.new do |s|
+  s.name = 'LoqaAudioBridge'
+  s.version = '0.3.0'
+  s.source_files = "ios/**/*.{h,m,mm,swift}"
+  s.exclude_files = ["ios/Tests/**/*", "ios/**/*Tests.swift", "ios/**/*Test.swift"]
+  s.test_spec 'Tests' do |test_spec|
+    test_spec.source_files = "ios/Tests/**/*.{h,m,swift}"
+    test_spec.dependency 'Quick', '~> 7.0'
+    test_spec.dependency 'Nimble', '~> 12.0'
+  end
+end</signature>
+      <path>modules/loqa-audio-bridge/LoqaAudioBridge.podspec</path>
+    </interface>
+  </interfaces>
+
+  <tests>
+    <standards>This story implements test EXCLUSION rather than test execution. The podspec configuration prevents test files from being included in the distributed CocoaPods package. Validation uses pod spec lint for syntax validation and npm pack inspection for distribution verification.</standards>
+    <locations>
+- Podspec validation: Run from modules/loqa-audio-bridge/ directory
+- Package inspection: Extract tarball after npm pack
+    </locations>
+    <ideas>
+- Test that pod spec lint passes with 0 errors and 0 warnings
+- Test that npm pack creates tarball successfully
+- Test that ios/LoqaAudioBridgeModule.swift exists in tarball (production code included)
+- Test that ios/Tests/ directory does not exist in tarball (tests excluded)
+- Test that no files matching *Tests.swift pattern exist in tarball
+- Test that no files matching *Test.swift pattern exist in tarball
+- Test that .npmignore includes ios/Tests/ pattern
+- Test that podspec version matches package.json version
+    </ideas>
+  </tests>
+</story-context>
