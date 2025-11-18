@@ -25,13 +25,16 @@
     "vad",
     "microphone"
   ],
-  "repository": "https://github.com/loqalabs/loqa",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/loqalabs/loqa-audio-bridge.git"
+  },
   "bugs": {
-    "url": "https://github.com/loqalabs/loqa/issues"
+    "url": "https://github.com/loqalabs/loqa-audio-bridge/issues"
   },
   "author": "Loqa Labs <33356887+annabarnes1138@users.noreply.github.com> (https://github.com/loqalabs)",
   "license": "MIT",
-  "homepage": "https://github.com/loqalabs/loqa#readme",
+  "homepage": "https://github.com/loqalabs/loqa-audio-bridge#readme",
   "devDependencies": {
     "@types/jest": "^30.0.0",
     "@types/react": "^18.0.0",
