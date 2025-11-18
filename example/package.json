@@ -11,10 +11,12 @@
   "dependencies": {
     "@loqalabs/loqa-audio-bridge": "file:..",
     "expo": "~52.0.0",
+    "expo-av": "~15.0.2",
     "react": "18.3.1",
     "react-native": "0.76.9"
   },
   "devDependencies": {
+    "@react-native-community/cli": "^20.0.2",
     "@types/react": "~18.0.0",
     "typescript": "^5.3.0"
   },

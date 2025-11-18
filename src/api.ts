@@ -11,14 +11,14 @@
  */
 
 import { EventEmitter, type EventSubscription } from 'expo-modules-core';
-import LoqaAudioBridgeModule from './src/LoqaAudioBridgeModule';
+import LoqaAudioBridgeModule from './LoqaAudioBridgeModule';
 import type {
   AudioSampleEvent,
   StreamStatusEvent,
   StreamErrorEvent,
   StreamConfig,
-} from './src/types';
-import { StreamErrorCode } from './src/types';
+} from './types';
+import { StreamErrorCode } from './types';
 
 // Export types for consumers
 export type {
@@ -42,12 +42,15 @@ export {
   IOS_SUPPORTED_RATES,
   BUFFER_SIZE_MIN,
   BUFFER_SIZE_MAX,
-} from './src/buffer-utils';
-export type { Platform, BufferValidationResult } from './src/buffer-utils';
+} from './buffer-utils';
+export type { Platform, BufferValidationResult } from './buffer-utils';
+
+// Import constants for internal use
+import { BUFFER_SIZE_MIN, BUFFER_SIZE_MAX } from './buffer-utils';
 
 // Export React hooks
-export { useAudioStreaming } from './hooks/useAudioStreaming';
-export type { UseAudioStreamingOptions, UseAudioStreamingResult } from './hooks/useAudioStreaming';
+export { useAudioStreaming } from '../hooks/useAudioStreaming';
+export type { UseAudioStreamingOptions, UseAudioStreamingResult } from '../hooks/useAudioStreaming';
 
 /**
  * Event map for type-safe event listening
@@ -100,7 +103,7 @@ export async function startAudioStream(config: StreamConfig): Promise<boolean> {
   // Platform-specific constraints (e.g., power-of-2 for iOS) are validated natively
   if (config.bufferSize !== undefined) {
     const { bufferSize } = config;
-    const { BUFFER_SIZE_MIN, BUFFER_SIZE_MAX } = await import('./src/buffer-utils');
+    const { BUFFER_SIZE_MIN, BUFFER_SIZE_MAX } = await import('./buffer-utils');
 
     if (bufferSize < BUFFER_SIZE_MIN || bufferSize > BUFFER_SIZE_MAX) {
       throw new Error(

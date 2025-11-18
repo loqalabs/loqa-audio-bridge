@@ -18,7 +18,7 @@ import {
   addAudioSampleListener,
   addStreamStatusListener,
   addStreamErrorListener,
-} from '../index';
+} from '../src/api';
 import type { AudioSampleEvent, StreamConfig, StreamStatusEvent, StreamErrorEvent } from '../src/types';
 
 /**

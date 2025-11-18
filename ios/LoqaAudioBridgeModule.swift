@@ -17,6 +17,9 @@ enum StreamErrorCode: String {
     case engineStartFailed = "ENGINE_START_FAILED"
     case deviceNotAvailable = "DEVICE_NOT_AVAILABLE"
     case bufferOverflow = "BUFFER_OVERFLOW"
+    case formatError = "FORMAT_ERROR"
+    case converterError = "CONVERTER_ERROR"
+    case conversionFailed = "CONVERSION_FAILED"
 }
 
 /// Buffer pool to reuse Float arrays and reduce allocations
@@ -87,6 +90,9 @@ public class LoqaAudioBridgeModule: Module {
 
     /// Buffer pool for reusing sample arrays
     private var bufferPool: BufferPool?
+
+    /// Audio converter for sample rate conversion (hardware format → target format)
+    private var audioConverter: AVAudioConverter?
 
     // MARK: - Lifecycle
 
@@ -256,6 +262,7 @@ public class LoqaAudioBridgeModule: Module {
     }
 
     /// Install tap on input node to capture audio buffers
+    /// Uses hardware format and converts to requested format via AVAudioConverter
     private func installAudioTap(config: StreamConfig) throws {
         guard let inputNode = inputNode else {
             throw NSError(
@@ -265,25 +272,22 @@ public class LoqaAudioBridgeModule: Module {
             )
         }
 
-        // Create audio format: Float32, actual sample rate (with fallback), mono, non-interleaved
-        guard let format = AVAudioFormat(
-            commonFormat: .pcmFormatFloat32,
-            sampleRate: Double(actualSampleRate),
-            channels: AVAudioChannelCount(config.channels),
-            interleaved: false
-        ) else {
-            throw NSError(
-                domain: "LoqaAudioBridge",
-                code: 1004,
-                userInfo: [NSLocalizedDescriptionKey: "Failed to create audio format"]
-            )
-        }
+        // CRITICAL: Use hardware format for the tap (iOS requirement)
+        // iOS AVAudioEngine requires tap format to match hardware format exactly
+        let hardwareFormat = inputNode.outputFormat(forBus: 0)
+        NSLog("[LoqaAudioBridge] Hardware format: \(hardwareFormat.sampleRate) Hz, \(hardwareFormat.channelCount) channels")
+        NSLog("[LoqaAudioBridge] Requested format: \(actualSampleRate) Hz, \(config.channels) channels")
 
-        // Install tap on bus 0 with specified buffer size and format
+        // Calculate scaled buffer size to maintain same time duration at hardware rate
+        let ratio = hardwareFormat.sampleRate / Double(actualSampleRate)
+        let scaledBufferSize = AVAudioFrameCount(Double(config.bufferSize) * ratio)
+        NSLog("[LoqaAudioBridge] Buffer size: requested=\(config.bufferSize), scaled=\(scaledBufferSize) (ratio=\(String(format: "%.2f", ratio)))")
+
+        // Install tap on bus 0 with hardware format (prevents format mismatch crash)
         inputNode.installTap(
             onBus: 0,
-            bufferSize: AVAudioFrameCount(config.bufferSize),
-            format: format
+            bufferSize: scaledBufferSize,
+            format: hardwareFormat
         ) { [weak self, config] (buffer, time) in
             guard let self = self else { return }
 
@@ -292,8 +296,14 @@ public class LoqaAudioBridgeModule: Module {
                 // Track execution time for overflow detection
                 let startTime = CACurrentMediaTime()
 
+                // Convert hardware format buffer to target format (sample rate conversion)
+                guard let convertedBuffer = self.processAndConvertAudioBuffer(buffer, targetConfig: config) else {
+                    // Conversion failed - error already sent in processAndConvertAudioBuffer
+                    return
+                }
+
                 // Convert buffer to Float32 array
-                let samples = self.convertBufferToSamples(buffer)
+                let samples = self.convertBufferToSamples(convertedBuffer)
 
                 // Calculate RMS for pre-computed metrics
                 let rms = self.calculateRMS(samples: samples)
@@ -359,6 +369,91 @@ public class LoqaAudioBridgeModule: Module {
                 }
             } // End autoreleasepool
         }
+    }
+
+    /// Process and convert audio buffer from hardware format to target format
+    /// Handles sample rate conversion using AVAudioConverter
+    /// - Parameters:
+    ///   - buffer: Input buffer at hardware sample rate
+    ///   - targetConfig: Target configuration with desired sample rate
+    /// - Returns: Converted buffer at target sample rate, or nil if conversion failed
+    private func processAndConvertAudioBuffer(_ buffer: AVAudioPCMBuffer, targetConfig: StreamConfig) -> AVAudioPCMBuffer? {
+        // Create target format (requested sample rate)
+        guard let targetFormat = AVAudioFormat(
+            commonFormat: .pcmFormatFloat32,
+            sampleRate: Double(actualSampleRate),
+            channels: buffer.format.channelCount,
+            interleaved: false
+        ) else {
+            sendEvent("onStreamError", [
+                "error": StreamErrorCode.formatError.rawValue,
+                "message": "Failed to create target audio format",
+                "platform": "ios",
+                "timestamp": Int64(Date().timeIntervalSince1970 * 1000)
+            ])
+            return nil
+        }
+
+        // If hardware format matches target format, no conversion needed
+        if buffer.format.sampleRate == targetFormat.sampleRate {
+            return buffer
+        }
+
+        // Create or reuse audio converter
+        if audioConverter == nil || audioConverter?.inputFormat.sampleRate != buffer.format.sampleRate {
+            audioConverter = AVAudioConverter(from: buffer.format, to: targetFormat)
+            NSLog("[LoqaAudioBridge] Created AVAudioConverter: \(buffer.format.sampleRate) Hz → \(targetFormat.sampleRate) Hz")
+        }
+
+        guard let converter = audioConverter else {
+            sendEvent("onStreamError", [
+                "error": StreamErrorCode.converterError.rawValue,
+                "message": "Audio converter is nil",
+                "platform": "ios",
+                "timestamp": Int64(Date().timeIntervalSince1970 * 1000)
+            ])
+            return nil
+        }
+
+        // Calculate output buffer size based on sample rate ratio
+        let inputFrames = buffer.frameLength
+        let ratio = targetFormat.sampleRate / buffer.format.sampleRate
+        let outputFrames = AVAudioFrameCount(Double(inputFrames) * ratio)
+
+        // Create output buffer
+        guard let outputBuffer = AVAudioPCMBuffer(
+            pcmFormat: targetFormat,
+            frameCapacity: outputFrames
+        ) else {
+            sendEvent("onStreamError", [
+                "error": StreamErrorCode.formatError.rawValue,
+                "message": "Failed to create output buffer",
+                "platform": "ios",
+                "timestamp": Int64(Date().timeIntervalSince1970 * 1000)
+            ])
+            return nil
+        }
+
+        // Perform conversion
+        var error: NSError?
+        let inputBlock: AVAudioConverterInputBlock = { inNumPackets, outStatus in
+            outStatus.pointee = .haveData
+            return buffer
+        }
+
+        let status = converter.convert(to: outputBuffer, error: &error, withInputFrom: inputBlock)
+
+        if status == .error {
+            sendEvent("onStreamError", [
+                "error": StreamErrorCode.conversionFailed.rawValue,
+                "message": "Audio format conversion failed: \(error?.localizedDescription ?? "unknown error")",
+                "platform": "ios",
+                "timestamp": Int64(Date().timeIntervalSince1970 * 1000)
+            ])
+            return nil
+        }
+
+        return outputBuffer
     }
 
     /// Calculate RMS (Root Mean Square) amplitude for audio samples
@@ -506,6 +601,9 @@ public class LoqaAudioBridgeModule: Module {
 
         // Release buffer pool
         bufferPool = nil
+
+        // Clean up audio converter
+        audioConverter = nil
     }
 
     /// Find the closest supported sample rate for iOS
