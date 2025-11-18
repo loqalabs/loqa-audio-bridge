@@ -55,3 +55,13 @@ yarn-error.log
 
 # Expo
 .expo/*
+
+# Compiled hooks (build artifacts from expo-module-scripts)
+hooks/*.js
+hooks/*.d.ts
+hooks/*.js.map
+hooks/*.d.ts.map
+
+# npm pack artifacts
+*.tgz
+package/
