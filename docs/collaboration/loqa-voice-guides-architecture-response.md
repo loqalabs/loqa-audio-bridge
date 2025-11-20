@@ -17,6 +17,7 @@ Thank you for the detailed Voice Guides API specification! This is an excellent 
 ✅ **High Architectural Alignment:** Voice Guides specification aligns well with Loqa's existing Epic 2C infrastructure (voice profiles, session analysis, file-based storage, privacy-first architecture)
 
 ⚠️ **Medium Implementation Complexity:** Requires 4 new capabilities beyond Epic 2C:
+
 1. Intonation pattern classification (upgrade from basic to multi-pattern)
 2. Resonance classification model (new)
 3. Progress comparison algorithm (new)
@@ -32,26 +33,26 @@ Thank you for the detailed Voice Guides API specification! This is an excellent 
 
 ### Existing Epic 2C Capabilities (Reusable)
 
-| Capability | Epic 2C Status | Reusability for Voice Guides |
-|-----------|----------------|------------------------------|
-| **Pitch Detection (F0)** | ✅ Implemented (YIN algorithm, ±5Hz accuracy) | **Direct reuse** for pitch analysis |
-| **Formant Extraction (F1, F2)** | ✅ Implemented (LPC-based) | **Direct reuse** for resonance input |
-| **Voice Profile Storage** | ✅ Implemented (JSON files, atomic writes) | **Extend schema** for `selectedGuides`, `guideProgress` |
-| **Session Recording** | ✅ Implemented (`POST /voice/session`) | **Reuse** for session data |
-| **Breakthrough Tagging** | ✅ Implemented (`POST /voice/breakthrough`) | **Reuse** for milestone tracking |
-| **Voice Quality Metrics** | ⚠️ **Stub implementation** (breathiness, tension) | **Upgrade required** for HNR, CPP |
-| **Intonation Detection** | ⚠️ **Basic implementation** (single pattern type) | **Upgrade required** for multi-pattern classification |
+| Capability                      | Epic 2C Status                                    | Reusability for Voice Guides                            |
+| ------------------------------- | ------------------------------------------------- | ------------------------------------------------------- |
+| **Pitch Detection (F0)**        | ✅ Implemented (YIN algorithm, ±5Hz accuracy)     | **Direct reuse** for pitch analysis                     |
+| **Formant Extraction (F1, F2)** | ✅ Implemented (LPC-based)                        | **Direct reuse** for resonance input                    |
+| **Voice Profile Storage**       | ✅ Implemented (JSON files, atomic writes)        | **Extend schema** for `selectedGuides`, `guideProgress` |
+| **Session Recording**           | ✅ Implemented (`POST /voice/session`)            | **Reuse** for session data                              |
+| **Breakthrough Tagging**        | ✅ Implemented (`POST /voice/breakthrough`)       | **Reuse** for milestone tracking                        |
+| **Voice Quality Metrics**       | ⚠️ **Stub implementation** (breathiness, tension) | **Upgrade required** for HNR, CPP                       |
+| **Intonation Detection**        | ⚠️ **Basic implementation** (single pattern type) | **Upgrade required** for multi-pattern classification   |
 
 ### New Capabilities Required
 
-| Capability | Complexity | Implementation Notes |
-|-----------|-----------|---------------------|
-| **Intonation Pattern Classification** | Medium | Upgrade from basic to 4-pattern classifier (rising, falling, upturn, flat) |
-| **Resonance Classification** | Medium | New rule-based classifier (formants + spectral centroid → dark/neutral/bright) |
-| **Tempo/Speaking Rate Analysis** | Low | Syllable counting or VAD-based speech rate estimation |
-| **Progress Comparison Algorithm** | Medium | Baseline → Current → Guide delta calculation with 0-100% progress |
-| **Trauma-Informed Language Generation** | High | Template-based generation with positive framing rules (critical UX requirement) |
-| **Guide-Aligned Coaching Suggestions** | Medium | Logic to generate practice prompts + listening recommendations based on progress |
+| Capability                              | Complexity | Implementation Notes                                                             |
+| --------------------------------------- | ---------- | -------------------------------------------------------------------------------- |
+| **Intonation Pattern Classification**   | Medium     | Upgrade from basic to 4-pattern classifier (rising, falling, upturn, flat)       |
+| **Resonance Classification**            | Medium     | New rule-based classifier (formants + spectral centroid → dark/neutral/bright)   |
+| **Tempo/Speaking Rate Analysis**        | Low        | Syllable counting or VAD-based speech rate estimation                            |
+| **Progress Comparison Algorithm**       | Medium     | Baseline → Current → Guide delta calculation with 0-100% progress                |
+| **Trauma-Informed Language Generation** | High       | Template-based generation with positive framing rules (critical UX requirement)  |
+| **Guide-Aligned Coaching Suggestions**  | Medium     | Logic to generate practice prompts + listening recommendations based on progress |
 
 ---
 
@@ -127,12 +128,14 @@ crates/loqa-voice-intelligence/
 **Answer:** **YIN algorithm** (already implemented in Epic 2C)
 
 **Rationale:**
+
 - ✅ Already implemented in Epic 2C (`loqa-core/audio/analysis.rs`)
 - ✅ Meets accuracy requirement (±5Hz)
 - ✅ Fast enough for real-time (<100ms per window)
 - ✅ Handles voice pitch range (80-400Hz) well
 
 **Performance (validated in Epic 2C):**
+
 - Accuracy: ±5Hz on clean speech
 - Latency: ~5ms per 100ms audio frame
 - Works well for 5-second clips (target: <500ms total analysis)
@@ -146,6 +149,7 @@ crates/loqa-voice-intelligence/
 **Answer:** ✅ **Yes, LPC-based formant extraction** (implemented in Epic 2C)
 
 **Details:**
+
 - Implementation: `loqa-core/audio/analysis::formant_extraction()`
 - Algorithm: Linear Predictive Coding (LPC)
 - Output: F1, F2 frequencies (F3 optional)
@@ -160,11 +164,13 @@ crates/loqa-voice-intelligence/
 **Answer:** ❌ **Not implemented** in Epic 2C
 
 **Epic 2C Speaker Diarization:**
+
 - Uses pyannote-based ML diarization (Story 2.10-2.11)
 - Speaker embeddings generated by pyannote-rs library (ECAPA-TDNN internally)
 - **Not exposed** as API feature
 
 **For Voice Guides:**
+
 - **Recommendation:** Do not use speaker embeddings for MVP
 - **Rationale:** Voice characteristic comparison (pitch, formants, intonation) is sufficient for "alignment" without requiring embedding similarity
 - **Future enhancement:** If needed post-MVP, can expose pyannote embeddings for cosine similarity comparison
@@ -178,11 +184,13 @@ crates/loqa-voice-intelligence/
 **Answer:** **WAV (16kHz mono) preferred**, but support WAV, MP3, M4A (auto-convert)
 
 **Existing Epic 2C Support:**
+
 - Accepts: WAV, M4A, MP3, AAC (via symphonia audio decoder)
 - Auto-converts to: 16kHz mono WAV for analysis
 - Validated in: Story 2C.5 (session recording)
 
 **Voice Guides Recommendation:**
+
 - **Custom guide upload:** Request 30-60 seconds of WAV (16kHz mono) for best quality
 - **Fallback:** Accept M4A/MP3 and auto-convert (warn user about potential quality degradation)
 - **Validation:** Min 15 seconds, max 120 seconds audio duration
@@ -194,11 +202,13 @@ crates/loqa-voice-intelligence/
 **Answer:** ⚠️ **Partially implemented** - requires **upgrade** from basic to multi-pattern
 
 **Epic 2C Current State:**
+
 - Basic intonation detection exists (`loqa-voice-intelligence/analysis/intonation.rs`)
 - Current output: Single pattern type + melodic variation score
 - **Gap:** Does not classify into 4 pattern types (rising, falling, upturn, flat)
 
 **Voice Guides Requirement:**
+
 - Detect 4 pattern types over 500-1000ms windows
 - Output: `Array<{ type, confidence, timestamp }>`
 - Target accuracy: 85%
@@ -206,6 +216,7 @@ crates/loqa-voice-intelligence/
 **Implementation Plan (Story 2D.4):**
 
 **Algorithm Upgrade:**
+
 ```rust
 // EXISTING (Epic 2C)
 pub struct IntonationPattern {
@@ -236,6 +247,7 @@ pub enum IntonationType {
 ```
 
 **Pattern Detection Logic:**
+
 ```rust
 fn classify_intonation_patterns(
     pitch_contour: &[f32],  // F0 values over time
@@ -283,6 +295,7 @@ fn classify_intonation_patterns(
 **Answer:** ❌ **Not implemented** - recommend **rule-based classifier** for MVP
 
 **Rationale:**
+
 - Rule-based classification sufficient for 5 categories (dark, neutral, bright, dark-warm, bright-forward)
 - Avoids ML model training overhead
 - Explainable rules (users can understand why classification was made)
@@ -360,6 +373,7 @@ fn calculate_resonance_confidence(
 ```
 
 **Validation Plan:**
+
 - Test with known voice samples (annotated by speech therapist)
 - Target: 80% classification accuracy (meets Voice Guides requirement)
 
@@ -727,26 +741,31 @@ mod tests {
 ### Phase 1: Foundation (Week 1-2)
 
 **Story 2D.1: Extend User Profile Schema** (2 days)
+
 - Add `selectedGuides`, `guideProgress` fields to user profile
 - Update profile storage with atomic writes
 - Migration script for existing profiles
 
 **Story 2D.2: Voice Guide Database** (2 days)
+
 - Create voice guide storage (`~/.loqa/voice-intelligence/voice_guides/`)
 - Implement guide loading (builtin + custom)
 - Add guide CRUD operations
 
 **Story 2D.3: Upgrade Intonation Classification** (3-4 days)
+
 - Implement multi-pattern classifier (rising, falling, upturn, flat)
 - Confidence scoring per pattern
 - Unit tests with labeled audio samples
 
 **Story 2D.4: Resonance Classification** (2-3 days)
+
 - Rule-based classifier (formants + spectral centroid)
 - 5-category output (dark, neutral, bright, dark-warm, bright-forward)
 - Confidence scoring
 
 **Story 2D.5: Tempo/Speaking Rate Analysis** (1-2 days)
+
 - Syllable counting or VAD-based speech rate estimation
 - Classification (slow, moderate, fast)
 
@@ -755,18 +774,21 @@ mod tests {
 ### Phase 2: Progress Analysis (Week 3)
 
 **Story 2D.6: Progress Comparison Algorithm** (3-4 days)
+
 - Implement pitch alignment calculation
 - Intonation pattern similarity
 - Resonance alignment
 - Overall progress weighting
 
 **Story 2D.7: Trauma-Informed Language Generation** (4-5 days)
+
 - Template-based generation system
 - Positive framing rules
 - Forbidden phrase validation
 - Unit tests for all templates
 
 **Story 2D.8: Journey Visualization Data** (2 days)
+
 - Generate baseline → current → guide visualization data
 - Alignment areas classification (aligned, emerging, exploring)
 - Exploration areas suggestions
@@ -776,6 +798,7 @@ mod tests {
 ### Phase 3: API Endpoints (Week 4)
 
 **Story 2D.9: `POST /voice/analyze-progress-toward-guide`** (3-4 days)
+
 - Endpoint implementation
 - Integrate progress comparison algorithm
 - Trauma-informed language generation
@@ -783,6 +806,7 @@ mod tests {
 - Error handling
 
 **Story 2D.10: `POST /voice/analyze-guide`** (2-3 days)
+
 - Custom guide analysis endpoint
 - Extract voice characteristics from audio
 - Resonance, intonation, tempo classification
@@ -790,6 +814,7 @@ mod tests {
 - Recommendations for manual adjustment
 
 **Story 2D.11: `GET /voice/guide-suggestions`** (2-3 days)
+
 - Coaching suggestions generation
 - Practice prompts based on progress
 - Weekly listening recommendations
@@ -800,11 +825,13 @@ mod tests {
 ### Phase 4: Testing & Validation (Week 5)
 
 **Story 2D.12: Integration Testing** (3 days)
+
 - End-to-end journey testing (baseline → progress → suggestions)
 - Trauma-informed language validation
 - Performance benchmarks (<500ms for progress analysis)
 
 **Story 2D.13: Voice Guide Database Seeding** (2 days)
+
 - Create builtin guide profiles (Emma Watson, Zendaya, etc.)
 - Validate guide characteristics accuracy
 - Documentation
@@ -813,13 +840,13 @@ mod tests {
 
 ## ⏱️ Timeline Estimate
 
-| Phase | Duration | Stories | Dependencies |
-|-------|----------|---------|--------------|
-| **Phase 1: Foundation** | 10-12 days | 2D.1-2D.5 | Epic 2C complete |
-| **Phase 2: Progress Analysis** | 9-11 days | 2D.6-2D.8 | Phase 1 complete |
-| **Phase 3: API Endpoints** | 7-10 days | 2D.9-2D.11 | Phase 2 complete |
-| **Phase 4: Testing** | 5 days | 2D.12-2D.13 | Phase 3 complete |
-| **Total** | **31-38 days** (4.5-5.5 weeks) | 13 stories | Epic 2C |
+| Phase                          | Duration                       | Stories     | Dependencies     |
+| ------------------------------ | ------------------------------ | ----------- | ---------------- |
+| **Phase 1: Foundation**        | 10-12 days                     | 2D.1-2D.5   | Epic 2C complete |
+| **Phase 2: Progress Analysis** | 9-11 days                      | 2D.6-2D.8   | Phase 1 complete |
+| **Phase 3: API Endpoints**     | 7-10 days                      | 2D.9-2D.11  | Phase 2 complete |
+| **Phase 4: Testing**           | 5 days                         | 2D.12-2D.13 | Phase 3 complete |
+| **Total**                      | **31-38 days** (4.5-5.5 weeks) | 13 stories  | Epic 2C          |
 
 **Recommended Buffer:** Add 1 week for unforeseen challenges
 
@@ -831,26 +858,27 @@ mod tests {
 
 ### Latency Targets (Aligned with Spec)
 
-| Endpoint | Target (P50) | Max Acceptable (P95) | Epic 2C Baseline |
-|----------|--------------|----------------------|------------------|
-| `POST /voice/analyze-progress` | <500ms | 1000ms | N/A (new) |
-| `POST /voice/analyze-guide` (30s audio) | <3s | 5s | ~2.8s (Epic 2C `/voice/analyze`) |
-| `GET /voice/guide-suggestions` | <200ms | 500ms | N/A (new) |
+| Endpoint                                | Target (P50) | Max Acceptable (P95) | Epic 2C Baseline                 |
+| --------------------------------------- | ------------ | -------------------- | -------------------------------- |
+| `POST /voice/analyze-progress`          | <500ms       | 1000ms               | N/A (new)                        |
+| `POST /voice/analyze-guide` (30s audio) | <3s          | 5s                   | ~2.8s (Epic 2C `/voice/analyze`) |
+| `GET /voice/guide-suggestions`          | <200ms       | 500ms                | N/A (new)                        |
 
 **Optimization Strategy:**
+
 - Pre-compute progress trends on session save (cache)
 - Lazy-load guide characteristics (in-memory cache)
 - Async processing for guide analysis
 
 ### Accuracy Requirements (Aligned with Spec)
 
-| Metric | Minimum Accuracy | Validation Method |
-|--------|------------------|-------------------|
-| Pitch (F0) detection | ±5Hz or 95% confidence | ✅ Already validated (Epic 2C) |
-| Formant extraction | ±50Hz for F1/F2 | ✅ Already validated (Epic 2C) |
-| Intonation pattern classification | 85% accuracy | **New:** Validate with human-labeled dataset |
-| Resonance classification | 80% accuracy | **New:** Validate with speech therapist annotations |
-| Progress alignment calculation | ±5% error | **New:** Unit tests with known values |
+| Metric                            | Minimum Accuracy       | Validation Method                                   |
+| --------------------------------- | ---------------------- | --------------------------------------------------- |
+| Pitch (F0) detection              | ±5Hz or 95% confidence | ✅ Already validated (Epic 2C)                      |
+| Formant extraction                | ±50Hz for F1/F2        | ✅ Already validated (Epic 2C)                      |
+| Intonation pattern classification | 85% accuracy           | **New:** Validate with human-labeled dataset        |
+| Resonance classification          | 80% accuracy           | **New:** Validate with speech therapist annotations |
+| Progress alignment calculation    | ±5% error              | **New:** Unit tests with known values               |
 
 ---
 
@@ -865,6 +893,7 @@ mod tests {
 5. **Audio Retention:** Optional (user chooses whether to keep custom guide audio post-analysis)
 
 **Additional Privacy Consideration:**
+
 - **Builtin Voice Guides:** Ensure legal clearance for celebrity voice characteristics (licensing requirement)
 
 ---
@@ -874,20 +903,24 @@ mod tests {
 ### Unit Tests (Per Story)
 
 **Story 2D.3 (Intonation Classification):**
+
 - Test with synthetic pitch contours (rising, falling, upturn, flat)
 - Validate confidence scoring
 - Edge cases: Very short audio, noisy pitch detection
 
 **Story 2D.4 (Resonance Classification):**
+
 - Test with known formant values (annotated by speech therapist)
 - Target 80% accuracy on validation set
 
 **Story 2D.6 (Progress Comparison):**
+
 - Test pitch alignment formula with known baseline/current/guide values
 - Verify 0-100 range output
 - Edge cases: User already at target, user beyond target, moving away from guide
 
 **Story 2D.7 (Trauma-Informed Language):**
+
 - **Critical:** Validate no forbidden phrases in generated text
 - Test all template variations
 - Edge cases: Missing context fields, empty guide names
@@ -895,12 +928,14 @@ mod tests {
 ### Integration Tests (Epic-Level)
 
 **E2E User Journey Test:**
+
 1. User selects Emma Watson as guide (baseline: 165Hz, guide: 210Hz)
 2. Practice session 1: User pitch = 175Hz → Progress analysis shows 22% alignment
 3. Practice session 5: User pitch = 195Hz → Progress shows 67% alignment
 4. Validate coaching suggestions adapt to progress
 
 **Expected Outputs:**
+
 - ✅ Positive progress narrative ("moving toward")
 - ✅ NO forbidden language ("65% similar")
 - ✅ Adaptive coaching (practice prompts change based on alignment)
@@ -908,6 +943,7 @@ mod tests {
 ### User Acceptance Testing
 
 **Trauma-Informed Language Validation:**
+
 - Review all generated text with trauma-informed UX expert
 - Validate no evaluation/comparison language
 - Ensure positive framing in all edge cases (no progress, regression, overshoot)
@@ -928,14 +964,17 @@ voice_guides = true             # Epic 2D (new)
 **Rollout Phases:**
 
 **Phase 1:** Internal testing (Voiceline team + Loqa team)
+
 - Feature flag: `voice_guides = false` (default)
 - Manual enable for testing
 
 **Phase 2:** Beta testing (select Voiceline users)
+
 - Feature flag: `voice_guides = true` for beta cohort
 - Collect feedback on trauma-informed language quality
 
 **Phase 3:** General availability
+
 - Feature flag: `voice_guides = true` (default)
 - Bundled with Loqa release (version TBD)
 
@@ -946,11 +985,13 @@ voice_guides = true             # Epic 2D (new)
 ### Technical Decisions
 
 **Q1: Builtin Voice Guide Curation**
+
 - **Question:** Which celebrity voices should be included in builtin guides?
 - **Decision Needed:** Legal clearance, licensing, diversity representation
 - **Owner:** Voiceline team (Anna / Mary)
 
 **Q2: Custom Guide Audio Retention**
+
 - **Question:** Should custom guide audio be kept after analysis or deleted?
 - **Options:**
   - Delete immediately (privacy-first)
@@ -959,6 +1000,7 @@ voice_guides = true             # Epic 2D (new)
 - **Recommendation:** User choice (default: delete after 30 days)
 
 **Q3: Progress Metric Weighting**
+
 - **Question:** Should overall progress be weighted equally (pitch 40%, intonation 40%, resonance 20%) or user-customizable?
 - **Current:** Fixed weighting (simpler)
 - **Future:** User can set priorities ("I care more about intonation than pitch")
@@ -966,11 +1008,13 @@ voice_guides = true             # Epic 2D (new)
 ### Integration Questions
 
 **Q4: Voiceline On-Device Feature Extraction**
+
 - **Question:** How much voice analysis happens on-device (Voiceline mobile) vs. server (Loqa)?
 - **Current Understanding:** Voiceline extracts basic pitch + intonation, sends to Loqa for advanced analysis
 - **Clarification Needed:** Exact division of responsibilities (performance trade-off)
 
 **Q5: Real-Time Feedback Latency**
+
 - **Question:** Does Voiceline need <100ms real-time feedback during recording, or is post-session analysis (<500ms) acceptable?
 - **Current Spec:** Post-session analysis (easier to implement)
 - **Future Enhancement:** Real-time analysis (requires streaming endpoint)
@@ -1086,6 +1130,7 @@ voice_guides = true             # Epic 2D (new)
 ---
 
 **Contact:**
+
 - **Loqa Architect:** Winston (via Anna)
 - **Voiceline Team:** Anna (Product) / Mary (BA)
 

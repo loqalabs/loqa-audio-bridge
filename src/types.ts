@@ -89,7 +89,13 @@ export interface StreamErrorEvent {
    * - DEVICE_NOT_AVAILABLE: Microphone hardware unavailable
    * - BUFFER_OVERFLOW: Audio processing overloaded (rare)
    */
-  error: StreamErrorCode | 'PERMISSION_DENIED' | 'SESSION_CONFIG_FAILED' | 'ENGINE_START_FAILED' | 'DEVICE_NOT_AVAILABLE' | 'BUFFER_OVERFLOW';
+  error:
+    | StreamErrorCode
+    | 'PERMISSION_DENIED'
+    | 'SESSION_CONFIG_FAILED'
+    | 'ENGINE_START_FAILED'
+    | 'DEVICE_NOT_AVAILABLE'
+    | 'BUFFER_OVERFLOW';
 
   /** User-friendly error message with actionable guidance */
   message: string;

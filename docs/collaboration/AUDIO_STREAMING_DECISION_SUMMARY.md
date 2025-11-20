@@ -64,30 +64,32 @@ Since both teams share the same developer (Anna), development will be **sequenti
 
 ## 📅 Timeline
 
-| Phase | Timeframe | Deliverable | Status |
-|-------|-----------|-------------|--------|
-| **Loqa Epic 2C** | Week 1-3 (Nov 11 - Dec 6) | Voice intelligence backend complete | 🚀 Active |
-| **VoicelineDSP Planning** | Week 4 (Dec 9-13) | Audio streaming design spec | ⏳ Pending |
-| **VoicelineDSP iOS** | Week 5-6 (Dec 16-27) | iOS native streaming | ⏳ Pending |
-| **VoicelineDSP Android** | Week 7-8 (Dec 30 - Jan 10) | Android native streaming | ⏳ Pending |
-| **Integration & Testing** | Week 9-10 (Jan 13-24) | Cross-platform validation | ⏳ Pending |
-| **Voiceline Story 2.3** | Week 10+ (Jan 27+) | Voice-to-flower visualization working | 🛑 Blocked |
+| Phase                     | Timeframe                  | Deliverable                           | Status     |
+| ------------------------- | -------------------------- | ------------------------------------- | ---------- |
+| **Loqa Epic 2C**          | Week 1-3 (Nov 11 - Dec 6)  | Voice intelligence backend complete   | 🚀 Active  |
+| **VoicelineDSP Planning** | Week 4 (Dec 9-13)          | Audio streaming design spec           | ⏳ Pending |
+| **VoicelineDSP iOS**      | Week 5-6 (Dec 16-27)       | iOS native streaming                  | ⏳ Pending |
+| **VoicelineDSP Android**  | Week 7-8 (Dec 30 - Jan 10) | Android native streaming              | ⏳ Pending |
+| **Integration & Testing** | Week 9-10 (Jan 13-24)      | Cross-platform validation             | ⏳ Pending |
+| **Voiceline Story 2.3**   | Week 10+ (Jan 27+)         | Voice-to-flower visualization working | 🛑 Blocked |
 
 ---
 
 ## 🔧 Technical Configuration
 
 ### Audio Stream Configuration
+
 ```typescript
 const streamConfig = {
-  sampleRate: 16000,   // Hz (optimized for voice)
-  bufferSize: 2048,    // samples (128ms at 16kHz)
-  channels: 1,         // mono
+  sampleRate: 16000, // Hz (optimized for voice)
+  bufferSize: 2048, // samples (128ms at 16kHz)
+  channels: 1, // mono
   encoding: 'pcm_float', // Float32 (-1.0 to 1.0)
 };
 ```
 
 ### Performance Targets
+
 - **End-to-end latency:** <100ms (mic → visual update)
 - **Battery impact:** <5% per 30-minute session
 - **Frame rate:** 60fps for Skia rendering
@@ -98,11 +100,13 @@ const streamConfig = {
 ## 📋 Key Architectural Decisions
 
 ### 1. Real-Time Audio Streaming is Within VoicelineDSP Scope ✅
+
 - Tight coupling of capture + analysis for optimal performance
 - Unified API reduces integration complexity
 - Battery efficiency through native optimizations
 
 ### 2. Use Expo EventEmitter Pattern for Streaming Events
+
 ```typescript
 const subscription = VoicelineDSP.addAudioSampleListener((event) => {
   AudioStreamService.processAudioSamples(new Float32Array(event.samples));
@@ -110,11 +114,13 @@ const subscription = VoicelineDSP.addAudioSampleListener((event) => {
 ```
 
 ### 3. Recommended Buffer Management
+
 - **Buffer size:** 2048 samples (128ms at 16kHz)
 - **Rationale:** Optimal for YIN pitch detection (requires 100-200ms windows)
 - **Trade-off:** Balance between latency and analysis accuracy
 
 ### 4. Native Performance Optimizations
+
 - Voice Activity Detection (VAD) to skip silent frames
 - Adaptive processing rate during low battery
 - Pre-compute RMS amplitude at native layer
@@ -145,14 +151,17 @@ const subscription = VoicelineDSP.addAudioSampleListener((event) => {
 ## 📞 Questions or Blockers?
 
 **Voiceline Team:**
+
 - Anna (Product/Technical Lead)
 - Status: Blocked on Loqa development
 
 **Loqa Team:**
+
 - Winston (Architect) - Available for design review
 - Anna (Lead) - Actively working on Epic 2C
 
 **Communication Channels:**
+
 - Technical questions → GitHub issues or collaboration docs
 - Design review → Joint architecture meeting (after Epic 2C)
 - Timeline updates → Async via docs

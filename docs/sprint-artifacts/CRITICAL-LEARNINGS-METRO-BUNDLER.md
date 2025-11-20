@@ -7,6 +7,7 @@
 ## Problem Summary
 
 When implementing the example app for loqa-audio-bridge, we encountered a runtime error where exported functions from the module were undefined (`addAudioSampleListener is not a function`), despite:
+
 - The functions being correctly exported in the TypeScript source
 - The TypeScript compilation succeeding without errors
 - The compiled JavaScript having all the correct exports
@@ -19,16 +20,19 @@ When implementing the example app for loqa-audio-bridge, we encountered a runtim
 ### Why This Happened
 
 1. **File Structure**: The module had BOTH:
+
    - A root-level `index.ts` (11,651 bytes) with all API exports
    - A compiled `build/index.js` (319 lines) that package.json pointed to
 
 2. **Metro's Resolution Strategy**: When using `file:..` dependencies, npm creates a symlink that includes ALL files from the source package, including:
+
    - Source TypeScript files (`.ts`)
    - Compiled JavaScript files (`.js`)
 
 3. **TypeScript Preference**: Metro bundler **preferentially resolves TypeScript source files** over compiled JavaScript when both exist, even when `package.json` specifies `"main": "build/index.js"`.
 
 4. **Import Path Failures**: The root `index.ts` contained imports like:
+
    ```typescript
    import LoqaAudioBridgeModule from './src/LoqaAudioBridgeModule';
    import { StreamErrorCode } from './src/types';
@@ -47,6 +51,7 @@ This ensures NO TypeScript source files exist at the package root where Metro mi
 ### 2. Update Source Entry Point
 
 Changed `src/index.ts` from native module re-exports to:
+
 ```typescript
 // Export the full API from api.ts
 export * from './api';
@@ -55,6 +60,7 @@ export * from './api';
 ### 3. Fix Import Paths
 
 Updated all imports in `src/api.ts` to use relative paths within `src/`:
+
 ```typescript
 // BEFORE (broken in root index.ts)
 import LoqaAudioBridgeModule from './src/LoqaAudioBridgeModule';
@@ -68,6 +74,7 @@ import { StreamErrorCode } from './types';
 ### 4. Update TypeScript Configuration
 
 Changed `tsconfig.json` to only compile from `src/` and `hooks/`:
+
 ```json
 {
   "include": ["./src", "./hooks"],
@@ -78,6 +85,7 @@ Changed `tsconfig.json` to only compile from `src/` and `hooks/`:
 ### 5. Rebuild and Verify
 
 After rebuilding, the compiled `build/index.js`:
+
 - Contains all 319 lines of exported API code
 - Has all functions properly exported
 - Metro now correctly resolves this file (no root-level TypeScript to confuse it)
@@ -85,11 +93,13 @@ After rebuilding, the compiled `build/index.js`:
 ## Verification
 
 **Before Fix**:
+
 - Metro bundled 792 modules
 - Runtime error: `addAudioSampleListener is not a function (it is undefined)`
 - App crashed on mount
 
 **After Fix**:
+
 - Metro bundled 726 modules (66 fewer = removed incorrect source resolution)
 - Zero runtime errors
 - App launches successfully with all functions available
@@ -126,10 +136,13 @@ my-expo-module/
 ## Critical Rules for Expo Modules
 
 ### Rule 1: No Root-Level TypeScript
+
 **NEVER** place TypeScript source files (`.ts`, `.tsx`) at the package root. They MUST be in `src/` or `hooks/`.
 
 ### Rule 2: Package Entry Point
+
 `package.json` MUST point to compiled JavaScript:
+
 ```json
 {
   "main": "build/index.js",
@@ -138,7 +151,9 @@ my-expo-module/
 ```
 
 ### Rule 3: TypeScript Config
+
 Only compile from source directories:
+
 ```json
 {
   "include": ["./src", "./hooks"],
@@ -147,7 +162,9 @@ Only compile from source directories:
 ```
 
 ### Rule 4: Publish Compiled Code
+
 `.npmignore` should include source but NOT build:
+
 ```
 src/
 *.ts
@@ -156,7 +173,9 @@ src/
 ```
 
 ### Rule 5: file:.. Dependency Behavior
+
 When using `file:..` dependencies (common for example apps during development):
+
 - npm creates a **symlink** that includes ALL files from the source package
 - Metro will scan this symlink and **prefer TypeScript over JavaScript**
 - This is different from published npm packages where only published files are available
@@ -164,18 +183,23 @@ When using `file:..` dependencies (common for example apps during development):
 ## Impact on Epic 2 Stories
 
 ### Story 2-1: TypeScript Migration
+
 **No Changes Needed** - The source code structure was correct.
 
 ### Story 2-2 & 2-4: iOS/Android Implementation
+
 **No Changes Needed** - Native code was correctly placed in `ios/` and `android/`.
 
 ### Story 2-3: Test Exclusions
+
 **VALIDATED** - This issue confirms why test exclusions are critical. If test files had been in the root, they would have caused similar Metro resolution issues.
 
 ### Story 2-5, 2-6, 2-7: Test Migration
+
 **No Changes Needed** - Tests were correctly placed in subdirectories and excluded from compilation.
 
 ### Story 2-8: Zero Warnings
+
 **Additional Fix Required** - The root `index.ts` file was a structural issue that should have been caught during the zero-warnings pass. However, TypeScript compilation succeeded because the file was valid TypeScript - the issue only manifested at Metro bundling time.
 
 **Recommendation**: Add a lint rule or documentation check to ensure no `.ts` files exist at package root (except configuration files like `jest.config.ts`).
@@ -183,9 +207,11 @@ When using `file:..` dependencies (common for example apps during development):
 ## Implications for Voiceline Team
 
 ### Critical Risk
+
 If the Voiceline app uses `file:..` dependencies for local development (which is common for testing unreleased modules), they will hit this exact issue if the module structure is incorrect.
 
 ### Prevention Checklist
+
 Before integrating loqa-audio-bridge into Voiceline:
 
 1. ✅ Verify NO `.ts` files at module root (except config files)
@@ -199,11 +225,13 @@ Before integrating loqa-audio-bridge into Voiceline:
 ### Published Package vs file:.. Dependency
 
 **Published to npm** (safer):
+
 - Only includes files specified in `package.json` `files` field or not in `.npmignore`
 - Metro can only see published files (typically just `build/`, not `src/`)
 - Less likely to have resolution issues
 
 **file:.. Dependency** (higher risk):
+
 - Includes ALL files from source directory (even .gitignored build artifacts)
 - Metro sees EVERYTHING including source TypeScript
 - Must follow strict module structure rules
@@ -224,10 +252,13 @@ Before integrating loqa-audio-bridge into Voiceline:
 ## Testing Recommendations
 
 ### For Epic 3 Story 3-5 (Documentation)
+
 Document this module structure in the integration guide with clear warnings about Metro bundler behavior.
 
 ### For Epic 5 Story 5-2 (CI/CD)
+
 Add automated checks:
+
 ```bash
 # Check for root-level TypeScript files (except config)
 ROOT_TS=$(find . -maxdepth 1 -name "*.ts" ! -name "*.config.ts" ! -name "jest.setup.ts")
@@ -239,7 +270,9 @@ fi
 ```
 
 ### For Future Stories
+
 When creating any new Expo module or updating existing ones:
+
 1. Always follow the standard Expo module structure
 2. Test with `file:..` dependency BEFORE publishing
 3. Verify Metro bundling succeeds
@@ -254,6 +287,7 @@ When creating any new Expo module or updating existing ones:
 ## Conclusion
 
 This was a **critical structural issue** that would have blocked all downstream consumers of the module. The fix is simple but the discovery process was complex because:
+
 - TypeScript compilation succeeded (the source was valid)
 - The compiled output was correct (exports were present)
 - The error only appeared at Metro bundling time with `file:..` dependencies

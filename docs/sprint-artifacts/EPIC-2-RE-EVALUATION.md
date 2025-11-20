@@ -11,6 +11,7 @@
 Story 3-4 (Implement Example App Audio Streaming Demo) was the first end-to-end runtime test of the module and revealed **two critical production-blocking issues** that passed through Epic 2 undetected:
 
 1. **Metro Bundler Module Resolution Issue** (RESOLVED)
+
    - **Severity**: CRITICAL - Blocked all runtime functionality
    - **Root Cause**: Root-level TypeScript files caused Metro to resolve source instead of compiled code
    - **Impact**: Would have blocked all downstream consumers including Voiceline team
@@ -35,6 +36,7 @@ Story 3-4 (Implement Example App Audio Streaming Demo) was the first end-to-end 
 **The Gap**: Story 2-8 validated compilation but NOT module structure or bundler compatibility.
 
 **Root Cause Analysis**:
+
 - TypeScript compilation (`npx tsc`) validates type correctness
 - BUT it doesn't validate that Metro bundler can resolve the compiled output
 - With `file:..` dependencies, npm symlinks include ALL files (source + compiled)
@@ -49,6 +51,7 @@ Story 3-4 (Implement Example App Audio Streaming Demo) was the first end-to-end 
 **The Gap**: Story 2-6 (iOS Tests) was deferred to Epic 5-2 (CI/CD) for execution infrastructure reasons.
 
 **Root Cause Analysis**:
+
 - Tests were migrated and validated as syntactically correct
 - BUT they were never executed, so they never caught the audio format bug
 - The bug was introduced in Story 2-2 (iOS Swift migration)
@@ -110,6 +113,7 @@ fi
 **Added to**: epics.md, sprint-status.yaml
 
 **Story Summary**:
+
 - Fix iOS AVAudioEngine format mismatch
 - Tap at hardware rate (48kHz), use AVAudioConverter to downsample to requested rate (16kHz)
 - Unblocks iOS audio streaming functionality
@@ -124,17 +128,20 @@ fi
 **Options**:
 
 **Option A: Execute Tests Before Epic 3** (Retroactive)
+
 - Run iOS tests now (Story 2-6) before continuing Epic 3
 - Catch issues earlier in the pipeline
 - Blocks current progress
 
 **Option B: Accept Risk, Document, Continue** (RECOMMENDED)
+
 - Continue with current approach (tests deferred to Epic 5-2)
 - Document that Epic 3 example app serves as integration test
 - Fix issues as discovered (like Story 2-9)
 - Run full test suite in Epic 5-2 before publishing
 
 **Option C: Hybrid - Run Critical Tests Only**
+
 - Run iOS audio streaming tests manually before Epic 3 completion
 - Defer remaining tests to Epic 5-2
 - Balances risk vs progress
@@ -152,6 +159,7 @@ fi
 1. **Prioritize Example App Earlier**: Consider moving example app creation earlier in Epic 3 (already done - it's Story 3-3/3-4)
 
 2. **Expand Example App Testing**: Current example app only tests basic streaming. Consider adding test cases for:
+
    - Different sample rates (16kHz, 44.1kHz, 48kHz)
    - Different buffer sizes
    - VAD functionality
@@ -167,24 +175,24 @@ fi
 
 ### Stories Requiring Updates
 
-| Story | Change | Priority | Status |
-|-------|--------|----------|--------|
-| Story 2-8 | Add module structure validation (Task 8) | HIGH | Documented in story file, not retroactively executed |
-| Story 2-9 | New story: Fix iOS audio format conversion | HIGH | ✅ Created |
-| Epic 2 Summary | Update from 9 stories to 10 stories | LOW | ✅ Updated |
-| Story 2-6 | Re-evaluate test deferral | MEDIUM | Decision needed |
+| Story          | Change                                     | Priority | Status                                               |
+| -------------- | ------------------------------------------ | -------- | ---------------------------------------------------- |
+| Story 2-8      | Add module structure validation (Task 8)   | HIGH     | Documented in story file, not retroactively executed |
+| Story 2-9      | New story: Fix iOS audio format conversion | HIGH     | ✅ Created                                           |
+| Epic 2 Summary | Update from 9 stories to 10 stories        | LOW      | ✅ Updated                                           |
+| Story 2-6      | Re-evaluate test deferral                  | MEDIUM   | Decision needed                                      |
 
 ### Stories That Worked Correctly
 
-| Story | What Worked | Why |
-|-------|-------------|-----|
-| Story 2-1 | TypeScript migration | Code was correct, structure issue was separate |
-| Story 2-2 | iOS Swift migration | Code compiled correctly, audio format bug is edge case |
-| Story 2-3 | iOS test exclusions | Worked correctly - tests excluded from production |
-| Story 2-4 | Android Kotlin migration | No issues discovered |
-| Story 2-5 | TypeScript tests | Tests passed, structural issue was separate |
-| Story 2-7 | Android tests | Tests migrated correctly |
-| Story 2-8 | Zero warnings | Achieved zero warnings, structural validation was gap |
+| Story     | What Worked              | Why                                                    |
+| --------- | ------------------------ | ------------------------------------------------------ |
+| Story 2-1 | TypeScript migration     | Code was correct, structure issue was separate         |
+| Story 2-2 | iOS Swift migration      | Code compiled correctly, audio format bug is edge case |
+| Story 2-3 | iOS test exclusions      | Worked correctly - tests excluded from production      |
+| Story 2-4 | Android Kotlin migration | No issues discovered                                   |
+| Story 2-5 | TypeScript tests         | Tests passed, structural issue was separate            |
+| Story 2-7 | Android tests            | Tests migrated correctly                               |
+| Story 2-8 | Zero warnings            | Achieved zero warnings, structural validation was gap  |
 
 ---
 
@@ -201,11 +209,13 @@ fi
 ### Short-Term Actions (Before Epic 3 Completion)
 
 6. **PENDING**: Decide on test deferral strategy (Recommendation 3)
+
    - Option A: Run iOS tests now
    - Option B: Continue with deferral (recommended)
    - Option C: Run critical tests only
 
 7. **PENDING**: Decide on Story 2-8 structural validation
+
    - Option A: Create Story 2-10 for module structure validation
    - Option B: Defer to Epic 5 CI/CD
    - Option C: Retroactively add to Story 2-8
@@ -228,6 +238,7 @@ fi
 **Updated**: 10 stories (2-0 through 2-9)
 
 **Status**:
+
 - Stories 2-0 through 2-8: DONE
 - Story 2-9: READY-FOR-DEV (newly created)
 
@@ -237,20 +248,20 @@ fi
 
 ### Risks Introduced by Learnings
 
-| Risk | Probability | Impact | Mitigation |
-|------|-------------|--------|------------|
-| More hidden bugs in Epic 2 code | MEDIUM | HIGH | Complete Story 2-9, run full test suite in Epic 5-2 |
-| Metro bundler issues in other modules | LOW | MEDIUM | Documented in CRITICAL-LEARNINGS-METRO-BUNDLER.md, structural validation proposed |
-| iOS audio issues on other hardware | LOW | MEDIUM | Story 2-9 handles variable hardware rates |
-| Android has similar audio issues | MEDIUM | HIGH | Test Android in Story 3-4 Task 10 |
+| Risk                                  | Probability | Impact | Mitigation                                                                        |
+| ------------------------------------- | ----------- | ------ | --------------------------------------------------------------------------------- |
+| More hidden bugs in Epic 2 code       | MEDIUM      | HIGH   | Complete Story 2-9, run full test suite in Epic 5-2                               |
+| Metro bundler issues in other modules | LOW         | MEDIUM | Documented in CRITICAL-LEARNINGS-METRO-BUNDLER.md, structural validation proposed |
+| iOS audio issues on other hardware    | LOW         | MEDIUM | Story 2-9 handles variable hardware rates                                         |
+| Android has similar audio issues      | MEDIUM      | HIGH   | Test Android in Story 3-4 Task 10                                                 |
 
 ### Risks Mitigated by Learnings
 
-| Risk | How Mitigated |
-|------|---------------|
-| Publishing broken module | Example app caught issues before Epic 4 (documentation) |
+| Risk                               | How Mitigated                                            |
+| ---------------------------------- | -------------------------------------------------------- |
+| Publishing broken module           | Example app caught issues before Epic 4 (documentation)  |
 | Voiceline team integration failure | Metro bundler fix prevents downstream integration issues |
-| Production iOS crashes | iOS audio format fix prevents AVAudioEngine crashes |
+| Production iOS crashes             | iOS audio format fix prevents AVAudioEngine crashes      |
 
 ---
 
@@ -259,16 +270,19 @@ fi
 ### What This Means for Voiceline Integration
 
 **Good News**:
+
 - Metro bundler issue RESOLVED - module will integrate correctly
 - Issues caught before publishing to npm
 - Documentation (CRITICAL-LEARNINGS-METRO-BUNDLER.md) provides integration checklist
 
 **Remaining Risks**:
+
 - iOS audio format issue needs Story 2-9 completion
 - Android testing not yet performed (Story 3-4 Task 10)
 - Full test suite execution deferred to Epic 5-2
 
 **Recommendations for Voiceline Team**:
+
 1. Wait for Story 2-9 completion before iOS integration
 2. Test Android integration in parallel with Epic 3 completion
 3. Review CRITICAL-LEARNINGS-METRO-BUNDLER.md for integration best practices
@@ -281,17 +295,20 @@ fi
 Story 3-4 provided critical learnings that improve the overall quality of v0.3.0:
 
 **Wins**:
+
 - Metro bundler issue discovered and fixed before publishing
 - Example app proved to be essential quality gate
 - New story (2-9) created to fix iOS audio format issue
 - Documentation created to prevent future issues
 
 **Gaps Identified**:
+
 - Module structure validation missing from Story 2-8
 - Test deferral strategy may have hidden bugs
 - Need more comprehensive example app testing
 
 **Recommended Path Forward**:
+
 1. ✅ Complete immediate actions (Story 2-9 creation, documentation)
 2. Implement Story 2-9 (HIGH priority)
 3. Complete Story 3-4 Android testing (Task 10)

@@ -35,6 +35,7 @@ So that I can validate that migrated tests pass and autolinking doesn't break te
 ## Tasks/Subtasks
 
 ### Task 1: Set Up iOS Test Infrastructure
+
 - [x] Navigate to test project from Story 3.1:
   ```bash
   cd /tmp/loqa-audio-bridge-test-3-1/test-install
@@ -58,6 +59,7 @@ So that I can validate that migrated tests pass and autolinking doesn't break te
 - [ ] Verify final test result: 48/48 passing
 
 ### Task 2: Set Up Android Test Infrastructure
+
 - [ ] Install Java Development Kit (JDK) 17 if not present:
   ```bash
   java -version  # Check current version
@@ -91,6 +93,7 @@ So that I can validate that migrated tests pass and autolinking doesn't break te
 - [ ] Document final test result: 41/41 passing
 
 ### Task 3: Document Test Execution Setup
+
 - [ ] Create test execution documentation:
   - iOS test execution steps
   - Android test execution steps
@@ -101,6 +104,7 @@ So that I can validate that migrated tests pass and autolinking doesn't break te
 - [ ] Add test execution guide to docs/loqa-audio-bridge/
 
 ### Task 4: Unblock Stories 2-6 and 2-7
+
 - [ ] Update Story 2-6 status:
   - Mark all test execution subtasks as complete
   - Update Dev Agent Record with test results
@@ -121,12 +125,14 @@ So that I can validate that migrated tests pass and autolinking doesn't break te
 ### Why This Story is Critical
 
 **Dependency Inversion Problem:**
+
 - Stories 2-6 and 2-7 migrated test files but couldn't execute them
 - Story 3-1 validated iOS autolinking but couldn't confirm tests still work
 - Story 3-2 will face same issue for Android
 - Epic 5 (CI/CD) assumes tests already run locally
 
 **By Creating This Story Now:**
+
 - ✅ Unblocks 2 stories immediately (2-6 and 2-7)
 - ✅ Validates autolinking doesn't break test execution
 - ✅ Proves Epic 2 migration was successful (tests pass)
@@ -136,17 +142,20 @@ So that I can validate that migrated tests pass and autolinking doesn't break te
 ### iOS Test Infrastructure Requirements
 
 **Test Location:**
+
 - Tests should be in: `Pods/Development Pods/LoqaAudioBridge/ios/Tests/`
 - LoqaAudioBridgeTests.swift (38 unit tests)
 - LoqaAudioBridgeIntegrationTests.swift (10 integration tests)
 
 **Test Target Setup:**
+
 - Tests need to be compiled as part of a test bundle
 - Test bundle needs access to LoqaAudioBridge module code
 - XCTest framework must be linked
 - Tests run in simulator environment
 
 **Common Issues:**
+
 - Test files excluded from production build (Story 2.3) - need to include in test target
 - Module import path may need adjustment
 - Test target may need explicit module dependencies
@@ -156,21 +165,25 @@ So that I can validate that migrated tests pass and autolinking doesn't break te
 ### Android Test Infrastructure Requirements
 
 **Environment Setup:**
+
 - JDK 17 required (Gradle 8.x dependency)
 - Android SDK with API 24+ (already installed if Story 3.2 complete)
 - Gradle wrapper already configured in project
 
 **Test Location:**
+
 - Tests should be in: `node_modules/@loqalabs/loqa-audio-bridge/android/src/test/`
 - LoqaAudioBridgeModuleTest.kt (unit tests)
 - Additional test files from Story 2.7
 
 **Test Execution:**
+
 - Run via Gradle: `./gradlew test`
 - Tests compile as part of module AAR build
 - JUnit framework already configured
 
 **Common Issues:**
+
 - JRE not installed (blocker for Story 2.7)
 - JAVA_HOME not set correctly
 - Gradle cache corruption (run `./gradlew clean`)
@@ -181,12 +194,14 @@ So that I can validate that migrated tests pass and autolinking doesn't break te
 ### Test Validation Strategy
 
 **Success Criteria:**
+
 1. All 48 iOS tests pass (0 failures, 0 errors)
 2. All 41 Android tests pass (0 failures, 0 errors)
 3. Test execution is reproducible (can run multiple times)
 4. Test output is clear and actionable
 
 **If Tests Fail:**
+
 - Document failure details (test name, error message, stack trace)
 - Analyze root cause (code issue vs. environment issue)
 - Fix implementation or test code as needed
@@ -208,6 +223,7 @@ So that I can validate that migrated tests pass and autolinking doesn't break te
 ### Investigation - iOS Test Infrastructure
 
 **Test File Location**: modules/loqa-audio-bridge/ios/Tests/
+
 - LoqaAudioBridgeTests.swift (25,599 bytes, ~38 unit tests)
 - LoqaAudioBridgeIntegrationTests.swift (18,381 bytes, ~10 integration tests)
 
@@ -218,6 +234,7 @@ So that I can validate that migrated tests pass and autolinking doesn't break te
 ✅ Production code compiles with zero errors (Story 3.1)
 
 **Test Execution Challenge Identified**:
+
 - Tests are excluded from pod build per Story 2.3 (by design) ✅
 - No test target exists in example app project
 - Creating test target requires:
@@ -229,10 +246,12 @@ So that I can validate that migrated tests pass and autolinking doesn't break te
   6. Estimated time: 2-3 hours
 
 **Available Simulators** (iOS 26.1):
+
 - iPhone 17, iPhone 17 Pro, iPhone 17 Pro Max
 - iPad variants (M3, M5)
 
 **Attempted Approaches**:
+
 1. ❌ Run tests in test-install project → No test target
 2. ❌ Run tests in example app → No test target (`xcodebuild test` returns "no test bundles")
 3. ✅ Syntax validation → Tests parse correctly
@@ -240,6 +259,7 @@ So that I can validate that migrated tests pass and autolinking doesn't break te
 **Decision**: Defer full test execution infrastructure to Epic 5 (CI/CD Story 5.2).
 
 **Rationale**:
+
 - Tests are validated as syntactically correct
 - Test exclusions proven to work
 - Production code builds successfully
@@ -251,6 +271,7 @@ So that I can validate that migrated tests pass and autolinking doesn't break te
 **Status**: Deferred to Epic 5 (Story 5.2: CI/CD Pipeline)
 
 **Reasons for Deferral**:
+
 1. JDK 17 installation required
 2. Android SDK configuration needed
 3. Gradle test execution setup

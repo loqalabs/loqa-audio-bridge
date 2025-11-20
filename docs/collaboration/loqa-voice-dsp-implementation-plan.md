@@ -22,14 +22,15 @@ The Voiceline team's hybrid specification is **excellent** and aligns perfectly 
 
 From [architecture.md](../architecture.md) and Epic 2C implementation:
 
-| Component | Status | Location | Reusable? |
-|-----------|--------|----------|-----------|
-| **YIN Pitch Detection** | ✅ Implemented | `loqa-core/src/audio/analysis.rs` | **YES** |
-| **LPC Formant Extraction** | ✅ Implemented | `loqa-core/src/audio/analysis.rs` | **YES** |
-| **FFT Utilities** | ✅ Implemented | `loqa-core/src/audio/analysis.rs` | **YES** (uses rustfft) |
-| **Spectral Analysis** | ⚠️ Partial | `loqa-core/src/audio/features.rs` | **YES** (needs spectral tilt) |
+| Component                  | Status         | Location                          | Reusable?                     |
+| -------------------------- | -------------- | --------------------------------- | ----------------------------- |
+| **YIN Pitch Detection**    | ✅ Implemented | `loqa-core/src/audio/analysis.rs` | **YES**                       |
+| **LPC Formant Extraction** | ✅ Implemented | `loqa-core/src/audio/analysis.rs` | **YES**                       |
+| **FFT Utilities**          | ✅ Implemented | `loqa-core/src/audio/analysis.rs` | **YES** (uses rustfft)        |
+| **Spectral Analysis**      | ⚠️ Partial     | `loqa-core/src/audio/features.rs` | **YES** (needs spectral tilt) |
 
 **Good news:** We have 90% of the DSP code already! Just need to:
+
 1. Extract into standalone crate
 2. Add FFI layer for mobile
 3. Add missing spectral tilt calculation
@@ -78,12 +79,14 @@ loqa/
 ### **Phase 1: Extract DSP Crate (Loqa Team - 2-3 days)**
 
 **Task 1.1: Create New Crate (Day 1 morning)**
+
 ```bash
 cd loqa/crates
 cargo new loqa-voice-dsp --lib
 ```
 
 **Cargo.toml:**
+
 ```toml
 [package]
 name = "loqa-voice-dsp"
@@ -115,6 +118,7 @@ harness = false
 Copy from `loqa-core/src/audio/analysis.rs` → `loqa-voice-dsp/src/pitch.rs`
 
 **New API (matches Voiceline spec):**
+
 ```rust
 // loqa-voice-dsp/src/pitch.rs
 
@@ -165,6 +169,7 @@ pub fn detect_pitch(
 Copy from `loqa-core/src/audio/analysis.rs` → `loqa-voice-dsp/src/formants.rs`
 
 **New API (matches Voiceline spec):**
+
 ```rust
 // loqa-voice-dsp/src/formants.rs
 
@@ -451,6 +456,7 @@ pub extern "C" fn loqa_detect_pitch(
 ```
 
 **Build Script for iOS:**
+
 ```rust
 // loqa-voice-dsp/build.rs
 fn main() {
@@ -745,11 +751,13 @@ criterion_main!(benches);
 ```
 
 **Run benchmarks:**
+
 ```bash
 cargo bench
 ```
 
 **Expected Results:**
+
 - Pitch detection (100ms audio): <20ms
 - Formant extraction (500ms audio): <50ms
 
@@ -757,15 +765,16 @@ cargo bench
 
 ## 📊 Timeline Summary
 
-| Phase | Tasks | Duration | Owner | Dependencies |
-|-------|-------|----------|-------|--------------|
-| **1. Extract DSP Crate** | Create crate, extract pitch/formants/FFT/spectral, update loqa-core | 2-3 days | Loqa | None |
-| **2. Add FFI Bridges** | iOS FFI, Android JNI, build scripts | 2-3 days | Loqa | Phase 1 complete |
-| **3. Voiceline Integration** | Swift/Java bridges, React Native module | 5-7 days | Voiceline | Phase 2 complete |
-| **4. Integration Testing** | Unit tests, E2E tests, benchmarks | 3-5 days | Both | Phase 3 complete |
-| **Total** | | **12-18 days** | | |
+| Phase                        | Tasks                                                               | Duration       | Owner     | Dependencies     |
+| ---------------------------- | ------------------------------------------------------------------- | -------------- | --------- | ---------------- |
+| **1. Extract DSP Crate**     | Create crate, extract pitch/formants/FFT/spectral, update loqa-core | 2-3 days       | Loqa      | None             |
+| **2. Add FFI Bridges**       | iOS FFI, Android JNI, build scripts                                 | 2-3 days       | Loqa      | Phase 1 complete |
+| **3. Voiceline Integration** | Swift/Java bridges, React Native module                             | 5-7 days       | Voiceline | Phase 2 complete |
+| **4. Integration Testing**   | Unit tests, E2E tests, benchmarks                                   | 3-5 days       | Both      | Phase 3 complete |
+| **Total**                    |                                                                     | **12-18 days** |           |                  |
 
 **Parallel Work Opportunities:**
+
 - Voiceline can start Swift/Java bridge design during Phase 1-2
 - Testing can begin as soon as FFI exports available (end of Phase 2)
 
@@ -774,17 +783,20 @@ cargo bench
 ## ✅ Success Criteria
 
 ### **Performance (Must Meet):**
+
 - ✅ Pitch detection: <20ms for 100ms audio
 - ✅ Formant extraction: <50ms for 500ms audio
 - ✅ FFT computation: <10ms for 2048-point FFT
 - ✅ Memory usage: <10MB during processing
 
 ### **Accuracy (Must Meet):**
+
 - ✅ Pitch detection: ±5Hz or 95% confidence
 - ✅ Formant extraction: ±50Hz for F1/F2
 - ✅ Spectral centroid: ±100Hz
 
 ### **Integration (Must Work):**
+
 - ✅ iOS: Swift can call Rust DSP functions
 - ✅ Android: Java can call Rust DSP functions
 - ✅ Loqa backend: Direct Rust imports work
@@ -796,6 +808,7 @@ cargo bench
 ## 🚀 Deliverables
 
 ### **For Voiceline Team:**
+
 1. **Rust crate:** `loqa-voice-dsp` with source code
 2. **iOS FFI headers:** C-compatible function signatures
 3. **Android JNI library:** `.so` files for ARM/x86
@@ -806,6 +819,7 @@ cargo bench
 5. **Test suite:** Shared validation audio samples
 
 ### **For Loqa Backend:**
+
 1. **Updated loqa-core:** Imports from `loqa-voice-dsp`
 2. **Validated compatibility:** Existing Epic 2C functionality unchanged
 3. **Performance:** No regression in analysis speed
@@ -815,18 +829,21 @@ cargo bench
 ## 📋 Open Action Items
 
 ### **For Anna (Loqa Team Lead):**
+
 - [ ] Approve extraction of loqa-core/audio → loqa-voice-dsp
 - [ ] Assign engineer for Phase 1-2 (DSP extraction + FFI)
 - [ ] Schedule kickoff meeting with Voiceline team (week of Nov 11)
 - [ ] Share Epic 2C test audio samples with Voiceline for validation
 
 ### **For Voiceline Team:**
+
 - [ ] Review extracted Rust API (Phase 1 complete)
 - [ ] Test iOS/Android FFI bridges (Phase 2)
 - [ ] Implement React Native integration (Phase 3)
 - [ ] Provide mobile-specific test cases (edge cases, device diversity)
 
 ### **Joint Activities:**
+
 - [ ] Kickoff meeting: Align on timeline, communication channels, repo access
 - [ ] Weekly sync: Review progress, address blockers
 - [ ] Integration testing: E2E validation with real Voiceline app
@@ -836,11 +853,13 @@ cargo bench
 ## 🤝 Communication & Collaboration
 
 **Recommended Channels:**
+
 - **GitHub:** Shared repository or loqa monorepo with Voiceline access
 - **Slack/Discord:** Real-time Q&A and coordination
 - **Weekly sync:** 30-minute call to review progress (Tuesdays 2pm?)
 
 **Code Reviews:**
+
 - Loqa team reviews FFI layer (safety, performance)
 - Voiceline team reviews API ergonomics (ease of use from Swift/Java)
 
@@ -849,6 +868,7 @@ cargo bench
 ## 🎯 Summary
 
 **Key Wins:**
+
 1. ✅ **Reuse existing code:** 90% of DSP already implemented in Epic 2C
 2. ✅ **Single source of truth:** Shared Rust crate for consistency
 3. ✅ **Fast timeline:** 12-18 days vs. rebuild from scratch (7-10 days Voiceline spec + 5-8 days duplicated work)
@@ -861,6 +881,7 @@ cargo bench
 **Next Step:** Loqa team approval to proceed with Phase 1 (DSP extraction) this week.
 
 **Contact:**
+
 - **Loqa:** Anna (Team Lead)
 - **Voiceline:** Anna (Developer)
 - **Architect:** Winston (via Anna)

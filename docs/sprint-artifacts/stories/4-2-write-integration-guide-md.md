@@ -11,39 +11,46 @@ So that I can complete integration without external support.
 ## Acceptance Criteria
 
 1. **Prerequisites Section** includes:
+
    - Expo version requirements (52+)
    - React Native version requirements (0.72+)
    - macOS requirements for iOS development
    - Android Studio requirements for Android development
 
 2. **Step 1: Installation** (detailed) includes:
+
    - Command: `npx expo install @loqalabs/loqa-audio-bridge`
    - Rebuild command: `npx expo prebuild --clean`
    - Verification command: `npx expo-doctor`
    - Expected output documented
 
 3. **Step 2: iOS Configuration** includes:
+
    - Microphone permission in app.json with NSMicrophoneUsageDescription
    - Explanation of why required (App Store rejection risk)
    - Example of customizing permission message
 
 4. **Step 3: Android Configuration** includes:
+
    - Microphone permission in app.json (RECORD_AUDIO)
    - Runtime permission handling explanation (Android 6.0+)
    - Code example for requesting permissions
 
 5. **Step 4: Basic Usage** includes:
+
    - Full code example with error handling
    - Permission request code for both platforms
    - Listener setup and cleanup patterns
    - Common configuration options explained (sample rate, buffer size, VAD)
 
 6. **Step 5: Testing** includes:
+
    - iOS simulator limitation (no microphone - use device)
    - Android emulator virtual microphone setup
    - Expected behavior checklist
 
 7. **Troubleshooting Section** covers:
+
    - "Cannot find native module" → solution with prebuild and pod-install
    - iOS CocoaPods errors → cache clearing solution
    - Android Gradle "Duplicate class" → clean solution
@@ -51,6 +58,7 @@ So that I can complete integration without external support.
    - Audio events not firing → sample rate/buffer validation
 
 8. **Advanced Topics Section** includes:
+
    - Voice Activity Detection (VAD) configuration
    - Battery optimization behavior explanation
    - Buffer size tuning (latency vs. CPU tradeoff)
@@ -67,23 +75,27 @@ So that I can complete integration without external support.
 ## Tasks / Subtasks
 
 - [x] Create INTEGRATION_GUIDE.md structure (AC: 1, 9)
+
   - [x] Add table of contents
   - [x] Create prerequisites section
   - [x] Organize with clear hierarchical headings
 
 - [x] Write installation steps (AC: 2)
+
   - [x] Document package installation command
   - [x] Add prebuild steps with clean flag
   - [x] Include verification with expo-doctor
   - [x] Show expected terminal output
 
 - [x] Document platform configuration (AC: 3, 4)
+
   - [x] iOS: NSMicrophoneUsageDescription setup
   - [x] iOS: Explain App Store requirements
   - [x] Android: RECORD_AUDIO permission
   - [x] Android: Runtime permission handling code
 
 - [x] Write basic usage section (AC: 5, 10)
+
   - [x] Full code example with error handling
   - [x] Permission request patterns (both platforms)
   - [x] Listener lifecycle (setup and cleanup)
@@ -91,17 +103,20 @@ So that I can complete integration without external support.
   - [x] Expected outcome for each step
 
 - [x] Create testing guidance (AC: 6)
+
   - [x] iOS simulator limitations documented
   - [x] Android emulator setup instructions
   - [x] Expected behavior checklist
 
 - [x] Build troubleshooting section (AC: 7, 11)
+
   - [x] Review v0.2.0 integration feedback for pain points
   - [x] Document common errors with exact messages
   - [x] Provide step-by-step solutions
   - [x] Add validation steps for each fix
 
 - [x] Add advanced topics (AC: 8)
+
   - [x] VAD configuration and use cases
   - [x] Battery optimization explanation
   - [x] Buffer size tuning guide
@@ -123,14 +138,17 @@ So that I can complete integration without external support.
 ### Project Structure Notes
 
 **File Location:**
+
 - Create at package root: `/loqa-audio-bridge/INTEGRATION_GUIDE.md`
 
 **Dependencies:**
+
 - Requires Story 4.1 (README) complete for consistency
 - References example app from Epic 3 Stories 3.3-3.5
 - Links to API.md (Story 4.3) for detailed API reference
 
 **Alignment with Architecture:**
+
 - Supports FR27 (Provide INTEGRATION_GUIDE.md with step-by-step instructions)
 - Addresses integration pain points from v0.2.0 (9-hour manual process)
 - Enables <30 minute integration target per architecture Decision 2
@@ -140,6 +158,7 @@ So that I can complete integration without external support.
 **From Story 4.1 (write-readme-md-with-quick-start):**
 
 This is the first story in Epic 4, so no predecessor context available. However, key patterns to establish:
+
 - Consistent code examples across README and Integration Guide
 - Same terminology and configuration examples
 - Reference same platform requirements
@@ -193,6 +212,7 @@ Story implementation executed in single session following workflow instructions:
 Created comprehensive INTEGRATION_GUIDE.md (650+ lines) enabling <30 minute integration:
 
 **Key Achievements**:
+
 - ✅ All 12 acceptance criteria met
 - ✅ 8 major sections with table of contents (AC1, AC9)
 - ✅ Prerequisites section with version requirements and verification commands (AC1)
@@ -209,6 +229,7 @@ Created comprehensive INTEGRATION_GUIDE.md (650+ lines) enabling <30 minute inte
 
 **v0.2.0 Feedback Integration**:
 All 7 major pain points from loqa-integration-feedback.md addressed:
+
 1. Missing config files → Installation section documents autolinking (no manual files needed)
 2. Autolinking failures → Troubleshooting Issue 1 with prebuild --clean solution
 3. Swift compilation errors → Not applicable (v0.3.0 fixed in Epic 2)
@@ -218,6 +239,7 @@ All 7 major pain points from loqa-integration-feedback.md addressed:
 7. Documentation gaps → This entire guide addresses the gap
 
 **Code Examples**:
+
 - Consistent configuration values (16kHz, 2048 buffer) across README, example app, and guide
 - All TypeScript examples compile without errors
 - Permission handling examples for both iOS and Android
@@ -225,12 +247,14 @@ All 7 major pain points from loqa-integration-feedback.md addressed:
 - Error handling patterns for all error codes
 
 **Platform Parity**:
+
 - Equal coverage for iOS and Android throughout
 - Side-by-side permission setup (iOS: Info.plist, Android: runtime)
 - Platform-specific testing sections (iOS device required, Android emulator supported)
 - Platform-specific troubleshooting entries
 
 **Documentation Quality**:
+
 - Table of contents with anchor links for navigation
 - "Expected Output" sections after installation steps
 - "Expected Result" validation criteria for each step
@@ -243,6 +267,7 @@ Ready for review. Guide enables self-service integration without external suppor
 ### File List
 
 **Created**:
+
 - modules/loqa-audio-bridge/INTEGRATION_GUIDE.md (1094 lines, comprehensive integration documentation)
 
 ---
@@ -258,6 +283,7 @@ Ready for review. Guide enables self-service integration without external suppor
 Story 4.2 delivers a production-ready INTEGRATION_GUIDE.md that exceeds all acceptance criteria. This comprehensive 1094-line guide enables self-service integration in <30 minutes, addresses 100% of v0.2.0 pain points, and provides exceptional developer experience with clear step-by-step instructions, troubleshooting coverage, and advanced optimization guidance.
 
 **Key Achievements**:
+
 - All 12 acceptance criteria fully implemented with concrete evidence
 - All 8 tasks verified complete with zero false completions
 - 7 troubleshooting entries covering all applicable v0.2.0 issues
@@ -268,6 +294,7 @@ Story 4.2 delivers a production-ready INTEGRATION_GUIDE.md that exceeds all acce
 ### Outcome Justification
 
 **APPROVE** - This story demonstrates exceptional quality:
+
 1. **Systematic Validation Passed**: 100% AC implementation, 100% task verification
 2. **Zero False Completions**: Every claimed task completion verified with file:line evidence
 3. **Exceeds Requirements**: 7 troubleshooting entries (5 required), 5 advanced topics (4 required)
@@ -282,20 +309,20 @@ This is **exemplary work** with zero deficiencies.
 
 ### Acceptance Criteria Coverage
 
-| AC# | Description | Status | Evidence |
-|-----|-------------|--------|----------|
-| AC1 | Prerequisites Section | ✅ IMPLEMENTED | [INTEGRATION_GUIDE.md:22-67](../../modules/loqa-audio-bridge/INTEGRATION_GUIDE.md#L22-L67) - Expo 52+, RN 0.72+, macOS/Xcode, Android Studio, verification commands |
-| AC2 | Step 1: Installation (detailed) | ✅ IMPLEMENTED | [INTEGRATION_GUIDE.md:70-128](../../modules/loqa-audio-bridge/INTEGRATION_GUIDE.md#L70-L128) - `npx expo install`, `prebuild --clean`, `expo-doctor`, expected outputs documented |
-| AC3 | Step 2: iOS Configuration | ✅ IMPLEMENTED | [INTEGRATION_GUIDE.md:131-172](../../modules/loqa-audio-bridge/INTEGRATION_GUIDE.md#L131-L172) - NSMicrophoneUsageDescription, App Store rejection warning, customization examples |
-| AC4 | Step 3: Android Configuration | ✅ IMPLEMENTED | [INTEGRATION_GUIDE.md:175-268](../../modules/loqa-audio-bridge/INTEGRATION_GUIDE.md#L175-L268) - RECORD_AUDIO permission, runtime handling (Android 6.0+), code examples |
-| AC5 | Step 4: Basic Usage | ✅ IMPLEMENTED | [INTEGRATION_GUIDE.md:271-450](../../modules/loqa-audio-bridge/INTEGRATION_GUIDE.md#L271-L450) - 106-line complete component with error handling, permissions, listener lifecycle, config options |
-| AC6 | Step 5: Testing | ✅ IMPLEMENTED | [INTEGRATION_GUIDE.md:453-529](../../modules/loqa-audio-bridge/INTEGRATION_GUIDE.md#L453-L529) - iOS simulator limitation warning, Android emulator virtual mic setup, 11-point behavior checklist |
-| AC7 | Troubleshooting Section | ✅ IMPLEMENTED | [INTEGRATION_GUIDE.md:532-791](../../modules/loqa-audio-bridge/INTEGRATION_GUIDE.md#L532-L791) - 7 issues covered (5 required): module not found, CocoaPods, Gradle, permissions, events, CPU, App Store |
-| AC8 | Advanced Topics Section | ✅ IMPLEMENTED | [INTEGRATION_GUIDE.md:793-1061](../../modules/loqa-audio-bridge/INTEGRATION_GUIDE.md#L793-L1061) - 5 topics (4 required): VAD, battery optimization, buffer tuning table, stereo, error handling |
-| AC9 | Guide is organized | ✅ IMPLEMENTED | [INTEGRATION_GUIDE.md:9-18](../../modules/loqa-audio-bridge/INTEGRATION_GUIDE.md#L9-L18) - Table of contents with anchor links, hierarchical headings throughout |
-| AC10 | Each step includes expected outcome | ✅ IMPLEMENTED | Multiple locations: Prerequisites:66, Installation:82-85,100-105,117-123,127, iOS:171, Android:267, Usage:437-449, Testing:512-528 |
+| AC#  | Description                                 | Status         | Evidence                                                                                                                                                                                                  |
+| ---- | ------------------------------------------- | -------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| AC1  | Prerequisites Section                       | ✅ IMPLEMENTED | [INTEGRATION_GUIDE.md:22-67](../../modules/loqa-audio-bridge/INTEGRATION_GUIDE.md#L22-L67) - Expo 52+, RN 0.72+, macOS/Xcode, Android Studio, verification commands                                       |
+| AC2  | Step 1: Installation (detailed)             | ✅ IMPLEMENTED | [INTEGRATION_GUIDE.md:70-128](../../modules/loqa-audio-bridge/INTEGRATION_GUIDE.md#L70-L128) - `npx expo install`, `prebuild --clean`, `expo-doctor`, expected outputs documented                         |
+| AC3  | Step 2: iOS Configuration                   | ✅ IMPLEMENTED | [INTEGRATION_GUIDE.md:131-172](../../modules/loqa-audio-bridge/INTEGRATION_GUIDE.md#L131-L172) - NSMicrophoneUsageDescription, App Store rejection warning, customization examples                        |
+| AC4  | Step 3: Android Configuration               | ✅ IMPLEMENTED | [INTEGRATION_GUIDE.md:175-268](../../modules/loqa-audio-bridge/INTEGRATION_GUIDE.md#L175-L268) - RECORD_AUDIO permission, runtime handling (Android 6.0+), code examples                                  |
+| AC5  | Step 4: Basic Usage                         | ✅ IMPLEMENTED | [INTEGRATION_GUIDE.md:271-450](../../modules/loqa-audio-bridge/INTEGRATION_GUIDE.md#L271-L450) - 106-line complete component with error handling, permissions, listener lifecycle, config options         |
+| AC6  | Step 5: Testing                             | ✅ IMPLEMENTED | [INTEGRATION_GUIDE.md:453-529](../../modules/loqa-audio-bridge/INTEGRATION_GUIDE.md#L453-L529) - iOS simulator limitation warning, Android emulator virtual mic setup, 11-point behavior checklist        |
+| AC7  | Troubleshooting Section                     | ✅ IMPLEMENTED | [INTEGRATION_GUIDE.md:532-791](../../modules/loqa-audio-bridge/INTEGRATION_GUIDE.md#L532-L791) - 7 issues covered (5 required): module not found, CocoaPods, Gradle, permissions, events, CPU, App Store  |
+| AC8  | Advanced Topics Section                     | ✅ IMPLEMENTED | [INTEGRATION_GUIDE.md:793-1061](../../modules/loqa-audio-bridge/INTEGRATION_GUIDE.md#L793-L1061) - 5 topics (4 required): VAD, battery optimization, buffer tuning table, stereo, error handling          |
+| AC9  | Guide is organized                          | ✅ IMPLEMENTED | [INTEGRATION_GUIDE.md:9-18](../../modules/loqa-audio-bridge/INTEGRATION_GUIDE.md#L9-L18) - Table of contents with anchor links, hierarchical headings throughout                                          |
+| AC10 | Each step includes expected outcome         | ✅ IMPLEMENTED | Multiple locations: Prerequisites:66, Installation:82-85,100-105,117-123,127, iOS:171, Android:267, Usage:437-449, Testing:512-528                                                                        |
 | AC11 | Troubleshooting covers 90% of v0.2.0 issues | ✅ IMPLEMENTED | 100% coverage of applicable v0.2.0 issues: (1) Cannot find module ✓, (2) Autolinking/Podfile ✓, (3-5) Swift/tests N/A (fixed in v0.3.0), (6) CocoaPods ✓, (7) Gradle ✓, (8) Docs gaps ✓, (9) 9hr→<30min ✓ |
-| AC12 | Guide enables <30 minute integration | ✅ IMPLEMENTED | [INTEGRATION_GUIDE.md:5](../../modules/loqa-audio-bridge/INTEGRATION_GUIDE.md#L5) - Target stated, guide structured with step-by-step commands, expected outputs, validation at each step |
+| AC12 | Guide enables <30 minute integration        | ✅ IMPLEMENTED | [INTEGRATION_GUIDE.md:5](../../modules/loqa-audio-bridge/INTEGRATION_GUIDE.md#L5) - Target stated, guide structured with step-by-step commands, expected outputs, validation at each step                 |
 
 **Summary**: 12 of 12 acceptance criteria fully implemented (100%)
 
@@ -303,32 +330,32 @@ This is **exemplary work** with zero deficiencies.
 
 Based on [loqa-integration-feedback.md](../../collaboration/loqa-integration-feedback.md), v0.2.0 had 9 major pain points:
 
-| v0.2.0 Issue | Guide Coverage | Status |
-|--------------|----------------|--------|
-| 1. Missing config files → "Cannot find module" | Issue 1 (lines 536-570) - prebuild + autolinking solution | ✅ COVERED |
-| 2. Autolinking failures → Manual Podfile edits | Issue 1 (lines 547-557) + Installation explains autolinking | ✅ COVERED |
-| 3. Swift 'required' keyword error | N/A - Fixed in v0.3.0 (Story 2-2: iOS Swift migration) | N/A (Fixed) |
-| 4. Deprecated Bluetooth API warning | N/A - Fixed in v0.3.0 (Story 2-2: iOS Swift migration) | N/A (Fixed) |
-| 5. Test files in build (XCTest errors) | N/A - Fixed in v0.3.0 (Story 2-3: iOS podspec test exclusions) | N/A (Fixed) |
-| 6. CocoaPods cache/specification errors | Issue 2 (lines 573-602) - cache clearing + deintegrate | ✅ COVERED |
-| 7. Android Gradle "Duplicate class" errors | Issue 3 (lines 605-636) - gradlew clean solution | ✅ COVERED |
-| 8. Documentation gaps (no step-by-step guide) | Entire 1094-line guide addresses this completely | ✅ COVERED |
-| 9. 9-hour integration time | Guide targets <30 min with detailed steps and validation | ✅ ADDRESSED |
+| v0.2.0 Issue                                   | Guide Coverage                                                 | Status       |
+| ---------------------------------------------- | -------------------------------------------------------------- | ------------ |
+| 1. Missing config files → "Cannot find module" | Issue 1 (lines 536-570) - prebuild + autolinking solution      | ✅ COVERED   |
+| 2. Autolinking failures → Manual Podfile edits | Issue 1 (lines 547-557) + Installation explains autolinking    | ✅ COVERED   |
+| 3. Swift 'required' keyword error              | N/A - Fixed in v0.3.0 (Story 2-2: iOS Swift migration)         | N/A (Fixed)  |
+| 4. Deprecated Bluetooth API warning            | N/A - Fixed in v0.3.0 (Story 2-2: iOS Swift migration)         | N/A (Fixed)  |
+| 5. Test files in build (XCTest errors)         | N/A - Fixed in v0.3.0 (Story 2-3: iOS podspec test exclusions) | N/A (Fixed)  |
+| 6. CocoaPods cache/specification errors        | Issue 2 (lines 573-602) - cache clearing + deintegrate         | ✅ COVERED   |
+| 7. Android Gradle "Duplicate class" errors     | Issue 3 (lines 605-636) - gradlew clean solution               | ✅ COVERED   |
+| 8. Documentation gaps (no step-by-step guide)  | Entire 1094-line guide addresses this completely               | ✅ COVERED   |
+| 9. 9-hour integration time                     | Guide targets <30 min with detailed steps and validation       | ✅ ADDRESSED |
 
 **Coverage**: 6/6 applicable issues covered (100%). Issues 3-5 were code-level fixes in v0.3.0, so guide correctly focuses on issues that can still occur during integration.
 
 ### Task Completion Validation
 
-| Task | Subtasks | Marked As | Verified As | Evidence |
-|------|----------|-----------|-------------|----------|
-| Create INTEGRATION_GUIDE.md structure | 3 subtasks | ✅ Complete | ✅ VERIFIED | TOC: lines 9-18, Prerequisites: lines 22-67, Hierarchical headings throughout |
-| Write installation steps | 4 subtasks | ✅ Complete | ✅ VERIFIED | Install command: line 77, Prebuild: line 92, Verification: lines 110-126, Expected outputs: 82-85,100-105,117-123 |
-| Document platform configuration | 4 subtasks | ✅ Complete | ✅ VERIFIED | iOS NSMicrophoneUsageDescription: lines 137-148, App Store warning: 158-161, Android RECORD_AUDIO: lines 181-192, Runtime permission code: lines 208-233 |
-| Write basic usage section | 5 subtasks | ✅ Complete | ✅ VERIFIED | Full component: lines 277-382 (106 lines), Permissions: 289-295,320-324, Lifecycle: 298-315,354-360, Config options: 385-435, Expected outcome: 437-449 |
-| Create testing guidance | 3 subtasks | ✅ Complete | ✅ VERIFIED | iOS simulator warning: lines 457-461, Android emulator setup: lines 486-494, Behavior checklist: lines 512-528 (11 points) |
-| Build troubleshooting section | 4 subtasks | ✅ Complete | ✅ VERIFIED | v0.2.0 review: all issues addressed, Exact error messages: lines 538-541,575-578,607-610, Step-by-step solutions: all 7 issues, Validation steps: end of each issue |
-| Add advanced topics | 4 subtasks | ✅ Complete | ✅ VERIFIED | VAD: lines 795-837, Battery: lines 840-885, Buffer tuning: lines 888-930 (with table), Stereo: lines 933-987 |
-| Validate guide completeness | 3 subtasks | ✅ Complete | ✅ VERIFIED | <30 min target stated (line 5), Platform coverage: iOS and Android throughout, Validation criteria: expected outputs at each step |
+| Task                                  | Subtasks   | Marked As   | Verified As | Evidence                                                                                                                                                            |
+| ------------------------------------- | ---------- | ----------- | ----------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Create INTEGRATION_GUIDE.md structure | 3 subtasks | ✅ Complete | ✅ VERIFIED | TOC: lines 9-18, Prerequisites: lines 22-67, Hierarchical headings throughout                                                                                       |
+| Write installation steps              | 4 subtasks | ✅ Complete | ✅ VERIFIED | Install command: line 77, Prebuild: line 92, Verification: lines 110-126, Expected outputs: 82-85,100-105,117-123                                                   |
+| Document platform configuration       | 4 subtasks | ✅ Complete | ✅ VERIFIED | iOS NSMicrophoneUsageDescription: lines 137-148, App Store warning: 158-161, Android RECORD_AUDIO: lines 181-192, Runtime permission code: lines 208-233            |
+| Write basic usage section             | 5 subtasks | ✅ Complete | ✅ VERIFIED | Full component: lines 277-382 (106 lines), Permissions: 289-295,320-324, Lifecycle: 298-315,354-360, Config options: 385-435, Expected outcome: 437-449             |
+| Create testing guidance               | 3 subtasks | ✅ Complete | ✅ VERIFIED | iOS simulator warning: lines 457-461, Android emulator setup: lines 486-494, Behavior checklist: lines 512-528 (11 points)                                          |
+| Build troubleshooting section         | 4 subtasks | ✅ Complete | ✅ VERIFIED | v0.2.0 review: all issues addressed, Exact error messages: lines 538-541,575-578,607-610, Step-by-step solutions: all 7 issues, Validation steps: end of each issue |
+| Add advanced topics                   | 4 subtasks | ✅ Complete | ✅ VERIFIED | VAD: lines 795-837, Battery: lines 840-885, Buffer tuning: lines 888-930 (with table), Stereo: lines 933-987                                                        |
+| Validate guide completeness           | 3 subtasks | ✅ Complete | ✅ VERIFIED | <30 min target stated (line 5), Platform coverage: iOS and Android throughout, Validation criteria: expected outputs at each step                                   |
 
 **Summary**: 8 of 8 completed tasks verified (100%). **ZERO false completions detected.**
 
@@ -339,12 +366,14 @@ Based on [loqa-integration-feedback.md](../../collaboration/loqa-integration-fee
 **Documentation Story - No Code Tests Required**
 
 This story creates documentation, not executable code. Quality validation through:
+
 - ✅ Code examples use consistent values (16kHz, 2048 buffer) matching README and example app
 - ✅ All TypeScript examples are syntactically correct
 - ✅ Permission patterns follow iOS/Android platform best practices
 - ✅ Error handling examples comprehensive (lines 994-1061)
 
 **Manual Validation Tests Implied**:
+
 - Integration timing test (AC12) - Guide designed to support <30 min target
 - Platform parity check - Equal iOS/Android coverage verified
 - Troubleshooting coverage audit - 100% v0.2.0 pain points addressed
@@ -357,6 +386,7 @@ This story creates documentation, not executable code. Quality validation throug
 **Tech Spec Compliance**: ✅ EXCELLENT
 
 From [tech-spec-epic-4.md](../tech-spec-epic-4.md) (Story Context reference):
+
 - ✅ **INTEGRATION_GUIDE.md Structure**: Prerequisites, installation (detailed), iOS config, Android config, basic usage, testing, troubleshooting, advanced topics - ALL sections present and comprehensive
 - ✅ **Zero-configuration emphasis**: Installation section explains autolinking (no manual Podfile edits needed in v0.3.0)
 - ✅ **FR27 compliance**: "Provide INTEGRATION_GUIDE.md with step-by-step instructions" - Fully satisfied with 1094 lines
@@ -364,6 +394,7 @@ From [tech-spec-epic-4.md](../tech-spec-epic-4.md) (Story Context reference):
 - ✅ **NFR-DOC-4 secure examples**: Permission handling includes proper error checking (lines 211-226, 320-324)
 
 **Architecture Decision Compliance**:
+
 - ✅ **Decision 2 (Autolinking Focus)**: Documentation emphasizes zero-configuration setup enabled by expo-module.config.json and proper podspec/gradle configuration
 - ✅ **<30 minute integration target**: Guide designed to enable rapid integration with clear validation steps
 
@@ -400,6 +431,7 @@ This story creates documentation only, not executable code. Security review focu
 7. **Accessibility**: ✅ Table of contents with anchor links for navigation
 
 **External References**:
+
 - [Expo Documentation Best Practices](https://docs.expo.dev) - Module integration patterns followed
 - [React Native Permission Handling](https://reactnative.dev/docs/permissionsandroid) - Android permission examples align with official docs
 - [iOS Human Interface Guidelines](https://developer.apple.com/design/human-interface-guidelines/) - Permission message examples follow Apple guidelines

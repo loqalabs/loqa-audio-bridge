@@ -1,5 +1,9 @@
 // Import the audio streaming module
-import { startAudioStream, stopAudioStream, addAudioSampleListener } from '@loqalabs/loqa-audio-bridge';
+import {
+  startAudioStream,
+  stopAudioStream,
+  addAudioSampleListener,
+} from '@loqalabs/loqa-audio-bridge';
 import { useState, useEffect } from 'react';
 import { StyleSheet, Text, View, Button } from 'react-native';
 import { Audio } from 'expo-av';
@@ -8,7 +12,9 @@ export default function App() {
   // Component state
   const [isStreaming, setIsStreaming] = useState(false);
   const [rmsLevel, setRmsLevel] = useState(0);
-  const [permissionStatus, setPermissionStatus] = useState<'granted' | 'denied' | 'pending'>('pending');
+  const [permissionStatus, setPermissionStatus] = useState<'granted' | 'denied' | 'pending'>(
+    'pending'
+  );
   const [error, setError] = useState<string | null>(null);
 
   // Request microphone permission
@@ -47,8 +53,8 @@ export default function App() {
       await startAudioStream({
         sampleRate: 16000,
         bufferSize: 2048,
-        channels: 1,  // Mono
-        vadEnabled: true,  // Enable Voice Activity Detection for battery savings
+        channels: 1, // Mono
+        vadEnabled: true, // Enable Voice Activity Detection for battery savings
       });
 
       setIsStreaming(true);
@@ -97,7 +103,9 @@ export default function App() {
       {/* Permission Status */}
       <View style={styles.statusSection}>
         <Text style={styles.label}>Permission Status:</Text>
-        <Text style={[styles.status, permissionStatus === 'granted' ? styles.granted : styles.denied]}>
+        <Text
+          style={[styles.status, permissionStatus === 'granted' ? styles.granted : styles.denied]}
+        >
           {permissionStatus === 'granted' ? '✓ Granted' : '✗ Not Granted'}
         </Text>
       </View>

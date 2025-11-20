@@ -15,12 +15,14 @@ Thank you for the detailed architectural analysis! After reviewing your options 
 **Decision:** Extend VoicelineDSP native module with audio streaming capabilities. Do NOT use third-party streaming library (expo-audio-studio).
 
 **Development Sequence:**
+
 1. **Priority 1:** Complete Loqa Epic 2C (voice intelligence backend) - 2-3 weeks
 2. **Priority 2:** Implement VoicelineDSP native audio streaming - 3-4 weeks
 
 **Impact:** Voiceline Story 2.3 remains blocked until VoicelineDSP audio streaming is complete (~5-7 weeks total)
 
 **Rationale:**
+
 - ✅ Single cohesive native module for capture + analysis (optimal architecture)
 - ✅ Best performance and battery efficiency from the start
 - ✅ No temporary dependencies to add and remove later
@@ -49,6 +51,7 @@ Thank you for the detailed architectural analysis! After reviewing your options 
 **Answer to Q1:** Yes, real-time audio streaming is **within scope** for VoicelineDSP.
 
 **Rationale:**
+
 - loqa-voice-dsp is designed as a **shared DSP library** for voice analysis
 - Audio capture + analysis are tightly coupled for optimal performance
 - Having both in one module reduces latency and improves battery efficiency
@@ -391,9 +394,7 @@ export function isStreaming(): boolean {
   return VoicelineDSPModule.isStreaming();
 }
 
-export function addAudioSampleListener(
-  listener: (event: AudioSampleEvent) => void
-): Subscription {
+export function addAudioSampleListener(listener: (event: AudioSampleEvent) => void): Subscription {
   return emitter.addListener<AudioSampleEvent>('onAudioSamples', listener);
 }
 
@@ -403,9 +404,7 @@ export function addStreamStatusListener(
   return emitter.addListener<StreamStatusEvent>('onStreamStatusChange', listener);
 }
 
-export function addStreamErrorListener(
-  listener: (event: StreamErrorEvent) => void
-): Subscription {
+export function addStreamErrorListener(listener: (event: StreamErrorEvent) => void): Subscription {
   return emitter.addListener<StreamErrorEvent>('onStreamError', listener);
 }
 
@@ -429,17 +428,17 @@ export const VoicelineDSP = {
 
 **Estimated Development Timeline:**
 
-| Task | iOS | Android | Testing | Total |
-|------|-----|---------|---------|-------|
-| Audio capture implementation | 2 days | 3 days | - | 5 days |
-| Event system integration | 1 day | 1 day | - | 2 days |
-| Permission handling | 0.5 day | 1 day | - | 1.5 days |
-| Error handling & recovery | 1 day | 1 day | - | 2 days |
-| TypeScript API wrapper | 0.5 day | 0.5 day | - | 1 day |
-| Unit tests | 1 day | 1 day | - | 2 days |
-| Integration testing | - | - | 3 days | 3 days |
-| Documentation | 1 day | 1 day | - | 2 days |
-| **Total** | **7 days** | **8.5 days** | **3 days** | **18.5 days** |
+| Task                         | iOS        | Android      | Testing    | Total         |
+| ---------------------------- | ---------- | ------------ | ---------- | ------------- |
+| Audio capture implementation | 2 days     | 3 days       | -          | 5 days        |
+| Event system integration     | 1 day      | 1 day        | -          | 2 days        |
+| Permission handling          | 0.5 day    | 1 day        | -          | 1.5 days      |
+| Error handling & recovery    | 1 day      | 1 day        | -          | 2 days        |
+| TypeScript API wrapper       | 0.5 day    | 0.5 day      | -          | 1 day         |
+| Unit tests                   | 1 day      | 1 day        | -          | 2 days        |
+| Integration testing          | -          | -            | 3 days     | 3 days        |
+| Documentation                | 1 day      | 1 day        | -          | 2 days        |
+| **Total**                    | **7 days** | **8.5 days** | **3 days** | **18.5 days** |
 
 **Buffer:** Add 4-5 days for unforeseen issues
 
@@ -450,35 +449,43 @@ export const VoicelineDSP = {
 ## 🔧 Technical Answers to Your Questions
 
 ### Q1: Native Module Scope
+
 **Answer:** ✅ **Yes, real-time audio streaming is within VoicelineDSP scope.**
 
 Loqa-voice-dsp is designed as a shared DSP library for voice analysis. Audio capture and analysis are tightly coupled for performance and battery efficiency. Having both in one module creates a cohesive API and reduces integration complexity.
 
 ### Q2: Development Timeline
+
 **Answer:** **3-4 weeks** for native streaming implementation (iOS + Android + testing).
 
 See detailed timeline breakdown above. This assumes:
+
 - Sequential development (iOS first, then Android)
 - One developer working full-time
 - Parallel testing as features complete
 
 ### Q3: Resource Availability
+
 **Answer:** **Loqa team is currently focused on Epic 2C completion** (voice intelligence features).
 
 **Recommendation:** Voiceline team should use expo-audio-studio immediately (Phase 1) while Loqa team:
+
 1. Completes Epic 2C (estimated completion: mid-November 2025)
 2. Plans VoicelineDSP v0.2.0 streaming integration (December 2025)
 3. Collaborates on native streaming design (shared responsibility)
 
 ### Q4: Audio Pipeline Design
+
 **Answer:** **Loosely coupled for MVP (Option 2/3), tightly coupled for production (Option 1).**
 
 Phase 1 (Hybrid) provides loose coupling:
+
 ```
 expo-audio-studio → AudioStreamService → VoicelineDSP.computeFFT()
 ```
 
 Phase 2 (Native) provides tight coupling:
+
 ```
 VoicelineDSP (capture + analysis) → AudioStreamService
 ```
@@ -486,15 +493,18 @@ VoicelineDSP (capture + analysis) → AudioStreamService
 Both architectures support the same AudioStreamService API, making migration seamless.
 
 ### Q5: Event System
+
 **Answer:** **Use Expo EventEmitter pattern** (standard for Expo modules).
 
 Benefits:
+
 - ✅ Standard Expo module convention
 - ✅ Type-safe event subscriptions
 - ✅ Automatic cleanup on component unmount
 - ✅ Works consistently on iOS + Android
 
 Example:
+
 ```typescript
 const subscription = VoicelineDSP.addAudioSampleListener((event) => {
   // Process samples
@@ -505,29 +515,34 @@ subscription.remove();
 ```
 
 ### Q6: Buffer Management
+
 **Answer:** **Recommended: 2048 samples at 16kHz (128ms buffers)**
 
 Rationale:
+
 - YIN pitch detection requires 100-200ms windows for accuracy
 - 2048 samples = 128ms at 16kHz (optimal for YIN)
 - Provides good balance between latency and analysis quality
 - Matches FFT size for efficient processing
 
 Configuration:
+
 ```typescript
 const streamConfig: StreamConfig = {
-  sampleRate: 16000,  // Hz (standard for voice analysis)
-  bufferSize: 2048,   // samples (128ms at 16kHz)
-  channels: 1,        // mono
+  sampleRate: 16000, // Hz (standard for voice analysis)
+  bufferSize: 2048, // samples (128ms at 16kHz)
+  channels: 1, // mono
 };
 ```
 
 ### Q7: Native Performance Optimization
+
 **Answer:** ✅ **Yes, consider native-side optimizations for battery efficiency.**
 
 **Recommended Native Optimizations:**
 
 1. **Voice Activity Detection (VAD)**
+
    ```swift
    // Skip analysis when silence detected
    let rms = calculateRMS(buffer)
@@ -537,6 +552,7 @@ const streamConfig: StreamConfig = {
    ```
 
 2. **Adaptive Processing Rate**
+
    ```swift
    // Reduce frame rate during low battery
    if isBatteryOptimizationMode {
@@ -546,6 +562,7 @@ const streamConfig: StreamConfig = {
    ```
 
 3. **Pre-computation at Native Layer**
+
    ```swift
    // Compute RMS amplitude at native layer
    let rms = calculateRMS(buffer)
@@ -560,6 +577,7 @@ const streamConfig: StreamConfig = {
 These optimizations reduce JS bridge crossings and CPU usage.
 
 ### Q8: Audio Session Management (iOS)
+
 **Answer:** **Use `.record` category with `.measurement` mode for optimal voice capture.**
 
 ```swift
@@ -576,11 +594,13 @@ try session.setActive(true)
 ```
 
 **Rationale:**
+
 - `.measurement` mode provides highest quality audio (no processing)
 - `.record` category enables microphone access
 - `.allowBluetooth` supports AirPods and other Bluetooth audio
 
 ### Q9: Android Permissions
+
 **Answer:** **Request RECORD_AUDIO at runtime with clear privacy explanation.**
 
 ```kotlin
@@ -601,39 +621,44 @@ if (ContextCompat.checkSelfPermission(context, Manifest.permission.RECORD_AUDIO)
 ```
 
 **Best Practices:**
+
 1. Request permission only when user initiates practice session (not on app launch)
 2. Provide clear explanation: "Voiceline needs microphone access to analyze your voice during practice"
 3. Handle permission denial gracefully (disable practice mode, show help text)
 4. Respect user's privacy choice (never re-prompt aggressively)
 
 ### Q10: Cross-Platform Consistency
+
 **Answer:** **Abstract platform differences behind unified TypeScript API.**
 
 **Strategy:**
 
 1. **Consistent Event Format**
+
    ```typescript
    // Same event structure on iOS + Android
    interface AudioSampleEvent {
-     samples: number[];      // Float32 array (-1.0 to 1.0)
-     sampleRate: number;     // Always 16000
-     frameLength: number;    // Number of samples
-     timestamp: number;      // Platform-specific timestamp
+     samples: number[]; // Float32 array (-1.0 to 1.0)
+     sampleRate: number; // Always 16000
+     frameLength: number; // Number of samples
+     timestamp: number; // Platform-specific timestamp
    }
    ```
 
 2. **Unified Error Handling**
+
    ```typescript
    // Consistent error codes across platforms
    enum AudioStreamError {
-     PERMISSION_DENIED = "PERMISSION_DENIED",
-     SESSION_CONFIG_FAILED = "SESSION_CONFIG_FAILED",
-     ENGINE_START_FAILED = "ENGINE_START_FAILED",
-     DEVICE_NOT_AVAILABLE = "DEVICE_NOT_AVAILABLE",
+     PERMISSION_DENIED = 'PERMISSION_DENIED',
+     SESSION_CONFIG_FAILED = 'SESSION_CONFIG_FAILED',
+     ENGINE_START_FAILED = 'ENGINE_START_FAILED',
+     DEVICE_NOT_AVAILABLE = 'DEVICE_NOT_AVAILABLE',
    }
    ```
 
 3. **Platform-Specific Behavior Documentation**
+
    ```typescript
    /**
     * Note: iOS uses AVAudioEngine (40-60ms latency typical)
@@ -654,29 +679,31 @@ if (ContextCompat.checkSelfPermission(context, Manifest.permission.RECORD_AUDIO)
 
 ### Latency Targets
 
-| Component | Target | Measurement Method |
-|-----------|--------|--------------------|
-| **Microphone → Native Buffer** | <40ms | Platform-specific (AVAudioEngine / AudioRecord) |
-| **Native → JS Bridge** | <10ms | Event emission timestamp tracking |
-| **JS Processing (AudioStreamService)** | <30ms | Performance.now() markers |
-| **Visual Update (Skia Rendering)** | <16ms | 60fps frame budget |
-| **Total End-to-End Latency** | **<100ms** | User-perceived voice → visual lag |
+| Component                              | Target     | Measurement Method                              |
+| -------------------------------------- | ---------- | ----------------------------------------------- |
+| **Microphone → Native Buffer**         | <40ms      | Platform-specific (AVAudioEngine / AudioRecord) |
+| **Native → JS Bridge**                 | <10ms      | Event emission timestamp tracking               |
+| **JS Processing (AudioStreamService)** | <30ms      | Performance.now() markers                       |
+| **Visual Update (Skia Rendering)**     | <16ms      | 60fps frame budget                              |
+| **Total End-to-End Latency**           | **<100ms** | User-perceived voice → visual lag               |
 
 ### Battery Impact Targets
 
-| Scenario | Target | Mitigation Strategy |
-|----------|--------|---------------------|
-| **30-minute practice session** | <5% battery drain | Adaptive processing rate, VAD |
-| **Real-time analysis (continuous)** | <10% per hour | Native optimizations, frame skipping |
+| Scenario                            | Target            | Mitigation Strategy                  |
+| ----------------------------------- | ----------------- | ------------------------------------ |
+| **30-minute practice session**      | <5% battery drain | Adaptive processing rate, VAD        |
+| **Real-time analysis (continuous)** | <10% per hour     | Native optimizations, frame skipping |
 
 ### Validation Plan
 
 **Phase 1 (expo-audio-studio):**
+
 1. Measure end-to-end latency with synthetic audio input
 2. Profile battery usage during 30-minute test session
 3. Validate visual responsiveness (60fps flower rendering)
 
 **Phase 2 (Native VoicelineDSP):**
+
 1. Compare latency: native vs expo-audio-studio
 2. Measure battery improvement from native optimizations
 3. Validate cross-platform consistency (iOS vs Android latency)
@@ -735,6 +762,7 @@ class AudioStreamService {
 **Status:** 🚀 **ACTIVE**
 
 **Tasks:**
+
 1. Story 2C.2: Create loqa-voice-intelligence crate (1-2 days)
 2. Story 2C.3: Implement voice analysis API (2-3 days)
 3. Story 2C.4: Build voice profile API (2 days)
@@ -750,6 +778,7 @@ class AudioStreamService {
 **Status:** ⏳ **PENDING** (after Epic 2C)
 
 **Tasks:**
+
 1. Detailed VoicelineDSP streaming API design
 2. Native module architecture review
 3. iOS AVAudioEngine design
@@ -763,6 +792,7 @@ class AudioStreamService {
 **Status:** ⏳ **PENDING**
 
 **Tasks:**
+
 1. Implement AVAudioEngine audio capture
 2. Add event system for sample streaming
 3. Handle audio session management
@@ -776,6 +806,7 @@ class AudioStreamService {
 **Status:** ⏳ **PENDING**
 
 **Tasks:**
+
 1. Implement AudioRecord audio capture
 2. Add event system for sample streaming
 3. Handle permission handling
@@ -789,6 +820,7 @@ class AudioStreamService {
 **Status:** ⏳ **PENDING**
 
 **Tasks:**
+
 1. Cross-platform testing (iOS + Android)
 2. Performance validation (latency, battery)
 3. TypeScript API wrapper finalization
@@ -804,16 +836,19 @@ class AudioStreamService {
 ### Technical Decisions Needed
 
 **Q1: Should VoicelineDSP v0.2.0 be backwards compatible with v0.1.x?**
+
 - **Option A:** Additive API (v0.2.0 adds streaming, keeps existing analysis functions)
 - **Option B:** Breaking changes (refactor analysis functions to work with streaming)
 - **Recommendation:** Option A (additive) - easier migration, no breaking changes
 
 **Q2: Should native streaming support recording to file simultaneously?**
+
 - **Option A:** Streaming-only (in-memory processing)
 - **Option B:** Dual-mode (streaming + optional recording)
 - **Recommendation:** Option B (future-proof for session recording feature)
 
 **Q3: Should VoicelineDSP provide high-level streaming abstractions?**
+
 - **Option A:** Low-level (raw samples only, no analysis)
 - **Option B:** High-level (pre-computed RMS, VAD, pitch)
 - **Recommendation:** Option B for battery efficiency (reduce JS bridge crossings)
@@ -821,12 +856,14 @@ class AudioStreamService {
 ### Collaboration Decisions
 
 **Q4: Who owns VoicelineDSP native streaming implementation?**
+
 - **Option A:** Loqa team (Rust + native expertise)
 - **Option B:** Voiceline team (immediate need, app context)
 - **Option C:** Shared (Loqa designs, Voiceline implements)
 - **Recommendation:** Option C (collaborative approach)
 
 **Q5: When should Phase 2 begin?**
+
 - **Option A:** Immediately (parallel with Phase 1)
 - **Option B:** After Epic 2C complete (December 2025)
 - **Option C:** After MVP launch (Q1 2026)
@@ -859,11 +896,13 @@ class AudioStreamService {
 ### Immediate Actions (Current)
 
 **For Voiceline Team:**
+
 - 🛑 **BLOCKED** - Wait for Loqa Epic 2C completion (2-3 weeks)
 - 🛑 **BLOCKED** - Wait for VoicelineDSP audio streaming (3-4 weeks after Epic 2C)
 - ⏳ **Story 2.3 unblock date:** Estimated 5-7 weeks from now
 
 **For Loqa Team:**
+
 1. ✅ Review this architectural response
 2. 🚀 **Active:** Complete Epic 2C stories 2C.2 through 2C.8 (current priority)
 3. ⏳ Plan VoicelineDSP v0.2.0 design (after Epic 2C complete)
@@ -880,15 +919,18 @@ class AudioStreamService {
 ## 📚 References
 
 ### Loqa Architecture
+
 - [Loqa Architecture Document](/Users/anna/code/loqalabs/loqa/docs/architecture.md)
 - [loqa-voice-dsp README](/Users/anna/code/loqalabs/loqa/crates/loqa-voice-dsp/README.md)
 - [loqa-voice-dsp Performance Benchmarks](/Users/anna/code/loqalabs/loqa/crates/loqa-voice-dsp/README.md#performance-benchmarks)
 
 ### Voiceline Implementation
+
 - [AudioStreamService Implementation](/Users/anna/code/annabarnes1138/voiceline/src/services/audio/AudioStreamService.ts)
 - [Story 2.3: Real-Time Voice-to-Flower Binding](/Users/anna/code/annabarnes1138/voiceline/docs/stories/2-3-implement-real-time-voice-to-flower-data-binding.md)
 
 ### External Resources
+
 - [expo-audio-studio Documentation](https://www.npmjs.com/package/@siteed/expo-audio-studio)
 - [AVAudioEngine Documentation (iOS)](https://developer.apple.com/documentation/avfaudio/avaudioengine)
 - [AudioRecord Documentation (Android)](https://developer.android.com/reference/android/media/AudioRecord)
@@ -899,14 +941,17 @@ class AudioStreamService {
 ## 🤝 Contact & Collaboration
 
 **Loqa Team:**
+
 - Winston (Architect) - Available for API design review and architecture questions
 - Ready to collaborate on VoicelineDSP v0.2.0 design
 
 **Voiceline Team:**
+
 - Ready to implement Phase 1 (hybrid solution) immediately
 - Available for performance testing and feedback
 
 **Preferred Communication:**
+
 - Technical questions: GitHub issues or collaboration docs
 - Design review: Joint architecture meeting (Zoom/Slack)
 - Timeline coordination: Async updates via docs

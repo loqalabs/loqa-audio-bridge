@@ -13,6 +13,7 @@
 This document provides the complete epic and story breakdown for **@loqalabs/loqa-audio-bridge v0.3.0**, a production-grade Expo native module for real-time audio streaming. This is a brownfield refactoring project transforming the functional v0.2.0 prototype into a production-ready npm package with proper packaging, autolinking, and comprehensive documentation.
 
 **Key Transformation:**
+
 - **v0.2.0**: Working code, but 9-hour manual integration process
 - **v0.3.0**: Production package with autolinking (<30 minutes to integrate)
 
@@ -23,6 +24,7 @@ This document provides the complete epic and story breakdown for **@loqalabs/loq
 ## Epic Summary
 
 ### Epic 1: Foundation & Scaffolding
+
 **Goal:** Establish proper Expo module structure using official scaffolding to ensure autolinking works out-of-the-box.
 
 **Value:** Correct foundation prevents 90% of v0.2.0 integration failures.
@@ -32,6 +34,7 @@ This document provides the complete epic and story breakdown for **@loqalabs/loq
 ---
 
 ### Epic 2: Code Migration & Quality Fixes
+
 **Goal:** Migrate v0.2.0 TypeScript, Swift, and Kotlin code into new scaffolding while fixing compilation errors and implementing test exclusions.
 
 **Value:** Working, compilable module with zero warnings and all v0.2.0 features intact.
@@ -41,6 +44,7 @@ This document provides the complete epic and story breakdown for **@loqalabs/loq
 ---
 
 ### Epic 3: Autolinking & Integration Proof
+
 **Goal:** Validate Expo autolinking works seamlessly on both platforms and create working example app.
 
 **Value:** Concrete proof that v0.3.0 eliminates v0.2.0's integration hell.
@@ -50,6 +54,7 @@ This document provides the complete epic and story breakdown for **@loqalabs/loq
 ---
 
 ### Epic 4: Developer Experience & Documentation
+
 **Goal:** Create comprehensive documentation that enables <30 minute integration.
 
 **Value:** Documentation eliminates confusion that caused v0.2.0's 9-hour integration time.
@@ -59,6 +64,7 @@ This document provides the complete epic and story breakdown for **@loqalabs/loq
 ---
 
 ### Epic 5: Distribution & CI/CD
+
 **Goal:** Set up automated npm publishing, GitHub Actions CI/CD, and multi-platform build validation.
 
 **Value:** Automated quality gates prevent regressions and make releases reliable.
@@ -70,6 +76,7 @@ This document provides the complete epic and story breakdown for **@loqalabs/loq
 ## Functional Requirements Inventory
 
 **Packaging & Scaffolding (FR1-FR5)**
+
 - **FR1**: Regenerate module structure using `create-expo-module` CLI
 - **FR2**: Include complete package.json with proper metadata
 - **FR3**: Include expo-module.config.json with platform specifications
@@ -77,18 +84,21 @@ This document provides the complete epic and story breakdown for **@loqalabs/loq
 - **FR5**: Include Android build.gradle with proper configuration
 
 **Code Quality & Compilation (FR6-FR9)**
+
 - **FR6**: Fix Swift compilation error (add `required` keyword to init override)
 - **FR7**: Update deprecated iOS API (`.allowBluetooth` → `.allowBluetoothA2DP`)
 - **FR8**: Exclude test files from production builds via podspec
 - **FR9**: Compile with zero warnings on iOS and Android
 
 **Autolinking & Integration (FR10-FR13)**
+
 - **FR10**: Enable iOS autolinking without manual Podfile edits
 - **FR11**: Enable Android autolinking without manual build.gradle edits
 - **FR12**: Auto-register module in ExpoModulesProvider.swift
 - **FR13**: Validate autolinking in fresh Expo project
 
 **Core Functionality Preservation (FR14-FR20)**
+
 - **FR14**: Maintain 100% feature parity with v0.2.0 (streaming API, sample rates, buffer sizes)
 - **FR15**: Preserve Voice Activity Detection (VAD) functionality
 - **FR16**: Preserve Adaptive Processing functionality (battery optimization)
@@ -98,6 +108,7 @@ This document provides the complete epic and story breakdown for **@loqalabs/loq
 - **FR20**: Preserve all existing tests
 
 **npm Package Distribution (FR21-FR25)**
+
 - **FR21**: Publish to npm as @loqalabs/loqa-audio-bridge
 - **FR22**: Support `npx expo install` installation
 - **FR23**: Include all source code and native implementations in package
@@ -105,18 +116,21 @@ This document provides the complete epic and story breakdown for **@loqalabs/loq
 - **FR25**: Include complete package metadata
 
 **Documentation (FR26-FR29)**
+
 - **FR26**: Provide README.md with installation and quick start
 - **FR27**: Provide INTEGRATION_GUIDE.md with step-by-step instructions
 - **FR28**: Migrate existing API.md (730 lines)
 - **FR29**: Provide MIGRATION.md with v0.2.0 → v0.3.0 upgrade guide
 
 **Example Application (FR30-FR33)**
+
 - **FR30**: Include working example/ directory with Expo app
 - **FR31**: Example app builds and runs successfully
 - **FR32**: Example demonstrates both iOS and Android
 - **FR33**: Example includes clear code comments
 
 **Build & Release (FR34-FR38)**
+
 - **FR34**: Support iOS builds with Xcode 14+ and 15+
 - **FR35**: Support Android builds with Gradle 8.x
 - **FR36**: Compatible with Expo 52, 53, and 54
@@ -129,13 +143,13 @@ This document provides the complete epic and story breakdown for **@loqalabs/loq
 
 ## FR Coverage Map
 
-| Epic | FRs Covered | Count |
-|------|-------------|-------|
-| Epic 1: Foundation & Scaffolding | FR1-5 | 5 |
-| Epic 2: Code Migration & Quality | FR6-9, FR14-20 | 11 |
-| Epic 3: Autolinking & Integration Proof | FR10-13, FR30-33 | 8 |
-| Epic 4: Developer Experience & Documentation | FR26-29 | 4 |
-| Epic 5: Distribution & CI/CD | FR21-25, FR34-38 | 10 |
+| Epic                                         | FRs Covered      | Count |
+| -------------------------------------------- | ---------------- | ----- |
+| Epic 1: Foundation & Scaffolding             | FR1-5            | 5     |
+| Epic 2: Code Migration & Quality             | FR6-9, FR14-20   | 11    |
+| Epic 3: Autolinking & Integration Proof      | FR10-13, FR30-33 | 8     |
+| Epic 4: Developer Experience & Documentation | FR26-29          | 4     |
+| Epic 5: Distribution & CI/CD                 | FR21-25, FR34-38 | 10    |
 
 **Total: 38 FRs, 100% coverage ✅**
 
@@ -160,6 +174,7 @@ So that all required configuration files are present and properly formatted.
 **Given** the project repository is empty
 **When** I run `npx create-expo-module@latest loqa-audio-bridge`
 **Then** the following files are generated:
+
 - package.json with proper npm metadata structure
 - expo-module.config.json with platform definitions
 - LoqaAudioBridge.podspec for iOS CocoaPods
@@ -168,11 +183,13 @@ So that all required configuration files are present and properly formatted.
 - ios/ and android/ directories with starter code
 
 **And** the generated package.json includes:
+
 - name: "@loqalabs/loqa-audio-bridge"
 - version: "0.3.0"
 - Peer dependencies for expo, react, react-native
 
 **And** expo-module.config.json specifies:
+
 - platforms: ["ios", "android"]
 - iOS deployment target: 13.4+
 - Android minSdkVersion: 24
@@ -180,6 +197,7 @@ So that all required configuration files are present and properly formatted.
 **Prerequisites:** None (first story)
 
 **Technical Notes:**
+
 - Use latest create-expo-module version compatible with Expo 52+
 - Answer prompts with: package name "@loqalabs/loqa-audio-bridge", supports iOS + Android
 - Verify generated structure matches architecture Decision 1
@@ -197,6 +215,7 @@ So that the package is properly indexed on npm and dependencies are clear.
 **Given** the scaffolded package.json exists
 **When** I update metadata fields
 **Then** package.json includes:
+
 - description: "Production-grade Expo native module for real-time audio streaming with VAD and battery optimization"
 - author: "Loqa Labs"
 - license: "MIT"
@@ -206,6 +225,7 @@ So that the package is properly indexed on npm and dependencies are clear.
 - bugs: GitHub issues URL
 
 **And** peerDependencies are set to:
+
 ```json
 {
   "expo": ">=52.0.0",
@@ -216,12 +236,14 @@ So that the package is properly indexed on npm and dependencies are clear.
 ```
 
 **And** devDependencies include:
+
 - typescript: ^5.3.0
 - @types/react: ^18.0.0
 - eslint: ^8.0.0
 - prettier: ^3.0.0
 
 **And** scripts section includes:
+
 - "build": "tsc"
 - "lint": "eslint ."
 - "test": "jest"
@@ -229,6 +251,7 @@ So that the package is properly indexed on npm and dependencies are clear.
 **Prerequisites:** Story 1.1
 
 **Technical Notes:**
+
 - Follow semantic versioning for peerDependencies (>= for minimum versions)
 - Use exact versions for devDependencies to ensure reproducible builds
 - Align with architecture Decision 2 (version strategy)
@@ -246,6 +269,7 @@ So that type errors are caught early and declaration files are generated.
 **Given** the scaffolded project structure exists
 **When** I create/update tsconfig.json
 **Then** compiler options include:
+
 - strict: true
 - target: "ES2020"
 - module: "ESNext"
@@ -258,9 +282,10 @@ So that type errors are caught early and declaration files are generated.
 **And** include paths are: ["src/**/*", "index.ts", "hooks/**/*"]
 
 **And** exclude paths are:
-- "__tests__"
-- "**/*.test.ts"
-- "**/*.spec.ts"
+
+- "**tests**"
+- "\*_/_.test.ts"
+- "\*_/_.spec.ts"
 - "example"
 - "ios/Tests"
 - "android/src/test"
@@ -269,6 +294,7 @@ So that type errors are caught early and declaration files are generated.
 **And** running `npx tsc` compiles successfully with zero errors
 
 **And** build/ directory contains:
+
 - Compiled .js files
 - Type definition .d.ts files
 - Source maps .d.ts.map files
@@ -276,6 +302,7 @@ So that type errors are caught early and declaration files are generated.
 **Prerequisites:** Story 1.1
 
 **Technical Notes:**
+
 - TypeScript config aligns with architecture Decision 5
 - Exclude test files from compilation (multi-layer exclusion strategy)
 - ES2020 targets React Native 0.72+ environments
@@ -293,10 +320,12 @@ So that code style is consistent and quality issues are caught automatically.
 **Given** the project structure exists
 **When** I configure ESLint and Prettier
 **Then** .eslintrc.js extends:
+
 - 'expo' (Expo's recommended config)
 - 'prettier' (Prettier integration)
 
 **And** .prettierrc specifies:
+
 - semi: true
 - trailingComma: "es5"
 - singleQuote: true
@@ -304,8 +333,9 @@ So that code style is consistent and quality issues are caught automatically.
 - tabWidth: 2
 
 **And** package.json scripts include:
+
 - "lint": "eslint . --ext .ts,.tsx"
-- "format": "prettier --write \"**/*.{ts,tsx,json,md}\""
+- "format": "prettier --write \"\*_/_.{ts,tsx,json,md}\""
 
 **And** running `npm run lint` on scaffolded code shows zero errors
 
@@ -314,6 +344,7 @@ So that code style is consistent and quality issues are caught automatically.
 **Prerequisites:** Story 1.2, 1.3
 
 **Technical Notes:**
+
 - Aligns with architecture Decision 6 (linting strategy)
 - Use @expo/eslint-config for Expo-specific rules
 - Pre-commit hooks optional for v0.3.0 (defer to v0.4.0)
@@ -351,6 +382,7 @@ So that I catch architectural mismatches early before committing to full migrati
 **And** Gradle compiles the file without errors
 
 **And** if any blocker issues found:
+
 - Document the issue clearly
 - Escalate to architect (Winston) for resolution
 - Do NOT proceed to remaining Epic 2 stories until resolved
@@ -358,6 +390,7 @@ So that I catch architectural mismatches early before committing to full migrati
 **Prerequisites:** Epic 1 complete (Stories 1.1-1.4)
 
 **Technical Notes:**
+
 - This is a GATE story—must pass before continuing Epic 2
 - Focus on API compatibility (expo-modules-core v1.x changes)
 - Check for deprecated methods that need updates
@@ -374,6 +407,7 @@ So that the JavaScript API layer is available in the new structure.
 
 **Given** Story 2.0 validation passed
 **When** I copy all TypeScript files from v0.2.0 into new structure:
+
 - index.ts → index.ts (update imports for new paths)
 - src/VoicelineDSPModule.ts → src/LoqaAudioBridgeModule.ts (rename module references)
 - src/types.ts → src/types.ts
@@ -387,6 +421,7 @@ So that the JavaScript API layer is available in the new structure.
 **And** TypeScript types match v0.2.0 API surface (no breaking changes)
 
 **And** module exports include:
+
 - startAudioStream
 - stopAudioStream
 - isStreaming
@@ -400,6 +435,7 @@ So that the JavaScript API layer is available in the new structure.
 **Prerequisites:** Story 2.0
 
 **Technical Notes:**
+
 - Update module name from "VoicelineDSP" to "LoqaAudioBridge" everywhere
 - Verify EventEmitter subscriptions still work with expo-modules-core updates
 - Maintain 100% API compatibility (FR19)
@@ -416,18 +452,22 @@ So that the iOS native module compiles with zero warnings.
 
 **Given** TypeScript migration is complete (Story 2.1)
 **When** I copy iOS Swift files from v0.2.0:
+
 - VoicelineDSPModule.swift → ios/LoqaAudioBridgeModule.swift
 
 **Then** I update the class name to LoqaAudioBridgeModule throughout
 
 **And** I fix FR6 (Swift compilation error):
+
 - Add `required` keyword to init override: `required init(appContext: EXAppContext)`
 
 **And** I fix FR7 (deprecated iOS API):
+
 - Change `.allowBluetooth` to `.allowBluetoothA2DP` in AVAudioSession configuration
 - Line is in: `audioSession.setCategory(.playAndRecord, mode: .default, options: [.allowBluetoothA2DP])`
 
 **And** I update import statements:
+
 - `import ExpoModulesCore` (verify correct for Expo 52+)
 - `import AVFoundation`
 
@@ -436,6 +476,7 @@ So that the iOS native module compiles with zero warnings.
 **And** build output shows **zero warnings**
 
 **And** module definition exports match TypeScript API:
+
 - startAudioStream
 - stopAudioStream
 - isStreaming
@@ -444,6 +485,7 @@ So that the iOS native module compiles with zero warnings.
 **Prerequisites:** Story 2.1
 
 **Technical Notes:**
+
 - Swift 5.4+ syntax required (podspec specifies this)
 - AVAudioEngine code unchanged from v0.2.0 (preserve FR14)
 - VAD logic (RMS calculation) preserved exactly (FR15)
@@ -474,6 +516,7 @@ s.exclude_files = [
 ```
 
 **And** test_spec section exists for development:
+
 ```ruby
 s.test_spec 'Tests' do |test_spec|
   test_spec.source_files = "ios/Tests/**/*.{h,m,swift}"
@@ -485,13 +528,15 @@ end
 **And** running `pod spec lint LoqaAudioBridge.podspec` passes validation
 
 **And** creating a tarball with `npm pack` and inspecting shows:
+
 - ios/LoqaAudioBridgeModule.swift present ✅
 - ios/Tests/ directory absent ✅
-- No *Tests.swift files present ✅
+- No \*Tests.swift files present ✅
 
 **Prerequisites:** Story 2.2
 
 **Technical Notes:**
+
 - Implements architecture Decision 3 (Layer 1: podspec exclusion)
 - Test files still exist in repo, just excluded from distribution
 - Aligns with FR8 (exclude test files from production builds)
@@ -508,6 +553,7 @@ So that the Android native module compiles with zero warnings.
 
 **Given** iOS migration is complete (Story 2.2-2.3)
 **When** I copy Android Kotlin files from v0.2.0:
+
 - VoicelineDSPModule.kt → android/src/main/java/expo/modules/loqaaudiobridge/LoqaAudioBridgeModule.kt
 
 **Then** I update package name to: `expo.modules.loqaaudiobridge`
@@ -515,12 +561,14 @@ So that the Android native module compiles with zero warnings.
 **And** I update class name to: `LoqaAudioBridgeModule`
 
 **And** I update android/build.gradle:
+
 - namespace: "expo.modules.loqaaudiobridge"
 - Kotlin version: 1.8+
 - compileSdkVersion: 34
 - minSdkVersion: 24
 
 **And** I verify imports:
+
 - `import expo.modules.kotlin.modules.Module`
 - `import expo.modules.kotlin.Promise`
 - `import android.media.AudioRecord`
@@ -541,6 +589,7 @@ So that the Android native module compiles with zero warnings.
 **Prerequisites:** Story 2.2
 
 **Technical Notes:**
+
 - Gradle automatically excludes src/test/ and src/androidTest/ (no explicit config needed)
 - Kotlin 1.8+ required for Expo 52 compatibility
 - Verify AudioRecord permissions handling unchanged
@@ -557,13 +606,15 @@ So that API contracts are validated and regressions are caught.
 
 **Given** TypeScript source is migrated (Story 2.1)
 **When** I copy test files from v0.2.0:
-- __tests__/index.test.ts
-- __tests__/buffer-utils.test.ts
-- __tests__/useAudioStreaming.test.tsx
+
+- **tests**/index.test.ts
+- **tests**/buffer-utils.test.ts
+- **tests**/useAudioStreaming.test.tsx
 
 **Then** I update imports to match new module name (LoqaAudioBridge)
 
 **And** I configure Jest in package.json:
+
 ```json
 "jest": {
   "preset": "expo",
@@ -578,6 +629,7 @@ So that API contracts are validated and regressions are caught.
 **And** all tests pass with **zero failures**
 
 **And** test coverage matches v0.2.0 baseline:
+
 - API contracts tested (startAudioStream, stopAudioStream, listeners)
 - Buffer utilities tested (format conversions, validations)
 - React hook lifecycle tested
@@ -587,6 +639,7 @@ So that API contracts are validated and regressions are caught.
 **Prerequisites:** Story 2.1
 
 **Technical Notes:**
+
 - Use @testing-library/react-native for hook testing
 - Mock native module calls (no actual audio recording in tests)
 - Tests are excluded from npm package via .npmignore (Decision 3, Layer 3)
@@ -603,6 +656,7 @@ So that native iOS functionality is validated.
 
 **Given** iOS Swift code is migrated (Story 2.2)
 **When** I copy iOS test files from v0.2.0 into ios/Tests/:
+
 - LoqaAudioBridgeTests.swift (unit tests)
 - LoqaAudioBridgeIntegrationTests.swift (integration tests)
 
@@ -615,6 +669,7 @@ So that native iOS functionality is validated.
 **And** all tests pass with **zero failures**
 
 **And** tests validate:
+
 - Audio session configuration works
 - AVAudioEngine can be instantiated
 - RMS calculation accuracy (VAD)
@@ -626,6 +681,7 @@ So that native iOS functionality is validated.
 **Prerequisites:** Story 2.2, 2.3
 
 **Technical Notes:**
+
 - Use Quick/Nimble for BDD-style Swift tests (already in v0.2.0)
 - Tests run in Xcode but excluded from CocoaPods distribution
 - FR20 compliance: all v0.2.0 tests preserved
@@ -642,6 +698,7 @@ So that native Android functionality is validated.
 
 **Given** Android Kotlin code is migrated (Story 2.4)
 **When** I copy Android test files from v0.2.0:
+
 - android/src/test/java/.../LoqaAudioBridgeModuleTest.kt (unit tests)
 - android/src/androidTest/java/.../LoqaAudioBridgeIntegrationTest.kt (instrumented tests)
 
@@ -658,6 +715,7 @@ So that native Android functionality is validated.
 **And** all instrumented tests pass
 
 **And** tests validate:
+
 - AudioRecord can be initialized
 - Audio format configuration correct
 - RMS calculation accuracy (VAD)
@@ -669,6 +727,7 @@ So that native Android functionality is validated.
 **Prerequisites:** Story 2.4
 
 **Technical Notes:**
+
 - Use JUnit 4 + Mockito for unit tests
 - Instrumented tests require Android emulator or device
 - FR20 compliance: all v0.2.0 tests preserved
@@ -698,6 +757,7 @@ So that code quality is production-ready (FR9).
 **Then** linting passes with **0 errors** and **0 warnings**
 
 **And** I fix any warnings found by:
+
 - Updating deprecated API calls
 - Adding missing type annotations
 - Resolving unused variable warnings
@@ -706,6 +766,7 @@ So that code quality is production-ready (FR9).
 **Prerequisites:** Stories 2.1-2.7
 
 **Technical Notes:**
+
 - FR9 explicit requirement: zero warnings on both platforms
 - Use `-Werror` flag to treat warnings as errors in CI (Epic 5)
 - Document any suppressed warnings with justification comments
@@ -734,11 +795,13 @@ So that the module functions correctly for speech recognition use cases.
 4. **Sends Downsampled Audio**: Calculates RMS on downsampled audio, sends samples at requested rate (16 kHz)
 
 **And** when user runs example app on iOS:
+
 - Taps "Start Streaming" → audio streaming starts without crash
 - RMS visualization updates in real-time
 - No `AVAudioEngine` format mismatch errors
 
 **And** the implementation:
+
 - Preserves sample accuracy (no dropped samples)
 - Handles variable hardware rates (44.1kHz, 48kHz, etc.)
 - Includes error handling for conversion failures
@@ -747,6 +810,7 @@ So that the module functions correctly for speech recognition use cases.
 **Prerequisites:** Stories 2.1-2.4, Story 3-4 (discovered the issue)
 
 **Technical Notes:**
+
 - **Problem**: iOS `AVAudioEngine.installTap()` requires tap format to match hardware format exactly
 - **Root Cause**: Hardware runs at 48kHz but module requests 16kHz, causing crash
 - **Solution**: Tap at hardware rate, use `AVAudioConverter` to downsample to requested rate
@@ -783,6 +847,7 @@ So that Metro bundler can correctly resolve the compiled code (prevents Story 3-
 **Prerequisites:** Story 3-4 (discovered the structural issue), Story 2-8 (compilation validation)
 
 **Technical Notes:**
+
 - **Why This Story**: Story 3-4 discovered Metro bundler resolves root TypeScript instead of compiled JavaScript, despite zero compilation warnings
 - **Relationship to Story 2-8**: Story 2-8 validates type correctness (compilation), this story validates bundler compatibility (structure)
 - **Metro Bundler Issue**: With `file:..` dependencies, Metro preferentially resolves TypeScript source over compiled JS
@@ -811,6 +876,7 @@ So that iOS integration matches the <30 minute target (FR10).
 **Given** Epic 2 is complete (compiled module with zero warnings)
 **When** I create a fresh test directory outside the module repo
 **And** I run:
+
 ```bash
 npx create-expo-app test-install
 cd test-install
@@ -827,7 +893,7 @@ npm install /path/to/loqa-audio-bridge  # local file install for testing
 **Then** CocoaPods installs LoqaAudioBridge successfully
 **And** terminal shows: "Installing LoqaAudioBridge"
 
-**And** when I open ios/*.xcworkspace in Xcode
+**And** when I open ios/\*.xcworkspace in Xcode
 **Then** LoqaAudioBridge appears in Pods project
 **And** no manual ExpoModulesProvider.swift edits required (FR12)
 
@@ -840,6 +906,7 @@ npm install /path/to/loqa-audio-bridge  # local file install for testing
 **Prerequisites:** Epic 2 complete
 
 **Technical Notes:**
+
 - Use `npm install <local-path>` for pre-publish testing
 - Verify autolinking detected by checking `npx expo-doctor` output
 - Test on clean machine or Docker container for accuracy
@@ -880,6 +947,7 @@ So that Android integration matches the <30 minute target (FR11).
 **Prerequisites:** Story 3.1
 
 **Technical Notes:**
+
 - Gradle autolinking works via expo-modules-autolinking package
 - Verify with `./gradlew :app:dependencies | grep loqaaudiobridge`
 - Test on clean Linux VM or Docker for accuracy
@@ -901,6 +969,7 @@ So that consumers can see working integration code (FR30).
 **Then** example/package.json is created
 
 **And** I add dependency to parent module:
+
 ```json
 "dependencies": {
   "@loqalabs/loqa-audio-bridge": "file:.."
@@ -910,6 +979,7 @@ So that consumers can see working integration code (FR30).
 **And** running `npm install` in example/ installs the local module
 
 **And** I configure app.json:
+
 ```json
 {
   "expo": {
@@ -939,6 +1009,7 @@ So that consumers can see working integration code (FR30).
 **Prerequisites:** Stories 3.1-3.2
 
 **Technical Notes:**
+
 - Example uses file: protocol to reference parent module during development
 - Permissions configured for both platforms (microphone access)
 - Blank TypeScript template for cleaner starting point
@@ -957,28 +1028,37 @@ So that consumers understand how to use the module (FR30, FR33).
 **When** I create example/App.tsx with the following features:
 
 1. **Import Section** (with clear comments):
+
 ```typescript
 // Import the audio streaming module
-import { startAudioStream, stopAudioStream, addAudioSamplesListener } from '@loqalabs/loqa-audio-bridge';
+import {
+  startAudioStream,
+  stopAudioStream,
+  addAudioSamplesListener,
+} from '@loqalabs/loqa-audio-bridge';
 import { useState, useEffect } from 'react';
 ```
 
 2. **Permission Handling**:
+
 - Request microphone permission on mount
 - Show permission status to user
 - Handle denied permission gracefully
 
 3. **Start/Stop Controls**:
+
 - Button to start audio streaming
 - Button to stop streaming
 - Visual indicator showing streaming status (green = active, red = stopped)
 
 4. **Real-time Visualization**:
+
 - Display RMS (volume level) from audio samples
 - Simple bar chart or numeric display updating in real-time
 - Show sample rate and buffer size
 
 5. **Event Handling** (with clear comments):
+
 ```typescript
 // Listen for audio samples
 const subscription = addAudioSamplesListener((event) => {
@@ -990,6 +1070,7 @@ const subscription = addAudioSamplesListener((event) => {
 ```
 
 **Then** the app UI includes:
+
 - Clear title: "Loqa Audio Bridge Example"
 - Permission status display
 - Start/Stop buttons with clear labels
@@ -997,31 +1078,35 @@ const subscription = addAudioSamplesListener((event) => {
 - Current configuration display (sample rate, buffer size)
 
 **And** when user taps "Start Streaming":
+
 - Microphone permission requested (if not granted)
 - Audio streaming begins
 - RMS visualization updates in real-time (~8 Hz)
 - Status shows "Streaming: Active"
 
 **And** when user taps "Stop Streaming":
+
 - Audio streaming stops
 - Visualization freezes at last value
 - Status shows "Streaming: Stopped"
 
 **And** all code includes **clear explanatory comments** (FR33):
+
 ```typescript
 // Configure audio stream: 16kHz sample rate, 2048 buffer size
 // This gives ~8 Hz event rate (2048 samples / 16000 Hz = 0.128s per event)
 await startAudioStream({
   sampleRate: 16000,
   bufferSize: 2048,
-  channels: 1,  // Mono
-  enableVAD: true,  // Enable Voice Activity Detection for battery savings
+  channels: 1, // Mono
+  enableVAD: true, // Enable Voice Activity Detection for battery savings
 });
 ```
 
 **Prerequisites:** Story 3.3
 
 **Technical Notes:**
+
 - Use React hooks for state management (useState, useEffect)
 - Demonstrate proper cleanup (unsubscribe listeners on unmount)
 - Show error handling for permission denials
@@ -1041,6 +1126,7 @@ So that it serves as reliable integration proof (FR31, FR32).
 **When** I create example/README.md with:
 
 1. **Quick Start Section**:
+
 ```markdown
 # Loqa Audio Bridge Example
 
@@ -1063,6 +1149,7 @@ So that it serves as reliable integration proof (FR31, FR32).
 ```
 
 2. **What This Example Demonstrates**:
+
 - Basic audio streaming setup
 - Event listener patterns
 - Real-time visualization
@@ -1070,15 +1157,18 @@ So that it serves as reliable integration proof (FR31, FR32).
 - Clean cleanup on unmount
 
 3. **Code Walkthrough**:
+
 - Annotated code snippets explaining each integration step
 - Links to main module documentation
 
 **Then** example/ includes:
+
 - README.md with clear instructions
 - Commented App.tsx showing integration
 - package.json with correct scripts
 
 **And** when I test on iOS simulator:
+
 - `npx expo run:ios` builds successfully
 - App launches and displays UI
 - Tapping "Start" requests permission
@@ -1087,6 +1177,7 @@ So that it serves as reliable integration proof (FR31, FR32).
 - **No crashes or errors**
 
 **And** when I test on Android emulator:
+
 - `npx expo run:android` builds successfully
 - App launches and displays UI
 - Tapping "Start" requests permission
@@ -1095,6 +1186,7 @@ So that it serves as reliable integration proof (FR31, FR32).
 - **No crashes or errors**
 
 **And** I document timing:
+
 - iOS build time: ~3-4 minutes on M-series Mac
 - Android build time: ~4-5 minutes
 - **Total from npm install to running app: <10 minutes**
@@ -1102,6 +1194,7 @@ So that it serves as reliable integration proof (FR31, FR32).
 **Prerequisites:** Story 3.4
 
 **Technical Notes:**
+
 - Test on both physical devices and simulators
 - Verify microphone permissions work correctly on both platforms
 - Example app proves FR31 (runs successfully) and FR32 (both platforms)
@@ -1130,6 +1223,7 @@ So that I can quickly evaluate if the package meets my needs (FR26).
 **Then** it includes the following sections:
 
 1. **Header Section**:
+
 ```markdown
 # @loqalabs/loqa-audio-bridge
 
@@ -1140,6 +1234,7 @@ Production-grade Expo native module for real-time audio streaming with Voice Act
 ```
 
 2. **Features List**:
+
 - Real-time audio streaming (8kHz-48kHz)
 - Voice Activity Detection (VAD) for battery optimization
 - Cross-platform (iOS + Android)
@@ -1147,6 +1242,7 @@ Production-grade Expo native module for real-time audio streaming with Voice Act
 - Zero manual configuration (autolinking works out-of-the-box)
 
 3. **Installation Section**:
+
 ```markdown
 ## Installation
 
@@ -1158,6 +1254,7 @@ That's it! Autolinking handles the rest.
 ```
 
 4. **Quick Start Code Example** (5-10 lines):
+
 ```typescript
 import { startAudioStream, addAudioSamplesListener } from '@loqalabs/loqa-audio-bridge';
 
@@ -1166,17 +1263,19 @@ await startAudioStream({ sampleRate: 16000, bufferSize: 2048 });
 
 // Listen for audio samples
 const subscription = addAudioSamplesListener((event) => {
-  console.log('RMS:', event.rms);  // Volume level
+  console.log('RMS:', event.rms); // Volume level
 });
 ```
 
 5. **Links to Comprehensive Docs**:
+
 - [Full Documentation](./INTEGRATION_GUIDE.md)
 - [API Reference](./API.md)
 - [Example App](./example)
 - [Migration from v0.2.0](./MIGRATION.md)
 
 6. **Platform Requirements**:
+
 - iOS 13.4+
 - Android API 24+
 - Expo 52+
@@ -1193,6 +1292,7 @@ const subscription = addAudioSamplesListener((event) => {
 **Prerequisites:** Epic 3 complete (example app proves code works)
 
 **Technical Notes:**
+
 - Follow npm README best practices
 - Use markdown badges for visual appeal
 - Keep technical jargon minimal in README (save for INTEGRATION_GUIDE)
@@ -1213,12 +1313,14 @@ So that I can complete integration without external support (FR27).
 **Then** it includes the following sections:
 
 1. **Prerequisites**:
+
 - Expo version requirements
 - React Native version requirements
 - macOS requirements for iOS development
 - Android Studio requirements for Android development
 
 2. **Step 1: Installation** (detailed):
+
 ```markdown
 ### Installation
 
@@ -1241,7 +1343,9 @@ So that I can complete integration without external support (FR27).
 ```
 
 3. **Step 2: iOS Configuration**:
+
 - Add microphone permission to app.json:
+
 ```json
 {
   "expo": {
@@ -1253,11 +1357,14 @@ So that I can complete integration without external support (FR27).
   }
 }
 ```
+
 - Explain why this is required (App Store rejection if missing)
 - Show how to customize the permission message
 
 4. **Step 3: Android Configuration**:
+
 - Add microphone permission to app.json:
+
 ```json
 {
   "expo": {
@@ -1267,41 +1374,51 @@ So that I can complete integration without external support (FR27).
   }
 }
 ```
+
 - Explain runtime permission handling required for Android 6.0+
 - Provide code example for requesting permissions
 
 5. **Step 4: Basic Usage**:
+
 - Full code example with error handling
 - Permission request code for both platforms
 - Listener setup and cleanup
 - Common configuration options explained
 
 6. **Step 5: Testing**:
+
 - How to test on iOS simulator (simulator doesn't have microphone—use device)
 - How to test on Android emulator (virtual microphone setup)
 - Expected behavior checklist
 
 7. **Troubleshooting Section**:
+
 ```markdown
 ### Common Issues
 
 #### "Cannot find native module LoqaAudioBridge"
+
 **Solution**: Run `npx expo prebuild --clean` and `npx pod-install` (iOS)
 
 #### iOS build fails with CocoaPods error
+
 **Solution**: Clear CocoaPods cache: `cd ios && pod cache clean --all && pod install`
 
 #### Android build fails with "Duplicate class" error
+
 **Solution**: Clear Gradle cache: `cd android && ./gradlew clean`
 
 #### Microphone permission always denied on iOS
+
 **Solution**: Check Info.plist includes NSMicrophoneUsageDescription
 
 #### Audio events not firing
+
 **Solution**: Verify sample rate and buffer size are valid values
 ```
 
 8. **Advanced Topics**:
+
 - Voice Activity Detection (VAD) configuration
 - Battery optimization behavior
 - Buffer size tuning for latency vs. CPU tradeoff
@@ -1318,6 +1435,7 @@ So that I can complete integration without external support (FR27).
 **Prerequisites:** Story 4.1
 
 **Technical Notes:**
+
 - Reference Voiceline integration feedback document for pain points to address
 - Use actual error messages in troubleshooting (copy from console output)
 - Include iOS and Android side-by-side where they differ
@@ -1336,6 +1454,7 @@ So that I can understand all configuration options and methods (FR28).
 **Given** v0.2.0 API.md exists (730 lines)
 **When** I migrate it to v0.3.0 structure
 **Then** I update all references:
+
 - Package name: VoicelineDSP → @loqalabs/loqa-audio-bridge
 - Module name: VoicelineDSPModule → LoqaAudioBridgeModule
 - Import statements updated to new package name
@@ -1343,6 +1462,7 @@ So that I can understand all configuration options and methods (FR28).
 **And** API.md includes the following sections:
 
 1. **Module Methods**:
+
 - `startAudioStream(config: AudioConfig): Promise<void>`
   - Full parameter documentation
   - Return value/error handling
@@ -1352,6 +1472,7 @@ So that I can understand all configuration options and methods (FR28).
 - `isStreaming(): boolean`
 
 2. **Event Listeners**:
+
 - `addAudioSamplesListener(callback): Subscription`
   - Event payload structure documented
   - Callback signature with TypeScript types
@@ -1360,6 +1481,7 @@ So that I can understand all configuration options and methods (FR28).
 - `addStreamErrorListener(callback): Subscription`
 
 3. **React Hook**:
+
 - `useAudioStreaming(config: AudioConfig): AudioStreamingResult`
   - Hook parameters
   - Return value shape
@@ -1367,19 +1489,21 @@ So that I can understand all configuration options and methods (FR28).
   - Example usage in component
 
 4. **TypeScript Interfaces**:
+
 - `AudioConfig` - all properties documented with defaults
 - `AudioSample` - event payload structure
 - `StreamStatus` - status enum values
 - `StreamError` - error object structure
 
 5. **Configuration Reference Table**:
-| Parameter | Type | Default | Description | Valid Values |
-|-----------|------|---------|-------------|--------------|
-| sampleRate | number | 16000 | Audio sample rate in Hz | 8000, 16000, 32000, 44100, 48000 |
-| bufferSize | number | 2048 | Buffer size in samples | 512-8192 (power of 2 on iOS) |
-| ... | ... | ... | ... | ... |
+   | Parameter | Type | Default | Description | Valid Values |
+   |-----------|------|---------|-------------|--------------|
+   | sampleRate | number | 16000 | Audio sample rate in Hz | 8000, 16000, 32000, 44100, 48000 |
+   | bufferSize | number | 2048 | Buffer size in samples | 512-8192 (power of 2 on iOS) |
+   | ... | ... | ... | ... | ... |
 
 6. **Code Examples**:
+
 - Basic streaming example
 - VAD configuration example
 - Error handling example
@@ -1397,6 +1521,7 @@ So that I can understand all configuration options and methods (FR28).
 **Prerequisites:** Story 4.1
 
 **Technical Notes:**
+
 - Use existing v0.2.0 API.md as base (already comprehensive)
 - Add any new APIs or configuration options introduced in v0.3.0
 - Ensure examples match example app implementation
@@ -1417,6 +1542,7 @@ So that I can migrate to v0.3.0 without breaking my app (FR29).
 **Then** it includes the following sections:
 
 1. **Overview**:
+
 ```markdown
 # Migrating from v0.2.0 to v0.3.0
 
@@ -1426,6 +1552,7 @@ v0.3.0 is a **packaging and distribution upgrade** with minimal API changes. The
 ```
 
 2. **Breaking Changes** (if any):
+
 - List any API changes (expected: none, 100% compatibility)
 - Package name change: VoicelineDSP → @loqalabs/loqa-audio-bridge
 - Import statement updates required
@@ -1462,7 +1589,7 @@ import { startAudioStream } from '@loqalabs/loqa-audio-bridge';
 
 \`\`\`bash
 npx expo prebuild --clean
-npx pod-install  # iOS only
+npx pod-install # iOS only
 \`\`\`
 
 ### Step 5: Test
@@ -1471,14 +1598,15 @@ Run your app and verify audio streaming works as before.
 ```
 
 4. **API Compatibility Matrix**:
-| Feature | v0.2.0 | v0.3.0 | Status |
-|---------|--------|--------|--------|
-| startAudioStream | ✅ | ✅ | No changes |
-| stopAudioStream | ✅ | ✅ | No changes |
-| VAD | ✅ | ✅ | No changes |
-| ... | ... | ... | ... |
+   | Feature | v0.2.0 | v0.3.0 | Status |
+   |---------|--------|--------|--------|
+   | startAudioStream | ✅ | ✅ | No changes |
+   | stopAudioStream | ✅ | ✅ | No changes |
+   | VAD | ✅ | ✅ | No changes |
+   | ... | ... | ... | ... |
 
 5. **Benefits of Upgrading**:
+
 - ✅ Zero manual configuration (autolinking works)
 - ✅ Installable via npm (no more manual file copying)
 - ✅ Official releases with semantic versioning
@@ -1487,6 +1615,7 @@ Run your app and verify audio streaming works as before.
 - ✅ CI/CD validation ensures quality
 
 6. **Troubleshooting Migration Issues**:
+
 - Common problems when upgrading
 - How to verify migration succeeded
 - Rollback instructions if needed
@@ -1500,6 +1629,7 @@ Run your app and verify audio streaming works as before.
 **Prerequisites:** Story 4.1, 4.2
 
 **Technical Notes:**
+
 - Reference Voiceline integration feedback for pain points to address
 - Emphasize simplification benefits to motivate upgrade
 - Provide side-by-side code comparisons for clarity
@@ -1556,6 +1686,7 @@ So that users can install via `npx expo install` (FR21, FR22).
 ```
 
 **And** .npmignore includes:
+
 ```
 __tests__/
 *.test.ts
@@ -1574,16 +1705,18 @@ node_modules/
 ```
 
 **And** when I run `npm pack`:
+
 - Tarball is created: `loqalabs-loqa-audio-bridge-0.3.0.tgz`
 - Tarball size is reasonable (<500 KB excluding node_modules)
 
 **And** when I extract tarball and inspect:
+
 - ✅ build/ directory present with compiled JS and .d.ts
 - ✅ src/ directory present with TypeScript source
 - ✅ ios/ directory present (excluding ios/Tests/)
 - ✅ android/ directory present (excluding test directories)
 - ✅ Documentation files present (README, API.md, etc.)
-- ❌ __tests__/ directory absent
+- ❌ **tests**/ directory absent
 - ❌ example/ directory absent
 - ❌ .github/ directory absent
 - ❌ No *Tests.swift or *Test.swift files
@@ -1591,6 +1724,7 @@ node_modules/
 **Prerequisites:** Epics 1-4 complete
 
 **Technical Notes:**
+
 - "files" whitelist approach ensures only intended files ship
 - .npmignore provides additional safety (defense in depth)
 - Aligns with architecture Decision 3 (multi-layer test exclusion)
@@ -1609,12 +1743,14 @@ So that code quality is maintained and regressions are caught early.
 **Given** GitHub repository exists
 **When** I create `.github/workflows/ci.yml`
 **Then** workflow triggers on:
+
 - Pull requests to main branch
 - Pushes to main branch
 
 **And** workflow includes these jobs:
 
 1. **Lint Job**:
+
 ```yaml
 lint:
   runs-on: ubuntu-latest
@@ -1627,6 +1763,7 @@ lint:
 ```
 
 2. **TypeScript Tests Job**:
+
 ```yaml
 test-ts:
   runs-on: ubuntu-latest
@@ -1635,10 +1772,11 @@ test-ts:
     - uses: actions/setup-node@v4
     - run: npm ci
     - run: npm test
-    - run: npm run build  # Verify TypeScript compiles
+    - run: npm run build # Verify TypeScript compiles
 ```
 
 3. **iOS Build Job**:
+
 ```yaml
 build-ios:
   runs-on: macos-latest
@@ -1649,6 +1787,7 @@ build-ios:
 ```
 
 4. **Android Build Job**:
+
 ```yaml
 build-android:
   runs-on: ubuntu-latest
@@ -1662,6 +1801,7 @@ build-android:
 ```
 
 5. **Package Validation Job** (implements Decision 3 CI validation):
+
 ```yaml
 validate-package:
   runs-on: ubuntu-latest
@@ -1697,6 +1837,7 @@ validate-package:
 **Prerequisites:** Story 5.1
 
 **Technical Notes:**
+
 - Use latest GitHub Actions versions (@v4)
 - Cache dependencies for faster builds
 - Run jobs in parallel for speed
@@ -1715,6 +1856,7 @@ So that releases are repeatable and validated (FR21, FR24).
 **Given** CI pipeline exists (Story 5.2)
 **When** I create `.github/workflows/publish-npm.yml`
 **Then** workflow triggers on:
+
 - Git tags matching pattern `v*.*.*` (e.g., v0.3.0, v0.3.1)
 
 **And** workflow includes:
@@ -1767,6 +1909,7 @@ jobs:
 ```
 
 **And** when I test publishing workflow:
+
 1. Update version in package.json to 0.3.0
 2. Commit: `git commit -m "Release v0.3.0"`
 3. Tag: `git tag v0.3.0`
@@ -1782,6 +1925,7 @@ jobs:
 **Prerequisites:** Story 5.2
 
 **Technical Notes:**
+
 - Requires npm account and authentication token
 - Use `npm publish --access public` for scoped packages
 - Tag format enforces semantic versioning
@@ -1799,6 +1943,7 @@ So that cloud builds succeed without special configuration (FR38).
 
 **Given** package is published to npm (Story 5.3)
 **When** I create a test Expo project:
+
 ```bash
 npx create-expo-app eas-test
 cd eas-test
@@ -1806,6 +1951,7 @@ npx expo install @loqalabs/loqa-audio-bridge
 ```
 
 **And** I configure EAS Build (eas.json):
+
 ```json
 {
   "build": {
@@ -1837,6 +1983,7 @@ npx expo install @loqalabs/loqa-audio-bridge
 **Prerequisites:** Story 5.3 (package must be published)
 
 **Technical Notes:**
+
 - EAS Build uses same autolinking as local builds
 - Test on both iOS and Android EAS builders
 - Verify no custom plugins or config needed
@@ -1867,6 +2014,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [0.3.0] - 2025-11-13
 
 ### Added
+
 - Production-grade npm packaging with autolinking
 - Comprehensive documentation (README, INTEGRATION_GUIDE, API.md, MIGRATION.md)
 - Working example Expo app demonstrating integration
@@ -1874,27 +2022,32 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Multi-layered test exclusion strategy (fixes v0.2.0 issue)
 
 ### Fixed
+
 - Swift compilation error: Added required keyword to init override
 - Deprecated iOS API: Updated .allowBluetooth to .allowBluetoothA2DP
 - Test files no longer ship to production (podspec exclusions)
 
 ### Changed
+
 - Package renamed from VoicelineDSP to @loqalabs/loqa-audio-bridge
 - Module structure regenerated with create-expo-module
 - Installation simplified to single command (no manual configuration)
 
 ### Migration
+
 - See [MIGRATION.md](./MIGRATION.md) for v0.2.0 → v0.3.0 upgrade guide
 
 ## [0.2.0] - 2024-XX-XX (Voiceline Deployment)
 
 ### Added
+
 - Initial working implementation with iOS and Android support
 - Voice Activity Detection (VAD)
 - Adaptive battery optimization
 - Event-driven architecture
 
 ### Known Issues
+
 - Required manual integration (9-hour process)
 - Missing packaging files
 - Tests shipped to clients causing build errors
@@ -1943,6 +2096,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 **Prerequisites:** Stories 5.1-5.4
 
 **Technical Notes:**
+
 - CHANGELOG.md should be updated with every release
 - Follow semantic versioning strictly
 - Document breaking changes prominently
@@ -1952,46 +2106,46 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## FR Coverage Matrix
 
-| FR | Requirement | Epic | Story |
-|----|-------------|------|-------|
-| FR1 | Regenerate module with create-expo-module | Epic 1 | 1.1 |
-| FR2 | Complete package.json | Epic 1 | 1.2 |
-| FR3 | expo-module.config.json | Epic 1 | 1.1 |
-| FR4 | voiceline-dsp.podspec | Epic 1 | 1.1, 2.3 |
-| FR5 | Android build.gradle | Epic 1 | 1.1 |
-| FR6 | Fix Swift required keyword | Epic 2 | 2.2 |
-| FR7 | Update deprecated iOS API | Epic 2 | 2.2 |
-| FR8 | Exclude test files (podspec) | Epic 2 | 2.3 |
-| FR9 | Zero compilation warnings | Epic 2 | 2.8 |
-| FR10 | iOS autolinking | Epic 3 | 3.1 |
-| FR11 | Android autolinking | Epic 3 | 3.2 |
-| FR12 | Auto-register in ExpoModulesProvider | Epic 3 | 3.1 |
-| FR13 | Validate autolinking (fresh project) | Epic 3 | 3.1, 3.2, 3.5 |
-| FR14 | Maintain feature parity | Epic 2 | 2.1, 2.2, 2.4 |
-| FR15 | Preserve VAD | Epic 2 | 2.2, 2.4, 2.6, 2.7 |
-| FR16 | Preserve Adaptive Processing | Epic 2 | 2.2, 2.4, 2.6, 2.7 |
-| FR17 | Maintain event architecture | Epic 2 | 2.1, 2.2, 2.4 |
-| FR18 | Preserve React hook | Epic 2 | 2.1, 2.5 |
-| FR19 | Maintain TypeScript types | Epic 2 | 2.1, 2.5 |
-| FR20 | Preserve all tests | Epic 2 | 2.5, 2.6, 2.7 |
-| FR21 | Publish to npm | Epic 5 | 5.1, 5.3 |
-| FR22 | Support npx expo install | Epic 5 | 5.1, 5.3 |
-| FR23 | Include source in package | Epic 5 | 5.1 |
-| FR24 | Semantic versioning | Epic 5 | 5.5 |
-| FR25 | Package metadata | Epic 1 | 1.2 |
-| FR26 | README.md | Epic 4 | 4.1 |
-| FR27 | INTEGRATION_GUIDE.md | Epic 4 | 4.2 |
-| FR28 | Migrate API.md | Epic 4 | 4.3 |
-| FR29 | MIGRATION.md | Epic 4 | 4.4 |
-| FR30 | Example app | Epic 3 | 3.3, 3.4 |
-| FR31 | Example builds successfully | Epic 3 | 3.5 |
-| FR32 | Example demonstrates both platforms | Epic 3 | 3.5 |
-| FR33 | Example has clear comments | Epic 3 | 3.4 |
-| FR34 | Support Xcode 14+/15+ | Epic 2 | 2.2, 2.8 |
-| FR35 | Support Gradle 8.x | Epic 2 | 2.4, 2.8 |
-| FR36 | Compatible Expo 52-54 | Epic 1 | 1.1, validated in 3.1-3.2 |
-| FR37 | Compatible RN 0.72+ | Epic 1 | 1.2, validated in 3.1-3.2 |
-| FR38 | EAS Build compatible | Epic 5 | 5.4 |
+| FR   | Requirement                               | Epic   | Story                     |
+| ---- | ----------------------------------------- | ------ | ------------------------- |
+| FR1  | Regenerate module with create-expo-module | Epic 1 | 1.1                       |
+| FR2  | Complete package.json                     | Epic 1 | 1.2                       |
+| FR3  | expo-module.config.json                   | Epic 1 | 1.1                       |
+| FR4  | voiceline-dsp.podspec                     | Epic 1 | 1.1, 2.3                  |
+| FR5  | Android build.gradle                      | Epic 1 | 1.1                       |
+| FR6  | Fix Swift required keyword                | Epic 2 | 2.2                       |
+| FR7  | Update deprecated iOS API                 | Epic 2 | 2.2                       |
+| FR8  | Exclude test files (podspec)              | Epic 2 | 2.3                       |
+| FR9  | Zero compilation warnings                 | Epic 2 | 2.8                       |
+| FR10 | iOS autolinking                           | Epic 3 | 3.1                       |
+| FR11 | Android autolinking                       | Epic 3 | 3.2                       |
+| FR12 | Auto-register in ExpoModulesProvider      | Epic 3 | 3.1                       |
+| FR13 | Validate autolinking (fresh project)      | Epic 3 | 3.1, 3.2, 3.5             |
+| FR14 | Maintain feature parity                   | Epic 2 | 2.1, 2.2, 2.4             |
+| FR15 | Preserve VAD                              | Epic 2 | 2.2, 2.4, 2.6, 2.7        |
+| FR16 | Preserve Adaptive Processing              | Epic 2 | 2.2, 2.4, 2.6, 2.7        |
+| FR17 | Maintain event architecture               | Epic 2 | 2.1, 2.2, 2.4             |
+| FR18 | Preserve React hook                       | Epic 2 | 2.1, 2.5                  |
+| FR19 | Maintain TypeScript types                 | Epic 2 | 2.1, 2.5                  |
+| FR20 | Preserve all tests                        | Epic 2 | 2.5, 2.6, 2.7             |
+| FR21 | Publish to npm                            | Epic 5 | 5.1, 5.3                  |
+| FR22 | Support npx expo install                  | Epic 5 | 5.1, 5.3                  |
+| FR23 | Include source in package                 | Epic 5 | 5.1                       |
+| FR24 | Semantic versioning                       | Epic 5 | 5.5                       |
+| FR25 | Package metadata                          | Epic 1 | 1.2                       |
+| FR26 | README.md                                 | Epic 4 | 4.1                       |
+| FR27 | INTEGRATION_GUIDE.md                      | Epic 4 | 4.2                       |
+| FR28 | Migrate API.md                            | Epic 4 | 4.3                       |
+| FR29 | MIGRATION.md                              | Epic 4 | 4.4                       |
+| FR30 | Example app                               | Epic 3 | 3.3, 3.4                  |
+| FR31 | Example builds successfully               | Epic 3 | 3.5                       |
+| FR32 | Example demonstrates both platforms       | Epic 3 | 3.5                       |
+| FR33 | Example has clear comments                | Epic 3 | 3.4                       |
+| FR34 | Support Xcode 14+/15+                     | Epic 2 | 2.2, 2.8                  |
+| FR35 | Support Gradle 8.x                        | Epic 2 | 2.4, 2.8                  |
+| FR36 | Compatible Expo 52-54                     | Epic 1 | 1.1, validated in 3.1-3.2 |
+| FR37 | Compatible RN 0.72+                       | Epic 1 | 1.2, validated in 3.1-3.2 |
+| FR38 | EAS Build compatible                      | Epic 5 | 5.4                       |
 
 **✅ All 38 FRs mapped to stories. Complete coverage validated.**
 
@@ -2006,6 +2160,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 **Estimated Timeline:** 6 weeks (one sprint per epic + buffer)
 
 **Sprint Sequencing:**
+
 - **Sprint 1 (Week 1):** Epic 1 - Foundation & Scaffolding
 - **Sprints 2-3 (Weeks 2-3):** Epic 2 - Code Migration & Quality (heavy lift)
 - **Sprint 4 (Week 4):** Epic 3 - Autolinking & Integration Proof
@@ -2013,11 +2168,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Sprint 6 (Week 6):** Epic 5 - Distribution & CI/CD
 
 **Key Milestones:**
+
 - After Epic 3: Working package with validated autolinking (internal testing ready)
 - After Epic 4: Fully documented package (beta release ready)
 - After Epic 5: Production-ready v0.3.0 on npm (public release)
 
 **Next Steps:**
+
 1. Review and approve epic breakdown
 2. Run `/bmad:bmm:workflows:create-story` to generate individual story implementation plans
 3. Execute sprints sequentially following story order

@@ -13,10 +13,12 @@
 **Architecture Shift:** After technical alignment discussion, we're moving from a **backend-heavy** to a **mobile-first** approach.
 
 **Key Change:**
+
 - ❌ **OLD:** Mobile records audio → Sends to Loqa → Waits for analysis
 - ✅ **NEW:** Mobile performs all core analysis on-device → Optionally requests LLM enhancement from Loqa
 
 **Benefits:**
+
 - ✅ **Offline capability:** Full voice analysis works without Loqa server
 - ✅ **Real-time feedback:** <100ms latency for visual feedback (voice flowers)
 - ✅ **Privacy-first:** Core analysis never leaves mobile device
@@ -79,24 +81,25 @@
 
 ## 📊 Responsibility Matrix
 
-| Feature | Mobile (On-Device) | Loqa Backend | Rationale |
-|---------|-------------------|--------------|-----------|
-| **Audio Recording** | ✅ Owner | ❌ Not involved | Real-time streaming required |
-| **Pitch Detection (YIN)** | ✅ Owner | ❌ Not involved | Lightweight, no ML, needed for voice flowers |
-| **Formant Extraction (LPC)** | ✅ Owner | ❌ Not involved | Lightweight, no ML, <10ms processing |
-| **Intonation Classification** | ✅ Owner | ❌ Not involved | Rule-based, pure logic, no ML |
-| **Resonance Analysis** | ✅ Owner | ❌ Not involved | Comparative (formant distance), pure math |
-| **Progress Comparison** | ✅ Owner | ❌ Not involved | Proximity-based, pure math |
-| **Voice Guide Database** | ✅ Owner | ❌ Not involved | JSON files, local storage |
-| **Session History** | ✅ Owner | ❌ Not involved | SQLite, local storage |
-| **Visual Feedback (Voice Flowers)** | ✅ Owner | ❌ Not involved | Real-time, <100ms latency required |
-| **Template-Based Narratives** | ✅ Owner (fallback) | ✅ LLM upgrade | Mobile has templates, Loqa adds variety |
-| **Trauma-Informed Narratives** | ⚠️ Templates | ✅ LLM generation | LLM model too large for mobile (2GB) |
-| **Coaching Suggestions** | ⚠️ Basic rules | ✅ LLM generation | LLM creates adaptive, personalized content |
-| **Practice Prompts** | ⚠️ Hardcoded | ✅ LLM generation | Variety and personalization via LLM |
-| **Listening Recommendations** | ⚠️ Basic selection | ✅ LLM reasoning | LLM explains why recommendation fits progress |
+| Feature                             | Mobile (On-Device)  | Loqa Backend      | Rationale                                     |
+| ----------------------------------- | ------------------- | ----------------- | --------------------------------------------- |
+| **Audio Recording**                 | ✅ Owner            | ❌ Not involved   | Real-time streaming required                  |
+| **Pitch Detection (YIN)**           | ✅ Owner            | ❌ Not involved   | Lightweight, no ML, needed for voice flowers  |
+| **Formant Extraction (LPC)**        | ✅ Owner            | ❌ Not involved   | Lightweight, no ML, <10ms processing          |
+| **Intonation Classification**       | ✅ Owner            | ❌ Not involved   | Rule-based, pure logic, no ML                 |
+| **Resonance Analysis**              | ✅ Owner            | ❌ Not involved   | Comparative (formant distance), pure math     |
+| **Progress Comparison**             | ✅ Owner            | ❌ Not involved   | Proximity-based, pure math                    |
+| **Voice Guide Database**            | ✅ Owner            | ❌ Not involved   | JSON files, local storage                     |
+| **Session History**                 | ✅ Owner            | ❌ Not involved   | SQLite, local storage                         |
+| **Visual Feedback (Voice Flowers)** | ✅ Owner            | ❌ Not involved   | Real-time, <100ms latency required            |
+| **Template-Based Narratives**       | ✅ Owner (fallback) | ✅ LLM upgrade    | Mobile has templates, Loqa adds variety       |
+| **Trauma-Informed Narratives**      | ⚠️ Templates        | ✅ LLM generation | LLM model too large for mobile (2GB)          |
+| **Coaching Suggestions**            | ⚠️ Basic rules      | ✅ LLM generation | LLM creates adaptive, personalized content    |
+| **Practice Prompts**                | ⚠️ Hardcoded        | ✅ LLM generation | Variety and personalization via LLM           |
+| **Listening Recommendations**       | ⚠️ Basic selection  | ✅ LLM reasoning  | LLM explains why recommendation fits progress |
 
 **Legend:**
+
 - ✅ Owner: Responsible for implementation and maintenance
 - ⚠️ Basic: Simple implementation, backend adds enhancement
 - ❌ Not involved: Not responsible
@@ -110,11 +113,13 @@
 **Implementation:** On-device, real-time
 
 **Libraries (React Native):**
+
 - **Option A:** Custom YIN implementation (pure JavaScript)
 - **Option B:** Native module bridge (C++ YIN → React Native)
 - **Option C:** `react-native-audio-toolkit` + DSP library
 
 **Algorithm (JavaScript pseudocode):**
+
 ```javascript
 // YIN pitch detection (simplified)
 function detectPitch(audioBuffer, sampleRate) {
@@ -167,6 +172,7 @@ function detectPitch(audioBuffer, sampleRate) {
 **Implementation:** On-device, post-session
 
 **Algorithm (JavaScript pseudocode):**
+
 ```javascript
 // LPC formant extraction (simplified)
 function extractFormants(audioBuffer, sampleRate) {
@@ -197,6 +203,7 @@ function extractFormants(audioBuffer, sampleRate) {
 **Accuracy Target:** ±50Hz for F1/F2
 
 **Libraries:**
+
 - `meyda` (JavaScript audio feature extraction)
 - Custom LPC implementation if needed
 
@@ -207,6 +214,7 @@ function extractFormants(audioBuffer, sampleRate) {
 **Implementation:** On-device, real-time or post-session
 
 **Algorithm:**
+
 ```javascript
 // Classify intonation patterns from pitch contour
 function classifyIntonationPatterns(pitchContour, timestamps) {
@@ -261,6 +269,7 @@ function calculateConfidence(slope, variation) {
 **Implementation:** On-device, instant calculation
 
 **Algorithm:**
+
 ```javascript
 // Calculate progress using proximity to guide
 function calculateProximityProgress(userCurrent, userBaseline, guideTarget) {
@@ -274,7 +283,8 @@ function calculateProximityProgress(userCurrent, userBaseline, guideTarget) {
   const currentToBaselineDistance = Math.abs(userCurrent - userBaseline);
 
   // Proximity-based progress
-  const progress = ((baselineToGuideDistance - currentToGuideDistance) / baselineToGuideDistance) * 100;
+  const progress =
+    ((baselineToGuideDistance - currentToGuideDistance) / baselineToGuideDistance) * 100;
 
   // Determine status
   let status;
@@ -300,6 +310,7 @@ function calculateProximityProgress(userCurrent, userBaseline, guideTarget) {
 ```
 
 **Handling Overshoot:**
+
 ```javascript
 if (progress > 100) {
   return {
@@ -317,6 +328,7 @@ if (progress > 100) {
 **Implementation:** On-device, comparative approach
 
 **Algorithm:**
+
 ```javascript
 // Comparative resonance analysis (no classification labels)
 function analyzeResonanceProgress(userFormants, baselineFormants, guideFormants) {
@@ -332,13 +344,15 @@ function analyzeResonanceProgress(userFormants, baselineFormants, guideFormants)
   };
 
   // Progress calculation (same as pitch proximity)
-  const f1Progress = baselineToGuide.f1 > 0
-    ? ((baselineToGuide.f1 - currentToGuide.f1) / baselineToGuide.f1) * 100
-    : 100;
+  const f1Progress =
+    baselineToGuide.f1 > 0
+      ? ((baselineToGuide.f1 - currentToGuide.f1) / baselineToGuide.f1) * 100
+      : 100;
 
-  const f2Progress = baselineToGuide.f2 > 0
-    ? ((baselineToGuide.f2 - currentToGuide.f2) / baselineToGuide.f2) * 100
-    : 100;
+  const f2Progress =
+    baselineToGuide.f2 > 0
+      ? ((baselineToGuide.f2 - currentToGuide.f2) / baselineToGuide.f2) * 100
+      : 100;
 
   const overallProgress = (f1Progress + f2Progress) / 2;
 
@@ -362,7 +376,7 @@ function generateResonanceNarrative(f1Progress, f2Progress) {
   } else if (avgProgress > 20) {
     return "You're beginning to explore resonance patterns";
   } else {
-    return "Starting your resonance exploration journey";
+    return 'Starting your resonance exploration journey';
   }
 }
 ```
@@ -374,6 +388,7 @@ function generateResonanceNarrative(f1Progress, f2Progress) {
 **Implementation:** JSON files in mobile app storage
 
 **Database Structure:**
+
 ```javascript
 // Voice guide schema (stored locally)
 const voiceGuide = {
@@ -393,11 +408,7 @@ const voiceGuide = {
       f2: 2100,
       f3: 2850,
     },
-    notablePatterns: [
-      'statement-upturn',
-      'expressive-melodic',
-      'wide-pitch-range',
-    ],
+    notablePatterns: ['statement-upturn', 'expressive-melodic', 'wide-pitch-range'],
     tempo: 'moderate',
     style: 'expressive-conversational',
   },
@@ -429,6 +440,7 @@ const voiceGuide = {
 ```
 
 **Storage (React Native):**
+
 ```javascript
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
@@ -437,7 +449,7 @@ const guides = await AsyncStorage.getItem('voice_guides');
 const guideDatabase = JSON.parse(guides);
 
 // Select guide
-const selectedGuide = guideDatabase.find(g => g.id === 'guide_emma_watson');
+const selectedGuide = guideDatabase.find((g) => g.id === 'guide_emma_watson');
 ```
 
 ---
@@ -449,6 +461,7 @@ const selectedGuide = guideDatabase.find(g => g.id === 'guide_emma_watson');
 **Purpose:** Generate trauma-informed narrative + coaching suggestions using LLM
 
 **Request:**
+
 ```json
 {
   "userId": "user_abc123",
@@ -478,6 +491,7 @@ const selectedGuide = guideDatabase.find(g => g.id === 'guide_emma_watson');
 ```
 
 **Response:**
+
 ```json
 {
   "traumaInformedNarrative": "Your pitch range is moving beautifully toward the characteristics you chose—67% alignment shows such lovely progress! Statement-upturn patterns are appearing naturally in your voice, which is wonderful to hear.",
@@ -524,6 +538,7 @@ const selectedGuide = guideDatabase.find(g => g.id === 'guide_emma_watson');
 ```
 
 **Error Response (LLM Failed Validation):**
+
 ```json
 {
   "traumaInformedNarrative": "Your pitch range is moving toward the characteristics you chose. Keep exploring!",
@@ -778,18 +793,12 @@ function VoiceGuidePracticeSession({ selectedGuide, userBaseline }) {
 
       {results && (
         <>
-          <JourneyVisualization
-            baseline={userBaseline}
-            current={results}
-            guide={selectedGuide}
-          />
+          <JourneyVisualization baseline={userBaseline} current={results} guide={selectedGuide} />
 
           <ProgressNarrative text={llmEnhancement?.traumaInformedNarrative || results.narrative} />
 
           {!llmEnhancement && (
-            <Button onPress={requestLLMEnhancement}>
-              Get Personalized Coaching Suggestions
-            </Button>
+            <Button onPress={requestLLMEnhancement}>Get Personalized Coaching Suggestions</Button>
           )}
 
           {llmEnhancement && (
@@ -865,24 +874,24 @@ function VoiceGuidePracticeSession({ selectedGuide, userBaseline }) {
 
 ### **On-Device Analysis (Mobile):**
 
-| Operation | Latency | Notes |
-|-----------|---------|-------|
-| Pitch detection (YIN) | <5ms per frame | Real-time capable |
-| Voice flowers update | <16ms (60 FPS) | Smooth visualization |
-| Formant extraction | <10ms per analysis | Post-session |
-| Intonation classification | <5ms per window | Post-session |
-| Progress comparison | <1ms | Pure math |
-| Template narrative generation | <5ms | String templating |
-| **Total on-device analysis** | **<100ms** | User sees results instantly |
+| Operation                     | Latency            | Notes                       |
+| ----------------------------- | ------------------ | --------------------------- |
+| Pitch detection (YIN)         | <5ms per frame     | Real-time capable           |
+| Voice flowers update          | <16ms (60 FPS)     | Smooth visualization        |
+| Formant extraction            | <10ms per analysis | Post-session                |
+| Intonation classification     | <5ms per window    | Post-session                |
+| Progress comparison           | <1ms               | Pure math                   |
+| Template narrative generation | <5ms               | String templating           |
+| **Total on-device analysis**  | **<100ms**         | User sees results instantly |
 
 ### **Backend LLM Enhancement (Optional):**
 
-| Operation | Latency | Notes |
-|-----------|---------|-------|
-| Network request | ~50-100ms | Local network (WiFi) |
-| LLM narrative generation | ~1-2s | Llama 3.2 3B inference |
-| LLM coaching generation | ~1-2s | Llama 3.2 3B inference |
-| Validation + fallback | ~50ms | If LLM output invalid |
+| Operation                 | Latency   | Notes                        |
+| ------------------------- | --------- | ---------------------------- |
+| Network request           | ~50-100ms | Local network (WiFi)         |
+| LLM narrative generation  | ~1-2s     | Llama 3.2 3B inference       |
+| LLM coaching generation   | ~1-2s     | Llama 3.2 3B inference       |
+| Validation + fallback     | ~50ms     | If LLM output invalid        |
 | **Total LLM enhancement** | **~2-3s** | User-initiated, not blocking |
 
 ---
@@ -890,12 +899,14 @@ function VoiceGuidePracticeSession({ selectedGuide, userBaseline }) {
 ## 🔒 Privacy Model
 
 ### **Default (Offline Mode):**
+
 - ✅ Audio never leaves mobile device
 - ✅ All analysis computed on-device
 - ✅ Results displayed without network call
 - ✅ Voice guide database stored locally
 
 ### **Enhanced (Optional LLM):**
+
 - ⚠️ Session analysis metadata sent to Loqa (NOT raw audio)
 - ⚠️ Data sent: Pitch numbers, pattern types, progress percentages
 - ⚠️ Data NOT sent: Audio files, voice recordings
@@ -903,6 +914,7 @@ function VoiceGuidePracticeSession({ selectedGuide, userBaseline }) {
 - ✅ User choice: Must tap "Get Personalized Coaching" to trigger
 
 **User Privacy Messaging:**
+
 ```
 Default Mode (Offline):
 "Your voice analysis happens entirely on your device. Nothing is sent anywhere."
@@ -917,37 +929,37 @@ Enhanced Mode (LLM):
 
 ### **Phase 1: Mobile Core Analysis (Voiceline Team) - 2-3 weeks**
 
-| Task | Estimated Time | Owner |
-|------|----------------|-------|
-| YIN pitch detection integration | 2-3 days | Voiceline (Mobile) |
-| LPC formant extraction | 2-3 days | Voiceline (Mobile) |
-| Intonation classification (rule-based) | 2-3 days | Voiceline (Mobile) |
-| Progress comparison algorithms | 1-2 days | Voiceline (Mobile) |
-| Voice guide database (JSON) | 2 days | Voiceline (Mobile) |
-| Template-based narratives | 1-2 days | Voiceline (Mobile) |
-| UI integration (journey visualization) | 2-3 days | Voiceline (Mobile) |
-| **Total** | **12-18 days** | |
+| Task                                   | Estimated Time | Owner              |
+| -------------------------------------- | -------------- | ------------------ |
+| YIN pitch detection integration        | 2-3 days       | Voiceline (Mobile) |
+| LPC formant extraction                 | 2-3 days       | Voiceline (Mobile) |
+| Intonation classification (rule-based) | 2-3 days       | Voiceline (Mobile) |
+| Progress comparison algorithms         | 1-2 days       | Voiceline (Mobile) |
+| Voice guide database (JSON)            | 2 days         | Voiceline (Mobile) |
+| Template-based narratives              | 1-2 days       | Voiceline (Mobile) |
+| UI integration (journey visualization) | 2-3 days       | Voiceline (Mobile) |
+| **Total**                              | **12-18 days** |                    |
 
 ### **Phase 2: Loqa LLM Enhancement (Loqa Team) - 1.5-2 weeks**
 
-| Task | Estimated Time | Owner |
-|------|----------------|-------|
-| LLM narrative generation | 3-4 days | Loqa (Backend) |
-| LLM coaching suggestions | 3-4 days | Loqa (Backend) |
-| Forbidden phrase validation | 1-2 days | Loqa (Backend) |
-| Fallback template system | 1 day | Loqa (Backend) |
-| API endpoint implementation | 1-2 days | Loqa (Backend) |
-| **Total** | **9-13 days** | |
+| Task                        | Estimated Time | Owner          |
+| --------------------------- | -------------- | -------------- |
+| LLM narrative generation    | 3-4 days       | Loqa (Backend) |
+| LLM coaching suggestions    | 3-4 days       | Loqa (Backend) |
+| Forbidden phrase validation | 1-2 days       | Loqa (Backend) |
+| Fallback template system    | 1 day          | Loqa (Backend) |
+| API endpoint implementation | 1-2 days       | Loqa (Backend) |
+| **Total**                   | **9-13 days**  |                |
 
 ### **Phase 3: Integration & Testing - 1 week**
 
-| Task | Estimated Time | Owner |
-|------|----------------|-------|
-| Mobile ↔ Backend integration | 2-3 days | Both teams |
-| E2E testing (offline mode) | 1-2 days | Voiceline |
-| E2E testing (LLM enhancement) | 1-2 days | Both teams |
-| User acceptance testing | 2-3 days | Voiceline |
-| **Total** | **6-10 days** | |
+| Task                          | Estimated Time | Owner      |
+| ----------------------------- | -------------- | ---------- |
+| Mobile ↔ Backend integration  | 2-3 days       | Both teams |
+| E2E testing (offline mode)    | 1-2 days       | Voiceline  |
+| E2E testing (LLM enhancement) | 1-2 days       | Both teams |
+| User acceptance testing       | 2-3 days       | Voiceline  |
+| **Total**                     | **6-10 days**  |            |
 
 **Grand Total:** **27-41 days (4-6 weeks)**
 
@@ -956,6 +968,7 @@ Enhanced Mode (LLM):
 ## ✅ Success Criteria
 
 ### **Mobile-First (Must Work Offline):**
+
 - ✅ User can complete practice session without Loqa server running
 - ✅ Voice flowers respond in real-time (<100ms latency)
 - ✅ Post-session analysis completes in <500ms
@@ -963,12 +976,14 @@ Enhanced Mode (LLM):
 - ✅ Template narratives provide positive, trauma-informed feedback
 
 ### **LLM Enhancement (Optional, Must Degrade Gracefully):**
+
 - ✅ LLM-generated narratives pass forbidden phrase validation (100% rate)
 - ✅ LLM enhancement completes in <3 seconds (P95)
 - ✅ Fallback to templates if LLM unavailable (graceful degradation)
 - ✅ User understands LLM enhancement is optional (clear UI)
 
 ### **Trauma-Informed UX (Critical):**
+
 - ✅ NO evaluation/comparison language in any output (template or LLM)
 - ✅ ALL narratives frame progress as exploration
 - ✅ Users report feeling empowered, not judged (UAT feedback)
@@ -980,17 +995,20 @@ Enhanced Mode (LLM):
 ### **For Voiceline Team:**
 
 1. **Technical Feasibility Check:**
+
    - ✅ React Native libraries available for YIN/LPC? (or custom implementation needed?)
    - ✅ Mobile team comfortable with DSP algorithms?
    - ✅ Performance testing on target devices (iPhone/Android)?
 
 2. **Voice Guide Curation:**
+
    - ✅ Select builtin guides (Emma Watson, Zendaya, etc.)
    - ✅ Extract voice characteristics (pitch, formants, patterns)
    - ✅ Curate listening content (podcasts, interviews, films)
    - ✅ Legal clearance for guide usage
 
 3. **Template Creation:**
+
    - ✅ Write template narratives for all progress stages (aligned, emerging, exploring)
    - ✅ Review with trauma-informed UX expert
    - ✅ Validate no forbidden phrases
@@ -1003,11 +1021,13 @@ Enhanced Mode (LLM):
 ### **For Loqa Team:**
 
 1. **LLM Setup:**
+
    - ✅ Ensure Llama 3.2 3B model available (already in Epic 2C architecture)
    - ✅ Test LLM generation latency on target hardware
    - ✅ Optimize prompt engineering for trauma-informed output
 
 2. **Validation System:**
+
    - ✅ Implement forbidden phrase filter
    - ✅ Test with diverse inputs (various progress levels)
    - ✅ Create fallback template library
@@ -1020,11 +1040,13 @@ Enhanced Mode (LLM):
 ### **Joint Activities:**
 
 1. **Integration Testing:**
+
    - Mobile team provides sample session data
    - Loqa team tests LLM generation
    - Validate E2E flow (mobile → backend → mobile)
 
 2. **User Testing:**
+
    - Test offline mode first (validate core UX)
    - Add LLM enhancement in second round
    - Gather feedback on narrative quality
@@ -1039,6 +1061,7 @@ Enhanced Mode (LLM):
 ## 🎯 Summary
 
 **Key Architectural Wins:**
+
 1. ✅ **Mobile-first:** Voiceline owns core features, works offline
 2. ✅ **Privacy-first:** Most analysis never leaves device
 3. ✅ **Optional backend:** LLM adds value without creating dependency
@@ -1046,11 +1069,13 @@ Enhanced Mode (LLM):
 5. ✅ **Real-time capable:** Voice flowers respond instantly (<100ms)
 
 **Loqa's Role:**
+
 - LLM-powered personalization (trauma-informed narratives + coaching)
 - Validation and safety (forbidden phrase filtering)
 - Fallback system (templates when LLM fails)
 
 **Voiceline's Role:**
+
 - Complete on-device voice analysis (pitch, formants, intonation, progress)
 - Real-time visual feedback (voice flowers)
 - Core UX (journey visualization, results display)
@@ -1063,6 +1088,7 @@ Enhanced Mode (LLM):
 ---
 
 **Contact:**
+
 - Loqa Architect: Winston (via Anna)
 - Voiceline Team: Anna (Product) / Mary (BA)
 

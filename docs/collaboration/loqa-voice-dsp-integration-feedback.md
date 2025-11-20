@@ -57,6 +57,7 @@ The function attempts to write memory beyond the allocated stack bounds, causing
 We had to disable spectral analysis in two locations:
 
 **Location 1**: [src/screens/DSPTestScreen.tsx](../src/screens/DSPTestScreen.tsx)
+
 ```typescript
 // DISABLED: loqa_analyze_spectrum has a stack overflow bug
 addResult({
@@ -67,6 +68,7 @@ addResult({
 ```
 
 **Location 2**: [src/services/audio/FFTAnalyzer.ts](../src/services/audio/FFTAnalyzer.ts)
+
 ```typescript
 // DISABLED: loqa_analyze_spectrum has a stack overflow bug
 // const spectralFeatures = await VoicelineDSP.analyzeSpectrum(
@@ -150,6 +152,7 @@ let formantResult = samples.withUnsafeBufferPointer { buffer in
 ### 4. XCFramework Structure
 
 The provided XCFramework has correct architecture support:
+
 - `ios-arm64/` for physical devices
 - `ios-arm64_x86_64-simulator/` for simulator testing
 - Both contain proper `module.modulemap` files
@@ -158,6 +161,7 @@ The provided XCFramework has correct architecture support:
 ### 5. C FFI Interface Design
 
 The header file [loqa_voice_dsp.h](../native/loqa-voice-dsp/include/loqa_voice_dsp.h) is well-designed:
+
 - Clear struct definitions
 - Boolean success flags
 - Confidence scores included
@@ -236,6 +240,7 @@ end
 ```
 
 **User installation becomes:**
+
 ```bash
 # In Podfile
 pod 'LoqaVoiceDSP', '~> 0.1.0'
@@ -269,6 +274,7 @@ let package = Package(
 ```
 
 **User installation becomes:**
+
 ```swift
 // In Xcode: File → Add Packages
 // Enter: https://github.com/loqalabs/loqa-voice-dsp
@@ -303,12 +309,7 @@ export const VoiceDSP = {
     minFreq: number = 80,
     maxFreq: number = 400
   ): Promise<PitchResult | null> {
-    return LoqaVoiceDSP.detectPitch(
-      Array.from(samples),
-      sampleRate,
-      minFreq,
-      maxFreq
-    );
+    return LoqaVoiceDSP.detectPitch(Array.from(samples), sampleRate, minFreq, maxFreq);
   },
 
   // ... other methods
@@ -316,6 +317,7 @@ export const VoiceDSP = {
 ```
 
 **User installation becomes:**
+
 ```bash
 npm install @loqalabs/expo-voice-dsp
 npx expo prebuild
@@ -327,17 +329,20 @@ Create comprehensive integration guides:
 
 #### Quick Start Guide
 
-```markdown
+````markdown
 # Loqa Voice DSP - iOS Quick Start
 
 ## Installation
 
 ### CocoaPods
+
 ```ruby
 pod 'LoqaVoiceDSP', '~> 0.1.0'
 ```
+````
 
 ### Swift Package Manager
+
 Add `https://github.com/loqalabs/loqa-voice-dsp` in Xcode
 
 ## Basic Usage
@@ -366,11 +371,14 @@ if pitch.success && pitch.is_voiced {
 ## Memory Management
 
 Always free FFT results:
+
 ```swift
 var fftResult = loqa_compute_fft(...)
 defer { loqa_free_fft_result(&fftResult) }
 ```
+
 ```
+
 ```
 
 #### React Native Integration Guide
@@ -379,6 +387,7 @@ defer { loqa_free_fft_result(&fftResult) }
 # Integrating Loqa Voice DSP with React Native
 
 ## Prerequisites
+
 - React Native 0.70+
 - iOS 13.0+
 - Xcode 14+
@@ -392,14 +401,14 @@ defer { loqa_free_fft_result(&fftResult) }
 
 Document expected performance:
 
-| Function | Sample Size | Sample Rate | FFT Size | Typical Duration |
-|----------|-------------|-------------|----------|------------------|
-| `loqa_detect_pitch` | 2048 | 16000 Hz | - | ~5-8ms |
-| `loqa_compute_fft` | 2048 | 16000 Hz | 2048 | ~2-4ms |
-| `loqa_extract_formants` | 2048 | 16000 Hz | - | ~8-12ms |
-| `loqa_analyze_spectrum` | - | - | 2048 | ⚠️ CRASHES |
+| Function                | Sample Size | Sample Rate | FFT Size | Typical Duration |
+| ----------------------- | ----------- | ----------- | -------- | ---------------- |
+| `loqa_detect_pitch`     | 2048        | 16000 Hz    | -        | ~5-8ms           |
+| `loqa_compute_fft`      | 2048        | 16000 Hz    | 2048     | ~2-4ms           |
+| `loqa_extract_formants` | 2048        | 16000 Hz    | -        | ~8-12ms          |
+| `loqa_analyze_spectrum` | -           | -           | 2048     | ⚠️ CRASHES       |
 
-*Benchmarked on iPhone 15 Pro simulator*
+_Benchmarked on iPhone 15 Pro simulator_
 
 ### Priority 4: API Improvements
 
@@ -502,12 +511,14 @@ Include expected results:
 # Test Data Expected Results
 
 ## sine_200hz_16khz.wav
+
 - **Pitch**: 200.0 Hz ± 2 Hz
 - **Confidence**: > 0.95
 - **Is Voiced**: true
 - **Spectral Centroid**: ~200 Hz
 
 ## voice_male_16khz.wav
+
 - **F1**: ~700-800 Hz
 - **F2**: ~1200-1400 Hz
 - **Pitch Range**: 100-150 Hz
@@ -519,29 +530,31 @@ Include expected results:
 
 ### Current Status
 
-| Feature | Status | Notes |
-|---------|--------|-------|
-| FFT Computation | ✅ Working | Fast and accurate |
-| Pitch Detection | ✅ Working | YIN algorithm excellent |
-| Formant Extraction | ✅ Working | Limited testing so far |
-| Spectral Analysis | ❌ Disabled | Critical crash bug |
-| Memory Management | ✅ Working | No leaks detected |
-| iOS Simulator | ✅ Working | x86_64 + arm64 support |
-| iOS Device | ✅ Working | arm64 support |
-| Documentation | ⚠️ Limited | Header comments only |
-| Distribution | ⚠️ Manual | Requires custom podspec |
+| Feature            | Status      | Notes                   |
+| ------------------ | ----------- | ----------------------- |
+| FFT Computation    | ✅ Working  | Fast and accurate       |
+| Pitch Detection    | ✅ Working  | YIN algorithm excellent |
+| Formant Extraction | ✅ Working  | Limited testing so far  |
+| Spectral Analysis  | ❌ Disabled | Critical crash bug      |
+| Memory Management  | ✅ Working  | No leaks detected       |
+| iOS Simulator      | ✅ Working  | x86_64 + arm64 support  |
+| iOS Device         | ✅ Working  | arm64 support           |
+| Documentation      | ⚠️ Limited  | Header comments only    |
+| Distribution       | ⚠️ Manual   | Requires custom podspec |
 
 ### Overall Assessment
 
 **Rating**: 7/10
 
 **Strengths**:
+
 - Core DSP algorithms are high quality
 - Performance is excellent
 - XCFramework structure is correct
 - C FFI design is clean
 
 **Needs Improvement**:
+
 - Critical crash bug blocks key feature
 - Distribution requires manual setup
 - Limited documentation
@@ -552,18 +565,21 @@ Include expected results:
 ## 🎯 Recommended Action Plan
 
 ### Phase 1: Critical Fixes (Week 1)
+
 1. ✅ Fix stack overflow in `loqa_analyze_spectrum`
 2. ✅ Add comprehensive unit tests
 3. ✅ Run memory sanitizers
 4. ✅ Release patch version 0.1.1
 
 ### Phase 2: Distribution (Week 2)
+
 1. ✅ Publish CocoaPod to trunk
 2. ✅ Add Swift Package Manager support
 3. ✅ Create GitHub releases with XCFramework
 4. ✅ Add installation instructions to README
 
 ### Phase 3: Documentation (Week 3)
+
 1. ✅ Write Quick Start guide
 2. ✅ Add API documentation
 3. ✅ Create React Native integration guide
@@ -571,6 +587,7 @@ Include expected results:
 5. ✅ Add example projects
 
 ### Phase 4: Enhancements (Week 4)
+
 1. ✅ Create official React Native wrapper
 2. ✅ Add Swift convenience API
 3. ✅ Provide test audio samples

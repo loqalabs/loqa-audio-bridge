@@ -22,8 +22,10 @@
 **Destination:** `crates/loqa-voice-dsp/src/pitch.rs`
 
 **Action:**
+
 1. Find YIN algorithm implementation in loqa-core
 2. Copy to pitch.rs with new API signature:
+
    ```rust
    pub struct PitchResult {
        pub frequency: f32,
@@ -38,9 +40,11 @@
        max_frequency: f32,
    ) -> Result<PitchResult, String>
    ```
+
 3. Test with: `cargo test -p loqa-voice-dsp`
 
 **How to find the code:**
+
 ```bash
 # Search for YIN implementation
 cd /Users/anna/code/loqalabs/loqa
@@ -55,8 +59,10 @@ rg "yin" crates/loqa-core/src/ --type rust
 **Destination:** `crates/loqa-voice-dsp/src/formants.rs`
 
 **Action:**
+
 1. Find LPC formant extraction in loqa-core
 2. Copy to formants.rs with new API signature:
+
    ```rust
    pub struct FormantResult {
        pub f1: f32,
@@ -71,6 +77,7 @@ rg "yin" crates/loqa-core/src/ --type rust
        lpc_order: usize,
    ) -> Result<FormantResult, String>
    ```
+
 3. Test with: `cargo test -p loqa-voice-dsp`
 
 ---
@@ -81,8 +88,10 @@ rg "yin" crates/loqa-core/src/ --type rust
 **Destination:** `crates/loqa-voice-dsp/src/fft.rs`
 
 **Action:**
+
 1. Find FFT implementation in loqa-core
 2. Copy to fft.rs with new API signature:
+
    ```rust
    pub struct FFTResult {
        pub magnitudes: Vec<f32>,
@@ -96,6 +105,7 @@ rg "yin" crates/loqa-core/src/ --type rust
        fft_size: usize,
    ) -> Result<FFTResult, String>
    ```
+
 3. Test with: `cargo test -p loqa-voice-dsp`
 
 ---
@@ -106,6 +116,7 @@ rg "yin" crates/loqa-core/src/ --type rust
 **Destination:** `crates/loqa-voice-dsp/src/spectral.rs`
 
 **Action:**
+
 1. Create new spectral analysis module
 2. Implement:
    - Spectral centroid (weighted mean frequency)
@@ -120,13 +131,16 @@ rg "yin" crates/loqa-core/src/ --type rust
 ### **Step 6: Update loqa-core Dependencies (~30 minutes)**
 
 **Action:**
+
 1. Edit `crates/loqa-core/Cargo.toml`:
+
    ```toml
    [dependencies]
    loqa-voice-dsp = { path = "../loqa-voice-dsp" }
    ```
 
 2. Update `crates/loqa-core/src/audio/mod.rs`:
+
    ```rust
    // Re-export from loqa-voice-dsp
    pub use loqa_voice_dsp::{
@@ -149,6 +163,7 @@ rg "yin" crates/loqa-core/src/ --type rust
 **Destination:** `crates/loqa-voice-dsp/src/ffi/`
 
 **Action:**
+
 1. Add `ffi` feature to Cargo.toml
 2. Create `src/ffi/mod.rs`, `src/ffi/ios.rs`, `src/ffi/android.rs`
 3. Implement C-compatible exports for iOS
@@ -180,6 +195,7 @@ After each step, validate:
 4. Schedule integration meeting to answer questions
 
 **Voiceline team will then:**
+
 - Create Swift bridge for iOS
 - Create Java bridge for Android
 - Build React Native module
@@ -189,23 +205,24 @@ After each step, validate:
 
 ## ⏱️ Estimated Timeline
 
-| Step | Duration | Who | Dependencies |
-|------|----------|-----|--------------|
-| ✅ Step 1: Crate structure | 0.5 hours | ✅ Done | None |
-| Step 2: Pitch detection | 2 hours | Loqa | Step 1 |
-| Step 3: Formant extraction | 2 hours | Loqa | Step 1 |
-| Step 4: FFT utilities | 1 hour | Loqa | Step 1 |
-| Step 5: Spectral analysis | 2 hours | Loqa | Step 4 |
-| Step 6: Update loqa-core | 0.5 hours | Loqa | Steps 2-5 |
-| Step 7: FFI layer | 4 hours | Loqa | Steps 2-6 |
-| **Total Loqa work** | **12 hours (1.5-2 days)** | | |
-| Voiceline integration | 5-7 days | Voiceline | Step 7 complete |
+| Step                       | Duration                  | Who       | Dependencies    |
+| -------------------------- | ------------------------- | --------- | --------------- |
+| ✅ Step 1: Crate structure | 0.5 hours                 | ✅ Done   | None            |
+| Step 2: Pitch detection    | 2 hours                   | Loqa      | Step 1          |
+| Step 3: Formant extraction | 2 hours                   | Loqa      | Step 1          |
+| Step 4: FFT utilities      | 1 hour                    | Loqa      | Step 1          |
+| Step 5: Spectral analysis  | 2 hours                   | Loqa      | Step 4          |
+| Step 6: Update loqa-core   | 0.5 hours                 | Loqa      | Steps 2-5       |
+| Step 7: FFI layer          | 4 hours                   | Loqa      | Steps 2-6       |
+| **Total Loqa work**        | **12 hours (1.5-2 days)** |           |                 |
+| Voiceline integration      | 5-7 days                  | Voiceline | Step 7 complete |
 
 ---
 
 ## 📞 Questions or Blockers?
 
 Contact:
+
 - **Technical:** Winston (Loqa Architect, via Anna)
 - **Voiceline:** Anna (via collaboration docs)
 

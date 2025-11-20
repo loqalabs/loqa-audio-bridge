@@ -197,9 +197,7 @@ export function validateBufferSize(
  */
 export function findClosestSupportedRate(requestedRate: number): number {
   return IOS_SUPPORTED_RATES.reduce((prev, curr) => {
-    return Math.abs(curr - requestedRate) < Math.abs(prev - requestedRate)
-      ? curr
-      : prev;
+    return Math.abs(curr - requestedRate) < Math.abs(prev - requestedRate) ? curr : prev;
   });
 }
 
@@ -226,10 +224,7 @@ export function isRateSupported(sampleRate: number): boolean {
  * calculateBufferDuration(4096, 44100); // ~93ms
  * ```
  */
-export function calculateBufferDuration(
-  bufferSize: number,
-  sampleRate: number
-): number {
+export function calculateBufferDuration(bufferSize: number, sampleRate: number): number {
   return (bufferSize / sampleRate) * 1000;
 }
 
@@ -246,9 +241,6 @@ export function calculateBufferDuration(
  * calculateEventRate(44100, 4096); // ~10.8 Hz
  * ```
  */
-export function calculateEventRate(
-  sampleRate: number,
-  bufferSize: number
-): number {
+export function calculateEventRate(sampleRate: number, bufferSize: number): number {
   return sampleRate / bufferSize;
 }

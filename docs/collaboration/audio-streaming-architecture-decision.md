@@ -18,6 +18,7 @@ The Voiceline app requires **real-time audio streaming** to power live voice-to-
 ### What Works ✅
 
 1. **VoicelineDSP Native Module** (`modules/voiceline-dsp/`)
+
    - iOS: Swift wrapper around `loqa-voice-dsp` Rust FFI
    - Android: Expected to follow similar pattern
    - Provides functions:
@@ -27,12 +28,14 @@ The Voiceline app requires **real-time audio streaming** to power live voice-to-
      - `analyzeSpectrum(samples, sampleRate, fftSize)` → Spectral features
 
 2. **AudioStreamService** (`src/services/audio/AudioStreamService.ts`)
+
    - Manages audio processing state machine
    - Provides `processAudioSamples(samples, pitchConfidence)` method
    - Implements adaptive processing modes (battery optimization)
    - Publishes voice metrics to Zustand store for UI consumption
 
 3. **Voice Analysis Pipeline**
+
    - PitchDetector → IntonationClassifier → Voice Metrics Store
    - Works perfectly when given audio samples
    - Tested and validated with synthetic data
@@ -48,6 +51,7 @@ The Voiceline app requires **real-time audio streaming** to power live voice-to-
 **Real-time audio capture pipeline:** There is no connection between device microphone and `AudioStreamService.processAudioSamples()`.
 
 **Current Recording Setup (Not Working for Real-Time):**
+
 ```typescript
 // PracticeScreen.tsx (simplified)
 import { useAudioRecorder } from 'expo-audio';
@@ -57,6 +61,7 @@ await recorder.record(); // ❌ Records to file, no real-time samples
 ```
 
 **Problem:**
+
 - `expo-audio` and `expo-av` recording APIs only provide audio **after** recording stops
 - No access to live audio buffers during recording
 - `AudioStreamService.processAudioSamples()` is never called
@@ -72,6 +77,7 @@ await recorder.record(); // ❌ Records to file, no real-time samples
 **Add real-time audio streaming to the native module.**
 
 #### iOS Implementation Approach
+
 ```swift
 // VoicelineDSPModule.swift additions
 
@@ -131,6 +137,7 @@ public class VoicelineDSPModule: Module {
 ```
 
 #### Android Implementation Approach
+
 ```kotlin
 // VoicelineDSPModule.kt additions
 
@@ -199,6 +206,7 @@ class VoicelineDSPModule : Module() {
 ```
 
 #### TypeScript Integration
+
 ```typescript
 // VoicelineDSP.ts additions
 
@@ -226,9 +234,7 @@ export function stopAudioStream(): void {
   return VoicelineDSPNative.stopAudioStream();
 }
 
-export function addAudioSampleListener(
-  listener: (event: AudioSampleEvent) => void
-): Subscription {
+export function addAudioSampleListener(listener: (event: AudioSampleEvent) => void): Subscription {
   return emitter.addListener('onAudioSamples', listener);
 }
 
@@ -237,13 +243,14 @@ export const VoicelineDSP = {
   detectPitch,
   extractFormants,
   analyzeSpectrum,
-  startAudioStream,      // NEW
-  stopAudioStream,       // NEW
+  startAudioStream, // NEW
+  stopAudioStream, // NEW
   addAudioSampleListener, // NEW
 };
 ```
 
 #### Usage in PracticeScreen
+
 ```typescript
 // PracticeScreen.tsx integration
 
@@ -271,6 +278,7 @@ useEffect(() => {
 ```
 
 #### Pros ✅
+
 - **Single native module** for all audio operations (capture + analysis)
 - **Lower latency** - samples stay native until needed for JS processing
 - **Better battery efficiency** - can optimize at native layer
@@ -279,6 +287,7 @@ useEffect(() => {
 - **Type-safe** integration with existing AudioStreamService
 
 #### Cons ⚠️
+
 - Requires native development for iOS + Android
 - More testing required (iOS + Android platforms)
 - Maintenance overhead for native code
@@ -291,11 +300,13 @@ useEffect(() => {
 **Integrate third-party streaming library.**
 
 #### Installation
+
 ```bash
 npx expo install @siteed/expo-audio-studio
 ```
 
 #### Usage
+
 ```typescript
 // PracticeScreen.tsx
 
@@ -315,6 +326,7 @@ await recording.start();
 ```
 
 #### Pros ✅
+
 - **Immediate solution** - no native development required
 - **Battle-tested** - used in production apps
 - **Maintained** - active development in 2025
@@ -322,6 +334,7 @@ await recording.start();
 - **Easy to integrate** - simple API
 
 #### Cons ⚠️
+
 - **External dependency** - another package to maintain
 - **Potential conflicts** with VoicelineDSP if it adds streaming later
 - **Less control** over audio pipeline
@@ -344,12 +357,12 @@ This gives us immediate functionality while planning native integration.
 
 ```typescript
 interface AudioStreamRequirements {
-  sampleRate: 16000;      // Hz (matches VoicelineDSP expectations)
-  bufferSize: 2048;       // samples (128ms at 16kHz)
-  format: 'float32';      // Normalized -1.0 to 1.0
-  channels: 1;            // Mono
-  latency: '<100ms';      // Target end-to-end latency
-  updateRate: '30-60Hz';  // Visual feedback rate
+  sampleRate: 16000; // Hz (matches VoicelineDSP expectations)
+  bufferSize: 2048; // samples (128ms at 16kHz)
+  format: 'float32'; // Normalized -1.0 to 1.0
+  channels: 1; // Mono
+  latency: '<100ms'; // Target end-to-end latency
+  updateRate: '30-60Hz'; // Visual feedback rate
 }
 ```
 
@@ -409,6 +422,7 @@ interface AudioStreamRequirements {
 5. ❌ Flower doesn't respond to voice input
 
 **Impact:**
+
 - Cannot test or validate real-time voice response
 - Cannot proceed to Story 2.4 animations (depends on real-time data)
 - Cannot deliver MVP experience to users
@@ -418,11 +432,13 @@ interface AudioStreamRequirements {
 ## Recommendation
 
 **We recommend Option 1 (Extend VoicelineDSP)** if:
+
 - Loqa team has capacity to implement within 1-2 weeks
 - Native audio streaming is within VoicelineDSP module scope
 - Long-term maintenance is acceptable
 
 **We recommend Option 3 (Hybrid)** if:
+
 - Loqa team is at capacity or timeline is uncertain
 - Need to unblock development immediately
 - Can plan native integration for future sprint
@@ -441,11 +457,13 @@ interface AudioStreamRequirements {
 ## References
 
 ### Current Implementation
+
 - [VoicelineDSP Module](/Users/anna/code/annabarnes1138/voiceline/modules/voiceline-dsp/)
 - [AudioStreamService.ts](/Users/anna/code/annabarnes1138/voiceline/src/services/audio/AudioStreamService.ts)
 - [Story 2.3 Documentation](/Users/anna/code/annabarnes1138/voiceline/docs/stories/2-3-implement-real-time-voice-to-flower-data-binding.md)
 
 ### External Resources
+
 - [expo-audio-studio on npm](https://www.npmjs.com/package/@siteed/expo-audio-studio)
 - [Expo: Real-time Audio Processing Blog](https://expo.dev/blog/real-time-audio-processing-with-expo-and-native-code)
 - [AVAudioEngine Documentation (iOS)](https://developer.apple.com/documentation/avfaudio/avaudioengine)
@@ -456,11 +474,13 @@ interface AudioStreamRequirements {
 ## Contact
 
 **Voiceline App Team:**
+
 - Ready to implement either option based on decision
 - Can provide code review and testing support
 - Available for architecture discussions
 
 **Awaiting Response From:**
+
 - Loqa DSP Team
 
 ---

@@ -96,11 +96,11 @@ func configureAudioSession() throws {
 
 **Configuration Details:**
 
-| Parameter | Value | Rationale |
-|-----------|-------|-----------|
-| **Category** | `.record` | Input-only mode (no playback) |
-| **Mode** | `.measurement` | Optimized for accurate measurement, minimal signal processing |
-| **Options** | `.allowBluetooth` | Enable Bluetooth microphones (AirPods, headsets) |
+| Parameter    | Value             | Rationale                                                     |
+| ------------ | ----------------- | ------------------------------------------------------------- |
+| **Category** | `.record`         | Input-only mode (no playback)                                 |
+| **Mode**     | `.measurement`    | Optimized for accurate measurement, minimal signal processing |
+| **Options**  | `.allowBluetooth` | Enable Bluetooth microphones (AirPods, headsets)              |
 
 **Alternative Configurations:**
 
@@ -397,11 +397,11 @@ public class VoicelineDSPModule: Module {
 
 **Event Payload Structures:**
 
-| Event | Payload Fields | Types |
-|-------|----------------|-------|
-| `onAudioSample` | `samples`, `sampleRate`, `frameLength`, `timestamp` | `[Float]`, `Int`, `Int`, `Double` |
-| `onStreamStatus` | `status`, `timestamp?` | `String`, `Double?` |
-| `onStreamError` | `error`, `message`, `platform`, `details?` | `String`, `String`, `String`, `[String: Any]?` |
+| Event            | Payload Fields                                      | Types                                          |
+| ---------------- | --------------------------------------------------- | ---------------------------------------------- |
+| `onAudioSample`  | `samples`, `sampleRate`, `frameLength`, `timestamp` | `[Float]`, `Int`, `Int`, `Double`              |
+| `onStreamStatus` | `status`, `timestamp?`                              | `String`, `Double?`                            |
+| `onStreamError`  | `error`, `message`, `platform`, `details?`          | `String`, `String`, `String`, `[String: Any]?` |
 
 **Threading Model:**
 
@@ -740,12 +740,12 @@ public class VoicelineDSPModule: Module {
 
 Choose buffer size based on latency requirements:
 
-| Buffer Size | Sample Rate | Latency | Frequency Resolution |
-|-------------|-------------|---------|---------------------|
-| 512 samples | 16kHz | 32ms | Low |
-| 1024 samples | 16kHz | 64ms | Medium |
-| 2048 samples | 16kHz | 128ms | High (recommended) |
-| 4096 samples | 16kHz | 256ms | Very high |
+| Buffer Size  | Sample Rate | Latency | Frequency Resolution |
+| ------------ | ----------- | ------- | -------------------- |
+| 512 samples  | 16kHz       | 32ms    | Low                  |
+| 1024 samples | 16kHz       | 64ms    | Medium               |
+| 2048 samples | 16kHz       | 128ms   | High (recommended)   |
+| 4096 samples | 16kHz       | 256ms   | Very high            |
 
 **Recommendation:** 2048 samples @ 16kHz (128ms) for voice analysis (optimal for YIN pitch detection)
 
@@ -868,6 +868,7 @@ if audioEngine.inputNode.inputFormat(forBus: 0).channelCount == 0 {
 This design document serves as the blueprint for **Story 2D.2: Implement iOS Native Streaming**.
 
 Implementation checklist:
+
 - [ ] Create Swift module in `modules/voiceline-dsp/ios/`
 - [ ] Implement AudioStreamManager class
 - [ ] Implement VoicelineDSPModule with Expo bindings

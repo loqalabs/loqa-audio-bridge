@@ -412,9 +412,7 @@ Registers a listener for audio sample events.
  * // Later: remove listener
  * subscription.remove();
  */
-export function addAudioSampleListener(
-  listener: (event: AudioSampleEvent) => void
-): Subscription;
+export function addAudioSampleListener(listener: (event: AudioSampleEvent) => void): Subscription;
 ```
 
 **Event Frequency:**
@@ -451,9 +449,7 @@ Registers a listener for stream status change events.
  *
  * subscription.remove();
  */
-export function addStreamStatusListener(
-  listener: (event: StreamStatusEvent) => void
-): Subscription;
+export function addStreamStatusListener(listener: (event: StreamStatusEvent) => void): Subscription;
 ```
 
 **Status Transitions:**
@@ -500,9 +496,7 @@ Registers a listener for stream error events.
  *
  * subscription.remove();
  */
-export function addStreamErrorListener(
-  listener: (event: StreamErrorEvent) => void
-): Subscription;
+export function addStreamErrorListener(listener: (event: StreamErrorEvent) => void): Subscription;
 ```
 
 **Error Handling Strategy:**
@@ -548,7 +542,7 @@ try {
   await VoicelineDSP.startAudioStream({
     sampleRate: 16000,
     bufferSize: 2048,
-    channels: 1
+    channels: 1,
   });
   console.log('Streaming started');
 } catch (error) {
@@ -596,7 +590,7 @@ function useAudioStreaming(enabled: boolean) {
     VoicelineDSP.startAudioStream({
       sampleRate: 16000,
       bufferSize: 2048,
-      channels: 1
+      channels: 1,
     }).catch((err) => {
       setError(err.message);
     });
@@ -646,8 +640,8 @@ const sampleSub = VoicelineDSP.addAudioSampleListener((event) => {
 
 await VoicelineDSP.startAudioStream({
   sampleRate: 16000,
-  bufferSize: 2048,  // 128ms window optimal for YIN pitch detection
-  channels: 1
+  bufferSize: 2048, // 128ms window optimal for YIN pitch detection
+  channels: 1,
 });
 ```
 
@@ -657,14 +651,14 @@ await VoicelineDSP.startAudioStream({
 
 ### Error Codes
 
-| Error Code | Description | Recovery Strategy |
-|------------|-------------|-------------------|
-| `PERMISSION_DENIED` | Microphone permission not granted | Prompt user to enable in Settings |
-| `SESSION_CONFIG_FAILED` | Audio session setup failed (iOS) | Retry with fallback config, inform user |
-| `ENGINE_START_FAILED` | Audio engine/recorder failed to start | Check device availability, retry once |
-| `DEVICE_NOT_AVAILABLE` | Microphone hardware unavailable | Inform user, disable audio features |
-| `BUFFER_OVERFLOW` | Audio frames being dropped | Increase buffer size, reduce processing |
-| `UNKNOWN_ERROR` | Unexpected error occurred | Log for debugging, inform user gracefully |
+| Error Code              | Description                           | Recovery Strategy                         |
+| ----------------------- | ------------------------------------- | ----------------------------------------- |
+| `PERMISSION_DENIED`     | Microphone permission not granted     | Prompt user to enable in Settings         |
+| `SESSION_CONFIG_FAILED` | Audio session setup failed (iOS)      | Retry with fallback config, inform user   |
+| `ENGINE_START_FAILED`   | Audio engine/recorder failed to start | Check device availability, retry once     |
+| `DEVICE_NOT_AVAILABLE`  | Microphone hardware unavailable       | Inform user, disable audio features       |
+| `BUFFER_OVERFLOW`       | Audio frames being dropped            | Increase buffer size, reduce processing   |
+| `UNKNOWN_ERROR`         | Unexpected error occurred             | Log for debugging, inform user gracefully |
 
 ### Error Handling Best Practices
 
@@ -724,11 +718,11 @@ await VoicelineDSP.startAudioStream({
 
 ### Buffer Size Selection
 
-| Sample Rate | Buffer Size | Latency | Use Case |
-|-------------|-------------|---------|----------|
-| 16kHz | 2048 samples | 128ms | Voice analysis (recommended) |
-| 44.1kHz | 4096 samples | 93ms | High-quality capture |
-| 48kHz | 4096 samples | 85ms | Professional audio |
+| Sample Rate | Buffer Size  | Latency | Use Case                     |
+| ----------- | ------------ | ------- | ---------------------------- |
+| 16kHz       | 2048 samples | 128ms   | Voice analysis (recommended) |
+| 44.1kHz     | 4096 samples | 93ms    | High-quality capture         |
+| 48kHz       | 4096 samples | 85ms    | Professional audio           |
 
 **Recommendation:** 16kHz + 2048 samples for voice analysis (optimal for YIN pitch detection)
 

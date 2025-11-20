@@ -149,11 +149,13 @@ private func installAudioTap(config: StreamConfig) throws {
 ## Impact
 
 **Blocks**:
+
 - Story 3-4 Task 9: iOS testing cannot be completed
 - Story 3-4 Acceptance Criteria: Cannot verify app functions on iOS
 - Epic 3 Goal: Cannot prove autolinking works end-to-end on iOS
 
 **Does NOT Block**:
+
 - Story 3-4 Tasks 1-8: App implementation is complete and correct
 - Metro bundler fix: Successfully resolved
 - Android testing: Can proceed independently
@@ -170,14 +172,18 @@ This issue is **out of scope** for Story 3-4 because:
 ## Recommended Approach
 
 ### Option 1: Create New Story (RECOMMENDED)
+
 Create a new story in Epic 2 or 3:
+
 - **Title**: "Fix iOS Audio Format Conversion for Sample Rate Mismatch"
 - **Epic**: Either Epic 2 (Native Implementation) or Epic 3 (Integration Testing)
 - **Priority**: HIGH - blocks iOS functionality
 - **Effort**: 2-3 hours (implement converter, test, validate)
 
 ### Option 2: Continue in Story 3-4
+
 Add this fix to the current story, but this would:
+
 - Expand scope significantly beyond example app work
 - Mix native implementation fixes with app-level work
 - Delay completion of the example app demonstration
@@ -213,7 +219,7 @@ For testing purposes, you can modify the example app to request 48 kHz (hardware
 
 ```typescript
 await startAudioStream({
-  sampleRate: 48000,  // Match hardware rate
+  sampleRate: 48000, // Match hardware rate
   bufferSize: 4096,
   channels: 1,
   vadEnabled: true,
@@ -221,6 +227,7 @@ await startAudioStream({
 ```
 
 This will work on iOS but:
+
 - Uses more CPU/battery
 - Produces larger data payloads
 - Not optimal for speech recognition (16 kHz is standard)

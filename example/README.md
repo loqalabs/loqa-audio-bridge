@@ -5,11 +5,13 @@ This example app demonstrates how to integrate `@loqalabs/loqa-audio-bridge` int
 ## Quick Start
 
 1. Install dependencies:
+
    ```bash
    npm install
    ```
 
 2. Run on iOS:
+
    ```bash
    npx expo run:ios
    ```
@@ -30,6 +32,7 @@ This example app demonstrates how to integrate `@loqalabs/loqa-audio-bridge` int
 ## What This Example Demonstrates
 
 ### Core Features
+
 - **Audio Streaming Setup**: How to configure and start audio streaming
 - **Event Listeners**: Subscribe to audio sample events
 - **Real-Time Visualization**: Display RMS (volume level) updates
@@ -37,6 +40,7 @@ This example app demonstrates how to integrate `@loqalabs/loqa-audio-bridge` int
 - **Lifecycle Management**: Proper cleanup when component unmounts
 
 ### Integration Patterns
+
 - Importing the module into React Native
 - TypeScript type definitions usage
 - Error handling best practices
@@ -45,15 +49,17 @@ This example app demonstrates how to integrate `@loqalabs/loqa-audio-bridge` int
 ## Code Walkthrough
 
 ### 1. Import the Module
+
 ```typescript
 import {
   startAudioStream,
   stopAudioStream,
-  addAudioSampleListener
+  addAudioSampleListener,
 } from '@loqalabs/loqa-audio-bridge';
 ```
 
 ### 2. Request Microphone Permission
+
 ```typescript
 import { Audio } from 'expo-av';
 
@@ -61,16 +67,18 @@ const { status } = await Audio.requestPermissionsAsync();
 ```
 
 ### 3. Start Audio Streaming
+
 ```typescript
 await startAudioStream({
-  sampleRate: 16000,    // 16kHz sample rate
-  bufferSize: 2048,     // 2048 samples per buffer
-  channels: 1,          // Mono audio
-  vadEnabled: true,     // Enable Voice Activity Detection
+  sampleRate: 16000, // 16kHz sample rate
+  bufferSize: 2048, // 2048 samples per buffer
+  channels: 1, // Mono audio
+  vadEnabled: true, // Enable Voice Activity Detection
 });
 ```
 
 ### 4. Listen for Audio Samples
+
 ```typescript
 const subscription = addAudioSampleListener((event) => {
   // event.samples: number[] of audio data
@@ -81,11 +89,12 @@ const subscription = addAudioSampleListener((event) => {
 ```
 
 ### 5. Clean Up on Unmount
+
 ```typescript
 useEffect(() => {
   return () => {
-    subscription.remove();     // Remove listener
-    stopAudioStream();         // Stop audio processing
+    subscription.remove(); // Remove listener
+    stopAudioStream(); // Stop audio processing
   };
 }, []);
 ```
@@ -93,23 +102,27 @@ useEffect(() => {
 ## Development Commands
 
 ### Installation
+
 ```bash
 npm install
 ```
 
 ### iOS Development
+
 ```bash
 npx expo run:ios              # Build and run on iOS simulator
 npx expo run:ios --device     # Run on physical iOS device
 ```
 
 ### Android Development
+
 ```bash
 npx expo run:android          # Build and run on Android emulator
 npx expo run:android --device # Run on physical Android device
 ```
 
 ### Other Commands
+
 ```bash
 npx expo start                # Start Metro bundler only
 npx expo prebuild             # Generate native projects
@@ -121,31 +134,39 @@ npx expo prebuild --clean     # Regenerate native projects (clean slate)
 ### iOS Issues
 
 **Build fails with "Pod install failed"**
+
 - Solution: `cd ios && pod install --repo-update && cd ..`
 
 **Microphone not working in simulator**
+
 - Solution: Simulator uses Mac's microphone. Speak into Mac mic.
 
 **Build fails with "Xcode version too old"**
+
 - Solution: Update Xcode to 14.0 or newer
 
 ### Android Issues
 
 **Build fails with "SDK not found"**
+
 - Solution: Install Android SDK via Android Studio
 
 **Microphone not working in emulator**
+
 - Solution: Enable virtual audio input in AVD Manager or use physical device
 
 **Gradle build fails**
+
 - Solution: `cd android && ./gradlew clean && cd ..`
 
 ### General Issues
 
 **Metro bundler errors**
+
 - Solution: Clear cache with `npx expo start -c`
 
 **Module not found errors**
+
 - Solution: Delete node_modules and run `npm install` again
 
 ## Build Times
@@ -153,11 +174,13 @@ npx expo prebuild --clean     # Regenerate native projects (clean slate)
 Tested on M1 MacBook Pro:
 
 ### iOS
+
 - First build: ~3-4 minutes
 - Subsequent builds: ~1-2 minutes
 - Total from `npm install` to running app: ~5-6 minutes
 
 ### Android
+
 - First build: ~4-5 minutes
 - Subsequent builds: ~1-2 minutes
 - Total from `npm install` to running app: ~6-7 minutes

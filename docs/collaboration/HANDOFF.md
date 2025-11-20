@@ -168,7 +168,7 @@ async function requestMicrophonePermission() {
       'To practice voice exercises and see real-time feedback, we need access to your microphone. Your voice data is processed only on your device and never recorded or sent anywhere.',
       [
         { text: 'Not Now', style: 'cancel' },
-        { text: 'Open Settings', onPress: () => Linking.openSettings() }
+        { text: 'Open Settings', onPress: () => Linking.openSettings() },
       ]
     );
     return false;
@@ -212,18 +212,16 @@ export function PracticeScreen() {
       }
 
       // Listen for audio samples
-      subscriptionRef.current = VoicelineDSP.addAudioSampleListener(
-        (event: AudioSampleEvent) => {
-          // Update RMS for visual feedback
-          setRMS(event.rms);
+      subscriptionRef.current = VoicelineDSP.addAudioSampleListener((event: AudioSampleEvent) => {
+        // Update RMS for visual feedback
+        setRMS(event.rms);
 
-          // Process samples for voice analysis
-          processAudioSamples(event.samples, event.sampleRate);
+        // Process samples for voice analysis
+        processAudioSamples(event.samples, event.sampleRate);
 
-          // Update flower visualization
-          updateFlowerVisualization(event);
-        }
-      );
+        // Update flower visualization
+        updateFlowerVisualization(event);
+      });
 
       // Listen for errors
       const errorSub = VoicelineDSP.addStreamErrorListener((event) => {
@@ -293,19 +291,19 @@ Recommended configuration:
 
 ```typescript
 const streamConfig = {
-  sampleRate: 16000,    // Hz - optimal for voice analysis
-  bufferSize: 2048,     // Samples - 128ms at 16kHz, good for YIN pitch detection
-  channels: 1,          // Mono - voice is inherently mono
+  sampleRate: 16000, // Hz - optimal for voice analysis
+  bufferSize: 2048, // Samples - 128ms at 16kHz, good for YIN pitch detection
+  channels: 1, // Mono - voice is inherently mono
 };
 ```
 
 **Performance vs Latency Tradeoff:**
 
-| Buffer Size | Latency | Use Case |
-|-------------|---------|----------|
-| 1024 | ~64ms | Ultra-low latency, but may cause dropouts |
-| **2048** | **~128ms** | **Recommended - balanced** |
-| 4096 | ~256ms | High robustness, but noticeable delay |
+| Buffer Size | Latency    | Use Case                                  |
+| ----------- | ---------- | ----------------------------------------- |
+| 1024        | ~64ms      | Ultra-low latency, but may cause dropouts |
+| **2048**    | **~128ms** | **Recommended - balanced**                |
+| 4096        | ~256ms     | High robustness, but noticeable delay     |
 
 ---
 
@@ -430,27 +428,30 @@ VoicelineDSP will be included automatically in the native build.
 
 Based on testing across multiple devices:
 
-| Metric | iOS (Typical) | Android (Typical) | Target |
-|--------|---------------|-------------------|--------|
-| **End-to-End Latency** | 68ms (median) | 82ms (median) | <100ms (p95) |
-| **Battery Impact** | 3-4% per 30 min | 4-5% per 30 min | <5% |
-| **Memory Usage** | 6-8 MB | 7-9 MB | <10MB |
-| **Dropout Rate** | <0.01% | <0.05% | <0.1% |
+| Metric                 | iOS (Typical)   | Android (Typical) | Target       |
+| ---------------------- | --------------- | ----------------- | ------------ |
+| **End-to-End Latency** | 68ms (median)   | 82ms (median)     | <100ms (p95) |
+| **Battery Impact**     | 3-4% per 30 min | 4-5% per 30 min   | <5%          |
+| **Memory Usage**       | 6-8 MB          | 7-9 MB            | <10MB        |
+| **Dropout Rate**       | <0.01%          | <0.05%            | <0.1%        |
 
 ### Optimization Features
 
 **Voice Activity Detection (VAD):**
+
 - Automatically skips silent frames (RMS <0.01)
 - Reduces battery drain by 10-15%
 - Enabled by default
 
 **Adaptive Processing:**
+
 - Activates when battery <20%
 - Reduces frame rate by 50% (skips every other frame)
 - Reduces battery drain by 15-25%
 - Enabled by default
 
 **RMS Pre-computation:**
+
 - RMS calculated natively, not in JavaScript
 - Included in every audio sample event
 - Use for volume indicators, VAD threshold checks, etc.
@@ -458,11 +459,13 @@ Based on testing across multiple devices:
 ### Platform Differences
 
 **iOS typically has:**
+
 - Lower latency (~10-15ms faster)
 - More consistent performance
 - Better audio session management
 
 **Android typically has:**
+
 - Slightly higher latency due to AudioRecord buffering
 - More variability across OEM skins (Samsung, OnePlus, etc.)
 - More aggressive battery management (may pause app in background)
@@ -480,6 +483,7 @@ Based on testing across multiple devices:
 **Symptoms:** Stream fails to start, error code `PERMISSION_DENIED`
 
 **Solutions:**
+
 - Verify Info.plist (iOS) has `NSMicrophoneUsageDescription`
 - Verify AndroidManifest.xml has `RECORD_AUDIO` permission
 - Request permission at runtime using `Audio.requestPermissionsAsync()`
@@ -490,6 +494,7 @@ Based on testing across multiple devices:
 **Symptoms:** Noticeable delay between speaking and flower response
 
 **Solutions:**
+
 - Reduce buffer size to 1024 samples (trade: may cause dropouts)
 - Verify no heavy processing in `onAudioSamples` listener (move to worker)
 - Profile JavaScript processing time (should be <15ms)
@@ -500,6 +505,7 @@ Based on testing across multiple devices:
 **Symptoms:** Choppy audio, buffer overflow warnings in logs
 
 **Solutions:**
+
 - Increase buffer size to 4096 samples
 - Reduce processing in `onAudioSamples` listener
 - Verify no blocking operations (network calls, file I/O) in listener
@@ -510,6 +516,7 @@ Based on testing across multiple devices:
 **Symptoms:** Battery drains >5% in 30-minute session
 
 **Solutions:**
+
 - Verify VAD is enabled (should skip silence)
 - Verify adaptive processing is enabled (activates at <20% battery)
 - Reduce buffer size (fewer samples processed per frame)
@@ -520,6 +527,7 @@ Based on testing across multiple devices:
 **Symptoms:** Memory usage grows over time, doesn't return to baseline after stopping
 
 **Solutions:**
+
 - Verify `stopAudioStream()` is called on unmount
 - Verify all subscriptions are removed: `subscription.remove()`
 - Check for circular references in event listeners
@@ -530,6 +538,7 @@ Based on testing across multiple devices:
 **Symptoms:** Stream fails to start on iOS with session error
 
 **Solutions:**
+
 - Verify no other audio session active (music, podcast, etc.)
 - Call `stopAudioStream()` before starting again
 - Check background audio capability (if needed)
@@ -540,6 +549,7 @@ Based on testing across multiple devices:
 **Symptoms:** Stream fails to start on Android
 
 **Solutions:**
+
 - Verify microphone hardware available (not in use by another app)
 - Check if device has multiple microphones (some tablets don't)
 - Restart device if AudioRecord is stuck
@@ -601,6 +611,7 @@ When you're ready to release your Voiceline app with VoicelineDSP:
 - [ ] App Store / Play Store submissions prepared
 
 **Recommended Beta Testing:**
+
 - 10-20 users minimum
 - Mix of iOS and Android
 - Mix of device models (old and new)

@@ -225,12 +225,12 @@ class AudioStreamManager {
 
 **Configuration Details:**
 
-| Parameter | Value | Rationale |
-|-----------|-------|-----------|
-| **Audio Source** | `VOICE_RECOGNITION` | Optimized for voice capture (AGC, noise suppression) |
-| **Channel Config** | `CHANNEL_IN_MONO` | Single channel (mono audio) |
-| **Audio Format** | `ENCODING_PCM_FLOAT` | Float32 format, normalized to [-1.0, 1.0] |
-| **Buffer Size** | 2× minimum | Better reliability, prevents buffer overruns |
+| Parameter          | Value                | Rationale                                            |
+| ------------------ | -------------------- | ---------------------------------------------------- |
+| **Audio Source**   | `VOICE_RECOGNITION`  | Optimized for voice capture (AGC, noise suppression) |
+| **Channel Config** | `CHANNEL_IN_MONO`    | Single channel (mono audio)                          |
+| **Audio Format**   | `ENCODING_PCM_FLOAT` | Float32 format, normalized to [-1.0, 1.0]            |
+| **Buffer Size**    | 2× minimum           | Better reliability, prevents buffer overruns         |
 
 **Alternative Audio Sources:**
 
@@ -729,11 +729,11 @@ class VoicelineDSPModule : Module() {
 
 Choose buffer size based on latency requirements:
 
-| Sample Rate | Buffer Size | Latency | Min Buffer Size (typical) |
-|-------------|-------------|---------|---------------------------|
-| 16kHz | 2048 samples | 128ms | ~1024 samples |
-| 44.1kHz | 4096 samples | 93ms | ~2048 samples |
-| 48kHz | 4096 samples | 85ms | ~2304 samples |
+| Sample Rate | Buffer Size  | Latency | Min Buffer Size (typical) |
+| ----------- | ------------ | ------- | ------------------------- |
+| 16kHz       | 2048 samples | 128ms   | ~1024 samples             |
+| 44.1kHz     | 4096 samples | 93ms    | ~2048 samples             |
+| 48kHz       | 4096 samples | 85ms    | ~2304 samples             |
 
 **Recommendation:** Use 2× minimum buffer size for reliability
 
@@ -838,6 +838,7 @@ if (samplesRead == AudioRecord.ERROR_INVALID_OPERATION) {
 This design document serves as the blueprint for **Story 2D.3: Implement Android Native Streaming**.
 
 Implementation checklist:
+
 - [ ] Create Kotlin module in `modules/voiceline-dsp/android/`
 - [ ] Implement AudioStreamManager class
 - [ ] Implement VoicelineDSPModule with Expo bindings

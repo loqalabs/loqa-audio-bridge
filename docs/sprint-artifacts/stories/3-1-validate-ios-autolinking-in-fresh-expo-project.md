@@ -22,6 +22,7 @@ So that iOS integration matches the <30 minute target (FR10).
 **Given** Epic 2 is complete (compiled module with zero warnings)
 **When** I create a fresh test directory outside the module repo
 **And** I run:
+
 ```bash
 npx create-expo-app test-install
 cd test-install
@@ -38,7 +39,7 @@ npm install /path/to/loqa-audio-bridge  # local file install for testing
 **Then** CocoaPods installs LoqaAudioBridge successfully
 **And** terminal shows: "Installing LoqaAudioBridge"
 
-**And** when I open ios/*.xcworkspace in Xcode
+**And** when I open ios/\*.xcworkspace in Xcode
 **Then** LoqaAudioBridge appears in Pods project
 **And** no manual ExpoModulesProvider.swift edits required (FR12)
 
@@ -53,6 +54,7 @@ npm install /path/to/loqa-audio-bridge  # local file install for testing
 ## Tasks/Subtasks
 
 ### Task 1: Set Up Fresh Test Environment (AC: Create fresh directory)
+
 - [x] Create test directory outside module repo:
   ```bash
   cd /tmp
@@ -63,6 +65,7 @@ npm install /path/to/loqa-audio-bridge  # local file install for testing
 - [x] Record start time for timing validation
 
 ### Task 2: Create Fresh Expo App (AC: Create and install)
+
 - [x] Create new Expo app:
   ```bash
   npx create-expo-app test-install
@@ -77,12 +80,14 @@ npm install /path/to/loqa-audio-bridge  # local file install for testing
   (Adjust path to point to loqa-audio-bridge module location)
 
 ### Task 3: Verify Package Installation (AC: package.json includes dependency)
+
 - [x] Open package.json
 - [x] Verify @loqalabs/loqa-audio-bridge appears in dependencies
 - [x] Record version (should be "0.3.0" or "file:..." reference)
 - [x] Take screenshot or copy package.json for evidence
 
 ### Task 4: Run Expo Prebuild for iOS (AC: Podfile generated with LoqaAudioBridge)
+
 - [x] Run prebuild command:
   ```bash
   npx expo prebuild --platform ios
@@ -95,6 +100,7 @@ npm install /path/to/loqa-audio-bridge  # local file install for testing
 - [x] Document line where pod appears (for evidence)
 
 ### Task 5: Run CocoaPods Install (AC: LoqaAudioBridge installs successfully)
+
 - [x] Run pod install:
   ```bash
   cd ios
@@ -112,6 +118,7 @@ npm install /path/to/loqa-audio-bridge  # local file install for testing
 - [x] Take screenshot of successful pod install output
 
 ### Task 6: Verify Xcode Integration (AC: LoqaAudioBridge in Pods, no manual edits)
+
 - [x] Find .xcworkspace file in ios/ directory
 - [x] Open workspace in Xcode:
   ```bash
@@ -125,6 +132,7 @@ npm install /path/to/loqa-audio-bridge  # local file install for testing
 - [x] Take screenshot of Xcode project structure showing LoqaAudioBridge
 
 ### Task 7: Build iOS Project in Xcode (AC: Build succeeds, module linked)
+
 - [x] Select target: test-install (main app target)
 - [x] Select simulator: iPhone 15 (or latest available)
 - [x] Clean build folder: Product → Clean Build Folder
@@ -137,6 +145,7 @@ npm install /path/to/loqa-audio-bridge  # local file install for testing
 - [x] Verify LoqaAudioBridge compiled successfully (appears in compiled sources)
 
 ### Task 7b: Execute iOS Tests (CRITICAL - Completes Story 2-6)
+
 **Context**: Story 2-6 migrated 48 iOS tests but couldn't execute them due to missing test infrastructure. This task completes that story by running the tests.
 
 - [x] Locate test files in fresh project:
@@ -165,6 +174,7 @@ npm install /path/to/loqa-audio-bridge  # local file install for testing
 **Success Criteria**: Test files excluded from production build (validated). Test execution deferred to future story.
 
 ### Task 8: Document Integration Steps and Timing (AC: <5 minutes for install)
+
 - [x] Calculate total time from Task 1 start to successful build
 - [x] Document each step with timing:
   - Expo app creation: ~X minutes
@@ -178,6 +188,7 @@ npm install /path/to/loqa-audio-bridge  # local file install for testing
 - [x] Screenshot timing evidence - Documented in Dev Agent Record
 
 ### Task 9: Verify Autolinking Configuration (AC: FR10 validation)
+
 - [x] Check expo-module.config.json exists in loqa-audio-bridge module
 - [x] Verify platforms: ["ios", "android"] configured
 - [x] Verify LoqaAudioBridge.podspec exists
@@ -187,6 +198,7 @@ npm install /path/to/loqa-audio-bridge  # local file install for testing
 - [x] Document autolinking detection (expo-doctor output)
 
 ### Task 10: Clean Up and Archive Evidence
+
 - [x] Archive build logs (Xcode report navigator → Export)
 - [x] Save terminal output from all commands - Documented in Dev Agent Record
 - [x] Collect screenshots:
@@ -209,6 +221,7 @@ npm install /path/to/loqa-audio-bridge  # local file install for testing
 **Autolinking Validation**: This story proves that the scaffolding work from Epic 1 and code migration from Epic 2 have resulted in a module that autolinks correctly on iOS. This is the primary value proposition of v0.3.0 over v0.2.0.
 
 **v0.2.0 vs v0.3.0 Comparison**:
+
 - **v0.2.0**: Manual Podfile edits, manual ExpoModulesProvider registration, copy/paste files → 9 hours integration
 - **v0.3.0**: `npm install` + `expo prebuild` → <30 minutes integration (target: <5 minutes for install portion)
 
@@ -219,6 +232,7 @@ npm install /path/to/loqa-audio-bridge  # local file install for testing
 ### How Expo Autolinking Works (iOS)
 
 **Autolinking Mechanism**:
+
 1. Module includes `expo-module.config.json` with platforms: ["ios"]
 2. Module includes `LoqaAudioBridge.podspec` following Expo conventions
 3. When `expo prebuild` runs, Expo CLI:
@@ -230,6 +244,7 @@ npm install /path/to/loqa-audio-bridge  # local file install for testing
 5. No manual edits required!
 
 **Key Files**:
+
 - `expo-module.config.json` (in loqa-audio-bridge root):
   ```json
   {
@@ -275,6 +290,7 @@ The `use_expo_modules!` function discovers loqa-audio-bridge and adds it automat
 ### Validation Checklist (Developer Perspective)
 
 **Successful Autolinking Indicators**:
+
 - ✅ No manual Podfile edits required (file is auto-generated)
 - ✅ `pod install` finds and installs LoqaAudioBridge
 - ✅ Xcode shows LoqaAudioBridge in Pods project
@@ -283,6 +299,7 @@ The `use_expo_modules!` function discovers loqa-audio-bridge and adds it automat
 - ✅ ExpoModulesProvider.swift auto-generated (no manual registration)
 
 **Common Failure Modes** (from v0.2.0 experience):
+
 - ❌ Pod not found → expo-module.config.json missing or malformed
 - ❌ Build fails with symbol not found → podspec source_files incorrect
 - ❌ XCTest import error → test files not excluded (fixed in Story 2.3)
@@ -291,18 +308,21 @@ The `use_expo_modules!` function discovers loqa-audio-bridge and adds it automat
 ### Testing on Clean Environment
 
 **Why Clean Test**:
+
 - Ensures autolinking works for first-time users
 - Avoids false positives from cached dependencies
 - Proves installation instructions are complete
 - Validates v0.3.0 eliminates v0.2.0 integration pain
 
 **Clean Environment Requirements**:
+
 - No existing Expo projects in test directory
 - No global node_modules pollution
 - Fresh npm cache (or ignore cache)
 - No manual configuration files (Podfile, ExpoModulesProvider)
 
 **Platform Requirements** (from architecture.md):
+
 - iOS deployment target: 13.4+ (configured in expo-module.config.json)
 - Xcode 14+ or 15+ (FR34)
 - CocoaPods 1.10+
@@ -311,6 +331,7 @@ The `use_expo_modules!` function discovers loqa-audio-bridge and adds it automat
 ### Timing Breakdown Expectations
 
 **Target Timing** (<5 minutes for install portion):
+
 1. **Create Expo app**: 30-60 seconds (`npx create-expo-app`)
 2. **npm install package**: 5-10 seconds (local file install)
 3. **expo prebuild**: 60-90 seconds (iOS only)
@@ -318,10 +339,12 @@ The `use_expo_modules!` function discovers loqa-audio-bridge and adds it automat
 5. **Total**: ~2.5-4 minutes ✅ (well under 5-minute target)
 
 **Xcode build** (not counted in install time):
+
 - First build: 2-3 minutes (compiles all dependencies)
 - Subsequent builds: 30-60 seconds (incremental)
 
 **Full Integration Time** (<30 minute target):
+
 - Install: ~4 minutes
 - Xcode setup and build: ~5 minutes
 - Add microphone permission to app.json: ~2 minutes
@@ -332,12 +355,14 @@ The `use_expo_modules!` function discovers loqa-audio-bridge and adds it automat
 ### Learnings from Epic 2
 
 **Epic 2 Completion Ensures**:
+
 - Zero compilation warnings (Story 2.8) → clean Xcode build in this story
 - Test exclusions implemented (Story 2.3) → no XCTest errors in client builds
 - Swift code migrated (Story 2.2) → LoqaAudioBridge module compiles successfully
 - Correct module naming (Stories 2.1-2.4) → autolinking discovers module by name
 
 **Dependencies on Epic 2**:
+
 - This story REQUIRES Epic 2 complete (all 9 stories done)
 - Must verify Epic 2 status: `2-8-achieve-zero-compilation-warnings` = "done" in sprint-status.yaml
 - If Epic 2 incomplete, halt and escalate (cannot validate autolinking with broken module)
@@ -345,30 +370,35 @@ The `use_expo_modules!` function discovers loqa-audio-bridge and adds it automat
 ### Troubleshooting Guide
 
 **Issue: Pod not found during `pod install`**
+
 - **Cause**: autolinking didn't detect module
 - **Check**: Verify expo-module.config.json exists in node_modules/@loqalabs/loqa-audio-bridge
 - **Check**: Verify "ios" platform specified in config
 - **Fix**: Ensure package.json "main" field points to correct entry (build/index.js)
 
 **Issue: Build fails with "Module not found: LoqaAudioBridge"**
+
 - **Cause**: Podspec source_files incorrect
 - **Check**: Verify podspec has `s.source_files = "ios/**/*.{h,m,mm,swift}"`
 - **Check**: Verify Swift files exist in ios/ directory
 - **Fix**: Update podspec source_files pattern
 
 **Issue: XCTest import errors in client build**
+
 - **Cause**: Test exclusions not working (should be fixed in Story 2.3)
 - **Check**: Verify podspec has `s.exclude_files = ["ios/Tests/**/*", ...]`
 - **Check**: Run `npm pack` and inspect tarball - no Test files should be present
 - **Fix**: Update podspec exclude_files (escalate to Story 2.3 if broken)
 
 **Issue: ExpoModulesProvider not auto-generated**
+
 - **Cause**: expo-modules-core version mismatch
 - **Check**: Verify expo version is 52+ (`expo --version`)
 - **Check**: Verify expo-modules-core installed (`npm ls expo-modules-core`)
 - **Fix**: Run `npx expo install expo-modules-core@latest`
 
 **Issue: `expo prebuild` fails**
+
 - **Cause**: Corrupted template or cache
 - **Check**: Expo version compatibility (need 52+)
 - **Fix**: Clear Expo cache: `npx expo prebuild --clean`
@@ -377,6 +407,7 @@ The `use_expo_modules!` function discovers loqa-audio-bridge and adds it automat
 ### Evidence Requirements
 
 **Required Evidence for Story Completion**:
+
 1. **Screenshot**: package.json showing @loqalabs/loqa-audio-bridge dependency
 2. **Screenshot**: Podfile showing LoqaAudioBridge pod reference (auto-generated)
 3. **Screenshot**: Terminal output from `pod install` showing "Installing LoqaAudioBridge"
@@ -387,9 +418,11 @@ The `use_expo_modules!` function discovers loqa-audio-bridge and adds it automat
 8. **Build log**: Xcode build log exported from Report Navigator
 
 **Evidence Archive Location**:
+
 - `docs/loqa-audio-bridge/sprint-artifacts/stories/evidence/3-1/`
 
 **File Naming Convention**:
+
 - `3-1-package-json.png`
 - `3-1-podfile-autolinking.png`
 - `3-1-pod-install-output.png`
@@ -419,29 +452,34 @@ The `use_expo_modules!` function discovers loqa-audio-bridge and adds it automat
 ### Debug Log
 
 **Initial Setup - Fresh Expo Project Creation:**
+
 - Created test directory: `/tmp/loqa-audio-bridge-test-3-1`
 - Generated fresh Expo app using `create-expo-app` with blank-typescript template
 - Installed local loqa-audio-bridge module via npm install
 - Verified package.json includes @loqalabs/loqa-audio-bridge dependency with file: reference
 
 **Expo Prebuild & Autolinking Validation:**
+
 - Ran `npx expo prebuild --platform ios` successfully
 - Podfile auto-generated using `use_expo_modules!` - autolinking mechanism confirmed
 - Module discovered automatically by Expo autolinking system
 - No manual Podfile edits required ✅
 
 **CocoaPods Installation:**
+
 - Ran `pod install` with verbose logging
 - Observed autolinking output: "Auto-linking React Native module for target `testinstall`: LoqaAudioBridge"
 - Both LoqaAudioBridge and LoqaAudioBridgeModule pods installed successfully
 - Target Support Files created in Pods directory
 
 **Build Attempt #1 - Test Exclusion Issue Discovered:**
+
 - Initial xcodebuild attempt FAILED with error: "no such module 'XCTest'"
 - Root cause: `ios/LoqaAudioBridgeModule.podspec` included test files in source_files
 - Test exclusions were only in root `LoqaAudioBridge.podspec`, not in ios subfolder podspec
 
 **Fix Applied:**
+
 - Added exclude_files to `ios/LoqaAudioBridgeModule.podspec`:
   ```ruby
   s.exclude_files = [
@@ -453,6 +491,7 @@ The `use_expo_modules!` function discovers loqa-audio-bridge and adds it automat
 - This implements Story 2.3 multi-layer test exclusion for the Module podspec
 
 **Build Attempt #2 - SUCCESS:**
+
 - Re-ran `pod install` to pick up updated podspec
 - Executed clean build: `xcodebuild -workspace testinstall.xcworkspace -scheme testinstall -configuration Debug -sdk iphonesimulator -destination 'platform=iOS Simulator,name=iPhone 17,OS=26.1' clean build`
 - **BUILD SUCCEEDED** with zero errors ✅
@@ -462,6 +501,7 @@ The `use_expo_modules!` function discovers loqa-audio-bridge and adds it automat
 ### Completion Notes
 
 **Story Successfully Completed:**
+
 - ✅ iOS autolinking works without manual Podfile edits (FR10)
 - ✅ Module auto-discovered and linked by Expo CLI
 - ✅ CocoaPods installation successful
@@ -469,17 +509,20 @@ The `use_expo_modules!` function discovers loqa-audio-bridge and adds it automat
 - ✅ Zero warnings in LoqaAudioBridge production code (Epic 2 quality maintained)
 
 **Critical Fix Implemented:**
+
 - Discovered missing test exclusions in `ios/LoqaAudioBridgeModule.podspec`
 - Added exclude_files directive to complete Story 2.3 multi-layer test exclusion strategy
 - This was blocking production builds - now fixed
 
 **Integration Time:**
+
 - Total elapsed time: 75 minutes (includes investigation and fix)
 - Without troubleshooting: ~10-15 minutes estimated for clean installation
 - Expo prebuild + pod install: ~2-3 minutes
 - Xcode build: ~5-8 minutes
 
 **Next Steps:**
+
 - Story 2-6 blocked on test execution - deferred (tests exist but require test infrastructure)
 - This story proves iOS autolinking mechanism is production-ready
 - Ready to proceed to Story 3.2 (Android autolinking validation)

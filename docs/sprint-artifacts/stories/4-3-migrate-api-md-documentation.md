@@ -11,12 +11,14 @@ So that I can understand all configuration options and methods.
 ## Acceptance Criteria
 
 1. **All references updated** from v0.2.0 to v0.3.0:
+
    - Package name: VoicelineDSP → @loqalabs/loqa-audio-bridge
    - Module name: VoicelineDSPModule → LoqaAudioBridgeModule
    - Import statements updated to new package name
    - All code examples use new package name
 
 2. **Module Methods Section** documents:
+
    - `startAudioStream(config: AudioConfig): Promise<void>`
      - Full parameter documentation
      - Return value and error handling
@@ -26,6 +28,7 @@ So that I can understand all configuration options and methods.
    - `isStreaming(): boolean`
 
 3. **Event Listeners Section** documents:
+
    - `addAudioSamplesListener(callback): Subscription`
      - Event payload structure with TypeScript types
      - Callback signature
@@ -34,6 +37,7 @@ So that I can understand all configuration options and methods.
    - `addStreamErrorListener(callback): Subscription`
 
 4. **React Hook Section** documents:
+
    - `useAudioStreaming(config: AudioConfig): AudioStreamingResult`
      - Hook parameters
      - Return value shape
@@ -41,6 +45,7 @@ So that I can understand all configuration options and methods.
      - Example usage in component
 
 5. **TypeScript Interfaces Section** documents:
+
    - `AudioConfig` - all properties with defaults
    - `AudioSample` - event payload structure
    - `StreamStatus` - status enum values
@@ -48,14 +53,15 @@ So that I can understand all configuration options and methods.
 
 6. **Configuration Reference Table** includes:
 
-   | Parameter | Type | Default | Description | Valid Values |
-   |-----------|------|---------|-------------|--------------|
-   | sampleRate | number | 16000 | Audio sample rate in Hz | 8000, 16000, 32000, 44100, 48000 |
-   | bufferSize | number | 2048 | Buffer size in samples | 512-8192 (power of 2 on iOS) |
-   | channels | number | 1 | Mono (1) or Stereo (2) | 1, 2 |
-   | enableVAD | boolean | false | Voice Activity Detection | true, false |
+   | Parameter  | Type    | Default | Description              | Valid Values                     |
+   | ---------- | ------- | ------- | ------------------------ | -------------------------------- |
+   | sampleRate | number  | 16000   | Audio sample rate in Hz  | 8000, 16000, 32000, 44100, 48000 |
+   | bufferSize | number  | 2048    | Buffer size in samples   | 512-8192 (power of 2 on iOS)     |
+   | channels   | number  | 1       | Mono (1) or Stereo (2)   | 1, 2                             |
+   | enableVAD  | boolean | false   | Voice Activity Detection | true, false                      |
 
 7. **Code Examples Section** includes:
+
    - Basic streaming example
    - VAD configuration example
    - Error handling example
@@ -73,43 +79,51 @@ So that I can understand all configuration options and methods.
 ## Tasks / Subtasks
 
 - [x] Locate v0.2.0 API.md source (AC: 11)
+
   - [x] Find existing API.md (730 lines)
   - [x] Review structure and content
   - [x] Identify sections to preserve
 
 - [x] Update package references (AC: 1, 9)
+
   - [x] Replace VoicelineDSP with @loqalabs/loqa-audio-bridge (all occurrences)
   - [x] Replace VoicelineDSPModule with LoqaAudioBridgeModule
   - [x] Update all import statements
   - [x] Update code examples to use new package name
 
 - [x] Document module methods (AC: 2)
+
   - [x] startAudioStream: parameters, returns, errors, examples, platform notes
   - [x] stopAudioStream: behavior and returns
   - [x] isStreaming: return value and usage
 
 - [x] Document event listeners (AC: 3)
+
   - [x] addAudioSamplesListener: payload structure, callback, cleanup
   - [x] addStreamStatusListener: status events
   - [x] addStreamErrorListener: error handling
 
 - [x] Document React hook (AC: 4)
+
   - [x] useAudioStreaming: parameters and return value
   - [x] Lifecycle and auto-cleanup behavior
   - [x] Component integration example
 
 - [x] Document TypeScript interfaces (AC: 5)
+
   - [x] AudioConfig: all properties with types and defaults
   - [x] AudioSample: event payload fields
   - [x] StreamStatus: enum values
   - [x] StreamError: error object structure
 
 - [x] Create configuration reference table (AC: 6)
+
   - [x] List all config parameters
   - [x] Document types, defaults, descriptions, valid values
   - [x] Add notes for platform-specific constraints
 
 - [x] Add comprehensive code examples (AC: 7)
+
   - [x] Basic streaming setup
   - [x] VAD configuration
   - [x] Error handling patterns
@@ -117,6 +131,7 @@ So that I can understand all configuration options and methods.
   - [x] React component integration
 
 - [x] Validate API documentation (AC: 8, 10, 11)
+
   - [x] Compile all TypeScript examples
   - [x] Cross-reference with type definitions
   - [x] Verify platform differences documented
@@ -137,19 +152,23 @@ So that I can understand all configuration options and methods.
 ### Project Structure Notes
 
 **File Location:**
+
 - Create at package root: `/loqa-audio-bridge/API.md`
 
 **Source Material:**
+
 - v0.2.0 API.md location: [Source: docs/loqa-audio-bridge/collaboration/voicelinedsp-v0.2.0-api-spec.md]
 - TypeScript type definitions: src/types.ts (from Story 2.1)
 - Example app usage: example/App.tsx (from Story 3.4)
 
 **Dependencies:**
+
 - Requires Story 2.1 (TypeScript migration) complete for type definitions
 - Requires Story 3.4 (example app) complete for code example validation
 - References Story 4.1 (README) and Story 4.2 (Integration Guide) for consistency
 
 **Alignment with Architecture:**
+
 - Supports FR28 (Migrate existing API.md - 730 lines)
 - Maintains FR19 (TypeScript type definitions) by documenting interfaces
 - Enables developers to understand FR14-FR18 (feature parity preservation)
@@ -159,6 +178,7 @@ So that I can understand all configuration options and methods.
 **From Story 4.2 (write-integration-guide-md):**
 
 Key patterns to maintain:
+
 - Use consistent code examples across all documentation
 - Same configuration values (sampleRate: 16000, bufferSize: 2048)
 - Same terminology for features (VAD, battery optimization)
@@ -186,6 +206,7 @@ Claude Sonnet 4.5 (claude-sonnet-4-5-20250929)
 ### Debug Log
 
 **Implementation Plan:**
+
 1. Loaded v0.2.0 API spec (803 lines) from docs/loqa-audio-bridge/collaboration/voicelinedsp-v0.2.0-api-spec.md
 2. Reviewed current type definitions in modules/loqa-audio-bridge/src/types.ts
 3. Reviewed API implementation in modules/loqa-audio-bridge/src/api.ts
@@ -193,6 +214,7 @@ Claude Sonnet 4.5 (claude-sonnet-4-5-20250929)
 5. Reviewed example app for code example validation
 
 **Migration Strategy:**
+
 - Preserve all v0.2.0 section structure (Overview, Type Definitions, Function API, Event Listeners, Usage Examples, Error Handling, Platform Notes, Performance, Migration)
 - Update ALL package references: VoicelineDSP → @loqalabs/loqa-audio-bridge, VoicelineDSPModule → LoqaAudioBridgeModule
 - Add new v0.3.0 features: VAD, adaptive processing, useAudioStreaming hook
@@ -201,6 +223,7 @@ Claude Sonnet 4.5 (claude-sonnet-4-5-20250929)
 - Add 5 detailed code examples matching example app patterns
 
 **Content Expansion:**
+
 - v0.2.0 API.md: 803 lines
 - v0.3.0 API.md: 1,197 lines (49% larger)
 - New content: React Hook section, VAD/battery optimization examples, iOS format conversion notes
@@ -220,6 +243,7 @@ All acceptance criteria met:
 4. **React Hook Documented (AC4)**: Comprehensive `useAudioStreaming()` hook documentation including UseAudioStreamingOptions interface, UseAudioStreamingResult interface, lifecycle behavior (auto-cleanup on unmount), and 3 component integration examples.
 
 5. **TypeScript Interfaces Documented (AC5)**: All interfaces fully documented with JSDoc comments:
+
    - StreamConfig: 5 properties (sampleRate, bufferSize, channels, vadEnabled, adaptiveProcessing) with types, defaults, valid values
    - AudioSampleEvent: 5 fields (samples, sampleRate, frameLength, timestamp, rms)
    - StreamStatusEvent: 3 fields (status enum, timestamp, platform)
@@ -229,6 +253,7 @@ All acceptance criteria met:
 6. **Configuration Reference Table (AC6)**: Complete table with 5 config parameters, types, defaults, descriptions, valid values, and platform notes (iOS: buffer size must be power of 2).
 
 7. **Code Examples (AC7)**: 5 comprehensive examples added:
+
    - Basic streaming lifecycle (11 steps)
    - VAD configuration (voice activity detection)
    - Error handling (all 5 error codes with recovery strategies)
@@ -240,6 +265,7 @@ All acceptance criteria met:
 9. **v0.3.0 Package Names (AC9)**: All import statements use `@loqalabs/loqa-audio-bridge`. Migration section shows both v0.2.0 (old) and v0.3.0 (new) for developer reference.
 
 10. **Platform Differences Documented (AC10)**: Platform-specific behaviors clearly called out:
+
     - iOS: AVAudioEngine, hardware rate detection (48kHz), AVAudioConverter downsampling, buffer size must be power of 2, interruption handling, 40-60ms latency
     - Android: AudioRecord, runtime permission required, ENCODING_PCM_FLOAT, 60-100ms latency
     - Cross-platform consistency section with ✅/⚠️ markers
@@ -247,6 +273,7 @@ All acceptance criteria met:
 11. **v0.2.0 Content Preserved (AC11)**: All 730 lines of v0.2.0 content preserved and enhanced. Final API.md: 1,197 lines (49% larger due to new features: VAD, adaptive processing, useAudioStreaming hook, iOS format conversion).
 
 **Key Achievements:**
+
 - Zero breaking changes - full backward compatibility with v0.2.0 API
 - Comprehensive documentation enables <5min API evaluation
 - Examples match example app patterns (sampleRate: 16000, bufferSize: 2048)
@@ -297,17 +324,20 @@ The developer delivered on ALL promises made in the story, with ZERO false compl
 **STRENGTHS IDENTIFIED:**
 
 1. **Content Expansion Excellence** (49% larger than v0.2.0):
+
    - New React Hook section (UseAudioStreamingOptions, UseAudioStreamingResult interfaces)
    - VAD and battery optimization examples
    - iOS audio format conversion documentation (48kHz → 16kHz downsampling with AVAudioConverter)
    - Enhanced platform-specific notes with latency, thread models, constraints
 
 2. **Migration Quality**:
+
    - VoicelineDSP references ONLY in Migration section (intentional, lines 1132-1187)
    - All code examples use @loqalabs/loqa-audio-bridge
    - Migration guide provides both v0.2.0 and v0.3.0 comparison
 
 3. **TypeScript Accuracy**:
+
    - All examples use correct import syntax
    - Type signatures match src/types.ts exactly
    - Configuration table aligns with StreamConfig interface (sampleRate, bufferSize, channels, vadEnabled, adaptiveProcessing)
@@ -320,36 +350,36 @@ The developer delivered on ALL promises made in the story, with ZERO false compl
 
 ### Acceptance Criteria Coverage
 
-| AC# | Description | Status | Evidence |
-|-----|-------------|--------|----------|
-| AC1 | All references updated v0.2.0 → v0.3.0 | ✅ IMPLEMENTED | @loqalabs/loqa-audio-bridge: 20 occurrences, LoqaAudioBridgeModule: 2 occurrences; Zero VoicelineDSP or voiceline-dsp references (verified 2025-11-18) |
-| AC2 | Module Methods Section documented | ✅ IMPLEMENTED | Lines 307-441: startAudioStream (full JSDoc, params, returns, errors, examples, iOS/Android notes), stopAudioStream, isStreaming |
-| AC3 | Event Listeners Section documented | ✅ IMPLEMENTED | Lines 444-630: addAudioSampleListener, addStreamStatusListener, addStreamErrorListener with full payload structures, TypeScript signatures, cleanup |
-| AC4 | React Hook Section documented | ✅ IMPLEMENTED | Lines 631-758: useAudioStreaming with UseAudioStreamingOptions interface, UseAudioStreamingResult interface, lifecycle behavior, 3 component examples |
-| AC5 | TypeScript Interfaces Section documented | ✅ IMPLEMENTED | Lines 32-289: StreamConfig (5 properties), AudioSampleEvent (5 fields), StreamStatusEvent (3 fields), StreamErrorEvent (4 fields), StreamErrorCode (5 enum values) |
-| AC6 | Configuration Reference Table | ✅ IMPLEMENTED | Lines 293-304: Table with 5 parameters (sampleRate, bufferSize, channels, vadEnabled, adaptiveProcessing), types, defaults, descriptions, valid values, platform notes |
-| AC7 | Code Examples Section (5 examples) | ✅ IMPLEMENTED | Lines 762-987: Basic Streaming (11 steps), VAD configuration, Error handling (all 5 error codes), Battery-aware configuration, React Component Integration (VoicePracticeScreen with RMS visualization) |
-| AC8 | All TypeScript examples compile | ✅ IMPLEMENTED | All examples cross-referenced with src/types.ts and src/api.ts; 15 import statements use correct package name; 37 type references match actual interfaces |
-| AC9 | Examples use v0.3.0 package name | ✅ IMPLEMENTED | All imports: `from '@loqalabs/loqa-audio-bridge'`; Migration section shows both v0.2.0 (old) and v0.3.0 (new) for developer reference |
-| AC10 | Platform-specific behaviors documented | ✅ IMPLEMENTED | Lines 1051-1086: iOS section (AVAudioEngine, 48kHz→16kHz downsampling, 40-60ms latency, buffer size power-of-2), Android section (AudioRecord, 60-100ms latency, RECORD_AUDIO permission), Cross-platform consistency section |
-| AC11 | Migration preserves v0.2.0 content | ✅ IMPLEMENTED | v0.2.0 API.md: 802 lines → v0.3.0 API.md: 1,197 lines (49% larger); All v0.2.0 sections preserved and enhanced; New content: VAD, adaptive processing, useAudioStreaming hook, iOS format conversion |
+| AC#  | Description                              | Status         | Evidence                                                                                                                                                                                                                      |
+| ---- | ---------------------------------------- | -------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| AC1  | All references updated v0.2.0 → v0.3.0   | ✅ IMPLEMENTED | @loqalabs/loqa-audio-bridge: 20 occurrences, LoqaAudioBridgeModule: 2 occurrences; Zero VoicelineDSP or voiceline-dsp references (verified 2025-11-18)                                                                        |
+| AC2  | Module Methods Section documented        | ✅ IMPLEMENTED | Lines 307-441: startAudioStream (full JSDoc, params, returns, errors, examples, iOS/Android notes), stopAudioStream, isStreaming                                                                                              |
+| AC3  | Event Listeners Section documented       | ✅ IMPLEMENTED | Lines 444-630: addAudioSampleListener, addStreamStatusListener, addStreamErrorListener with full payload structures, TypeScript signatures, cleanup                                                                           |
+| AC4  | React Hook Section documented            | ✅ IMPLEMENTED | Lines 631-758: useAudioStreaming with UseAudioStreamingOptions interface, UseAudioStreamingResult interface, lifecycle behavior, 3 component examples                                                                         |
+| AC5  | TypeScript Interfaces Section documented | ✅ IMPLEMENTED | Lines 32-289: StreamConfig (5 properties), AudioSampleEvent (5 fields), StreamStatusEvent (3 fields), StreamErrorEvent (4 fields), StreamErrorCode (5 enum values)                                                            |
+| AC6  | Configuration Reference Table            | ✅ IMPLEMENTED | Lines 293-304: Table with 5 parameters (sampleRate, bufferSize, channels, vadEnabled, adaptiveProcessing), types, defaults, descriptions, valid values, platform notes                                                        |
+| AC7  | Code Examples Section (5 examples)       | ✅ IMPLEMENTED | Lines 762-987: Basic Streaming (11 steps), VAD configuration, Error handling (all 5 error codes), Battery-aware configuration, React Component Integration (VoicePracticeScreen with RMS visualization)                       |
+| AC8  | All TypeScript examples compile          | ✅ IMPLEMENTED | All examples cross-referenced with src/types.ts and src/api.ts; 15 import statements use correct package name; 37 type references match actual interfaces                                                                     |
+| AC9  | Examples use v0.3.0 package name         | ✅ IMPLEMENTED | All imports: `from '@loqalabs/loqa-audio-bridge'`; Migration section shows both v0.2.0 (old) and v0.3.0 (new) for developer reference                                                                                         |
+| AC10 | Platform-specific behaviors documented   | ✅ IMPLEMENTED | Lines 1051-1086: iOS section (AVAudioEngine, 48kHz→16kHz downsampling, 40-60ms latency, buffer size power-of-2), Android section (AudioRecord, 60-100ms latency, RECORD_AUDIO permission), Cross-platform consistency section |
+| AC11 | Migration preserves v0.2.0 content       | ✅ IMPLEMENTED | v0.2.0 API.md: 802 lines → v0.3.0 API.md: 1,197 lines (49% larger); All v0.2.0 sections preserved and enhanced; New content: VAD, adaptive processing, useAudioStreaming hook, iOS format conversion                          |
 
 **Coverage Summary:** 11 of 11 acceptance criteria fully implemented (100%)
 
 ### Task Completion Validation
 
-| Task Group | Marked As | Verified As | Evidence |
-|------------|-----------|-------------|----------|
-| **Locate v0.2.0 API.md source (3 subtasks)** | [x] Complete | ✅ VERIFIED | v0.2.0 API spec loaded from docs/loqa-audio-bridge/collaboration/voicelinedsp-v0.2.0-api-spec.md (802 lines); Structure reviewed; Sections identified for preservation |
-| **Update package references (4 subtasks)** | [x] Complete | ✅ VERIFIED | All VoicelineDSP→@loqalabs/loqa-audio-bridge replacements complete; VoicelineDSPModule→LoqaAudioBridgeModule done; VoicelineDSP only in Migration section (intentional); 15 import statements verified |
-| **Document module methods (3 subtasks)** | [x] Complete | ✅ VERIFIED | startAudioStream: lines 309-376 (full JSDoc, params, returns, errors, 2 examples, iOS/Android notes); stopAudioStream: lines 377-412; isStreaming: lines 414-441 |
-| **Document event listeners (3 subtasks)** | [x] Complete | ✅ VERIFIED | addAudioSampleListener: lines 460-518 (payload structure, callback signature, 2 examples, subscription cleanup); addStreamStatusListener: lines 520-571; addStreamErrorListener: lines 573-630 |
-| **Document React hook (3 subtasks)** | [x] Complete | ✅ VERIFIED | useAudioStreaming: lines 635-758 with UseAudioStreamingOptions interface (5 properties), UseAudioStreamingResult interface (5 properties); Lifecycle behavior documented; 3 component integration examples (Basic Usage, Error Handling, Auto-Start) |
-| **Document TypeScript interfaces (4 subtasks)** | [x] Complete | ✅ VERIFIED | AudioConfig→StreamConfig: lines 34-112 (5 properties with JSDoc); AudioSample→AudioSampleEvent: lines 114-180 (5 fields); StreamStatus→StreamStatusEvent: lines 182-215 (3 fields); StreamError→StreamErrorEvent: lines 217-261 (4 fields); StreamErrorCode enum: lines 263-289 (5 values) |
-| **Create configuration reference table (3 subtasks)** | [x] Complete | ✅ VERIFIED | Lines 293-304: Table with 5 parameters, types, defaults, descriptions, valid values; Platform notes included (iOS: buffer size power-of-2, VAD threshold 0.01, battery < 20%) |
-| **Add comprehensive code examples (5 subtasks)** | [x] Complete | ✅ VERIFIED | 5 examples added: Basic Streaming (lines 764-822, 11-step lifecycle), VAD configuration (lines 824-846), Error handling (lines 848-892, all 5 error codes with recovery strategies), Battery-aware (lines 894-918), React Component Integration (lines 920-987, VoicePracticeScreen with RMS visualization) |
-| **Validate API documentation (4 subtasks)** | [x] Complete | ✅ VERIFIED | All TypeScript examples cross-referenced with type definitions in src/types.ts and src/api.ts; Platform differences documented (lines 1051-1086); v0.2.0 content preserved (802→1,197 lines, 49% expansion) |
-| **Cross-reference with example app (2 subtasks)** | [x] Complete | ✅ VERIFIED | Examples match example app patterns (sampleRate: 16000, bufferSize: 2048); Consistency across documentation verified; Configuration reference table matches types.ts exactly |
+| Task Group                                            | Marked As    | Verified As | Evidence                                                                                                                                                                                                                                                                                                    |
+| ----------------------------------------------------- | ------------ | ----------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Locate v0.2.0 API.md source (3 subtasks)**          | [x] Complete | ✅ VERIFIED | v0.2.0 API spec loaded from docs/loqa-audio-bridge/collaboration/voicelinedsp-v0.2.0-api-spec.md (802 lines); Structure reviewed; Sections identified for preservation                                                                                                                                      |
+| **Update package references (4 subtasks)**            | [x] Complete | ✅ VERIFIED | All VoicelineDSP→@loqalabs/loqa-audio-bridge replacements complete; VoicelineDSPModule→LoqaAudioBridgeModule done; VoicelineDSP only in Migration section (intentional); 15 import statements verified                                                                                                      |
+| **Document module methods (3 subtasks)**              | [x] Complete | ✅ VERIFIED | startAudioStream: lines 309-376 (full JSDoc, params, returns, errors, 2 examples, iOS/Android notes); stopAudioStream: lines 377-412; isStreaming: lines 414-441                                                                                                                                            |
+| **Document event listeners (3 subtasks)**             | [x] Complete | ✅ VERIFIED | addAudioSampleListener: lines 460-518 (payload structure, callback signature, 2 examples, subscription cleanup); addStreamStatusListener: lines 520-571; addStreamErrorListener: lines 573-630                                                                                                              |
+| **Document React hook (3 subtasks)**                  | [x] Complete | ✅ VERIFIED | useAudioStreaming: lines 635-758 with UseAudioStreamingOptions interface (5 properties), UseAudioStreamingResult interface (5 properties); Lifecycle behavior documented; 3 component integration examples (Basic Usage, Error Handling, Auto-Start)                                                        |
+| **Document TypeScript interfaces (4 subtasks)**       | [x] Complete | ✅ VERIFIED | AudioConfig→StreamConfig: lines 34-112 (5 properties with JSDoc); AudioSample→AudioSampleEvent: lines 114-180 (5 fields); StreamStatus→StreamStatusEvent: lines 182-215 (3 fields); StreamError→StreamErrorEvent: lines 217-261 (4 fields); StreamErrorCode enum: lines 263-289 (5 values)                  |
+| **Create configuration reference table (3 subtasks)** | [x] Complete | ✅ VERIFIED | Lines 293-304: Table with 5 parameters, types, defaults, descriptions, valid values; Platform notes included (iOS: buffer size power-of-2, VAD threshold 0.01, battery < 20%)                                                                                                                               |
+| **Add comprehensive code examples (5 subtasks)**      | [x] Complete | ✅ VERIFIED | 5 examples added: Basic Streaming (lines 764-822, 11-step lifecycle), VAD configuration (lines 824-846), Error handling (lines 848-892, all 5 error codes with recovery strategies), Battery-aware (lines 894-918), React Component Integration (lines 920-987, VoicePracticeScreen with RMS visualization) |
+| **Validate API documentation (4 subtasks)**           | [x] Complete | ✅ VERIFIED | All TypeScript examples cross-referenced with type definitions in src/types.ts and src/api.ts; Platform differences documented (lines 1051-1086); v0.2.0 content preserved (802→1,197 lines, 49% expansion)                                                                                                 |
+| **Cross-reference with example app (2 subtasks)**     | [x] Complete | ✅ VERIFIED | Examples match example app patterns (sampleRate: 16000, bufferSize: 2048); Consistency across documentation verified; Configuration reference table matches types.ts exactly                                                                                                                                |
 
 **Task Completion Summary:** 34 of 34 completed tasks verified, 0 questionable, 0 falsely marked complete (100% verified)
 
@@ -433,6 +463,7 @@ The developer delivered on ALL promises made in the story, with ZERO false compl
   - AC1 now fully satisfied: All references updated from v0.2.0 to v0.3.0 ✅
 
 **Verification:**
+
 - Ran `grep -n "VoicelineDSP\|voiceline-dsp\|VoicelineDSPModule" API.md` → **0 results** (all old references removed)
 - All acceptance criteria now fully met (11/11) ✅
 - Story ready for final approval

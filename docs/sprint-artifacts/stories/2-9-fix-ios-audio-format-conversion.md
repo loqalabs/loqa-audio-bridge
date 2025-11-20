@@ -34,6 +34,7 @@ mismatch, <AVAudioFormat 0x600002161770: 1 ch, 16000 Hz, Float32>'
 **Root Cause**: iOS hardware audio input runs at **48 kHz** (system hardware rate), but the module requests a tap at **16 kHz** (desired sample rate for speech recognition). iOS's `AVAudioEngine.installTap()` requires the tap format to match the hardware format, or it throws an exception.
 
 **Required Solution**:
+
 1. Tap at the hardware rate (48 kHz)
 2. Use `AVAudioConverter` to downsample to the requested rate (16 kHz)
 
@@ -46,16 +47,19 @@ mismatch, <AVAudioFormat 0x600002161770: 1 ch, 16000 Hz, Float32>'
 **Then** the module:
 
 1. **Detects Hardware Format**:
+
    - Gets the hardware format from `inputNode.outputFormat(forBus: 0)`
    - Identifies the hardware sample rate (typically 48000 Hz)
    - Logs the hardware format for debugging
 
 2. **Installs Tap at Hardware Rate**:
+
    - Creates tap using `inputNode.installTap(onBus: 0, bufferSize: scaledBufferSize, format: hardwareFormat)`
-   - Scales buffer size proportionally (e.g., 2048 * (48000/16000) = 6144 samples)
+   - Scales buffer size proportionally (e.g., 2048 \* (48000/16000) = 6144 samples)
    - Does NOT use the requested sample rate for the tap format
 
 3. **Converts to Requested Format**:
+
    - Creates `AVAudioConverter` from hardware format to target format (16 kHz)
    - In the tap callback, converts each buffer from 48 kHz → 16 kHz
    - Handles conversion errors gracefully with error events
@@ -66,12 +70,14 @@ mismatch, <AVAudioFormat 0x600002161770: 1 ch, 16000 Hz, Float32>'
    - Event rate matches expected rate (e.g., ~8 Hz for 2048 buffer @ 16 kHz)
 
 **And** when the user runs the example app on iOS:
+
 - Taps "Start Streaming" button
 - Audio streaming starts without crash
 - RMS visualization updates in real-time
 - No `AVAudioEngine` format mismatch errors
 
 **And** the implementation:
+
 - Preserves sample accuracy (no dropped samples)
 - Handles variable hardware rates (44.1kHz, 48kHz, etc.)
 - Includes error handling for conversion failures
@@ -82,9 +88,11 @@ mismatch, <AVAudioFormat 0x600002161770: 1 ch, 16000 Hz, Float32>'
 ## Tasks/Subtasks
 
 ### Task 1: Update `installAudioTap` to Use Hardware Format
+
 - [ ] Open `ios/LoqaAudioBridgeModule.swift`
 - [ ] Locate the `installAudioTap(config: StreamConfig)` function
 - [ ] Replace the current tap format creation:
+
   ```swift
   // BEFORE (causes crash)
   let format = AVAudioFormat(
@@ -99,6 +107,7 @@ mismatch, <AVAudioFormat 0x600002161770: 1 ch, 16000 Hz, Float32>'
   NSLog("LoqaAudioBridge: Hardware format: \(hardwareFormat)")
   NSLog("LoqaAudioBridge: Requested format: \(config.sampleRate) Hz")
   ```
+
 - [ ] Calculate scaled buffer size for hardware rate:
   ```swift
   let ratio = hardwareFormat.sampleRate / config.sampleRate
@@ -116,11 +125,13 @@ mismatch, <AVAudioFormat 0x600002161770: 1 ch, 16000 Hz, Float32>'
   ```
 
 ### Task 2: Implement Audio Format Conversion
+
 - [ ] Add a new property to store the converter:
   ```swift
   private var audioConverter: AVAudioConverter?
   ```
 - [ ] Create a new function `processAndConvertAudioBuffer`:
+
   ```swift
   private func processAndConvertAudioBuffer(
       _ buffer: AVAudioPCMBuffer,
@@ -187,6 +198,7 @@ mismatch, <AVAudioFormat 0x600002161770: 1 ch, 16000 Hz, Float32>'
   ```
 
 ### Task 3: Update Error Handling
+
 - [ ] Add new error codes to the module's error handling:
   - `FORMAT_ERROR`: Failed to create audio format
   - `CONVERTER_ERROR`: Audio converter initialization failed
@@ -194,6 +206,7 @@ mismatch, <AVAudioFormat 0x600002161770: 1 ch, 16000 Hz, Float32>'
 - [ ] Ensure errors are sent via the existing `sendError` mechanism
 
 ### Task 4: Add Logging for Debugging
+
 - [ ] Log hardware format detection
 - [ ] Log converter creation
 - [ ] Log buffer size scaling
@@ -201,6 +214,7 @@ mismatch, <AVAudioFormat 0x600002161770: 1 ch, 16000 Hz, Float32>'
 - [ ] Use `NSLog` for compatibility with Xcode console
 
 ### Task 5: Clean Up Converter on Stream Stop
+
 - [ ] Update `stopAudioStream` to clean up the converter:
   ```swift
   private func stopAudioStream() throws {
@@ -210,6 +224,7 @@ mismatch, <AVAudioFormat 0x600002161770: 1 ch, 16000 Hz, Float32>'
   ```
 
 ### Task 6: Test with Example App
+
 - [ ] Navigate to `modules/loqa-audio-bridge/example/`
 - [ ] Build and run on iOS: `npx expo run:ios`
 - [ ] Grant microphone permission when prompted
@@ -224,12 +239,14 @@ mismatch, <AVAudioFormat 0x600002161770: 1 ch, 16000 Hz, Float32>'
 - [ ] Verify streaming stops cleanly without errors
 
 ### Task 7: Test with Different Sample Rates
+
 - [ ] Test with 16000 Hz (speech recognition)
 - [ ] Test with 44100 Hz (CD quality)
 - [ ] Test with 48000 Hz (matches hardware - no conversion needed)
 - [ ] Verify all rates work correctly
 
 ### Task 8: Update Documentation
+
 - [ ] Add comments explaining the format conversion approach
 - [ ] Document why we tap at hardware rate vs requested rate
 - [ ] Add inline documentation for the converter setup
@@ -243,11 +260,13 @@ mismatch, <AVAudioFormat 0x600002161770: 1 ch, 16000 Hz, Float32>'
 **iOS Audio Architecture**: Unlike Android, iOS's `AVAudioEngine` is strict about format matching. The `installTap` API requires that the tap format matches the hardware's output format exactly. This is a fundamental limitation of the Core Audio framework.
 
 **Why This Wasn't Caught Earlier**:
+
 - Story 2-2 (iOS Swift implementation) migrated v0.2.0 code that didn't account for this
 - Story 2-6 (iOS tests) was deferred, so no unit tests validated audio tap creation
 - Story 3-4 (example app) was the first end-to-end iOS runtime test
 
 **Hardware Sample Rates**:
+
 - Most iOS devices: 48000 Hz
 - Some older devices: 44100 Hz
 - Can vary based on connected audio accessories (Bluetooth headphones, etc.)
@@ -255,29 +274,35 @@ mismatch, <AVAudioFormat 0x600002161770: 1 ch, 16000 Hz, Float32>'
 ### Conversion Strategy
 
 **Option 1: Inline Conversion (CHOSEN)**
+
 - Tap at hardware rate
 - Convert each buffer in the tap callback
 - Send downsampled audio to JavaScript
 
 **Advantages**:
+
 - Simpler state management
 - Lower latency (no buffering)
 - Memory efficient (convert and discard)
 
 **Disadvantages**:
+
 - CPU overhead per callback
 - More complex error handling
 
 **Option 2: Separate Converter Node**
+
 - Use `AVAudioMixerNode` and `AVAudioConverter`
 - Connect nodes in audio graph
 - Let Core Audio handle conversion
 
 **Advantages**:
+
 - Potentially more efficient (Core Audio optimizations)
 - Cleaner separation of concerns
 
 **Disadvantages**:
+
 - More complex audio graph setup
 - Higher memory overhead
 - Harder to debug
@@ -289,11 +314,13 @@ mismatch, <AVAudioFormat 0x600002161770: 1 ch, 16000 Hz, Float32>'
 **CPU Impact**: Downsampling from 48 kHz → 16 kHz is a 3:1 reduction. Apple's `AVAudioConverter` uses optimized DSP algorithms (typically polyphase filters) that are efficient.
 
 **Estimated Overhead**:
+
 - 48 kHz → 16 kHz conversion: ~2-5% CPU on modern iPhones
 - Negligible impact on battery life
 - Acceptable for real-time speech recognition use cases
 
 **Buffer Size Scaling**:
+
 - Requested: 2048 samples @ 16 kHz = 128ms
 - Hardware: 6144 samples @ 48 kHz = 128ms (same duration)
 - Output: 2048 samples @ 16 kHz (as requested)
@@ -301,19 +328,23 @@ mismatch, <AVAudioFormat 0x600002161770: 1 ch, 16000 Hz, Float32>'
 ### Alternative Solutions Considered
 
 **Workaround 1: Match Hardware Rate**
+
 - Request 48 kHz instead of 16 kHz
 - No conversion needed
 
 **Why Not**:
+
 - Defeats the purpose of allowing custom sample rates
 - Speech recognition models expect 16 kHz
 - 3x more data sent to JavaScript (wasted bandwidth)
 
 **Workaround 2: Software Tap**
+
 - Use `AVAudioRecorder` instead of `AVAudioEngine`
 - Record to buffer, then read
 
 **Why Not**:
+
 - Higher latency (buffering required)
 - More complex state management
 - Doesn't align with the existing architecture
@@ -323,6 +354,7 @@ mismatch, <AVAudioFormat 0x600002161770: 1 ch, 16000 Hz, Float32>'
 This story is added to Epic 2 (Code Migration & Quality Fixes) because it's fixing a bug introduced during the iOS Swift migration (Story 2-2). The original v0.2.0 implementation likely had the same issue but it went unnoticed due to lack of testing.
 
 **Relationship to Other Stories**:
+
 - Story 2-2: iOS Swift implementation (introduced the bug)
 - Story 2-6: iOS tests deferred (would have caught this)
 - Story 3-4: Example app implementation (discovered the bug)
@@ -330,6 +362,7 @@ This story is added to Epic 2 (Code Migration & Quality Fixes) because it's fixi
 ### Learnings for Voiceline Team
 
 When integrating this module into the Voiceline app:
+
 1. iOS audio streaming will work correctly at any requested sample rate
 2. The module handles format conversion transparently
 3. No special configuration needed
@@ -369,11 +402,13 @@ When integrating this module into the Voiceline app:
 ## Impact
 
 **Unblocks**:
+
 - Story 3-4 Task 9: iOS testing can now be completed
 - Story 3-4 Acceptance Criteria: Can verify app functions on iOS
 - Epic 3 Goal: Can prove autolinking works end-to-end on iOS
 
 **Validates**:
+
 - FR14: Maintains 100% feature parity with v0.2.0 (audio streaming works)
 - FR10: iOS autolinking works correctly (once audio streaming works)
 - Epic 2 Goal: Working, compilable module with all v0.2.0 features intact

@@ -20,6 +20,7 @@ So that native Android functionality is validated.
 
 **Given** Android Kotlin code is migrated (Story 2.4)
 **When** I copy Android test files from v0.2.0:
+
 - android/src/test/java/.../LoqaAudioBridgeModuleTest.kt (unit tests)
 - android/src/androidTest/java/.../LoqaAudioBridgeIntegrationTest.kt (instrumented tests)
 
@@ -36,6 +37,7 @@ So that native Android functionality is validated.
 **And** all instrumented tests pass
 
 **And** tests validate:
+
 - AudioRecord can be initialized
 - Audio format configuration correct
 - RMS calculation accuracy (VAD)
@@ -49,6 +51,7 @@ So that native Android functionality is validated.
 ## Tasks/Subtasks
 
 ### Task 1: Migrate Android Unit Test Files
+
 - [ ] Create android/src/test/java/expo/modules/loqaaudiobridge/ directory structure
 - [ ] Copy v0.2.0 VoicelineDSPModuleTest.kt → android/src/test/java/expo/modules/loqaaudiobridge/LoqaAudioBridgeModuleTest.kt
 - [ ] Update package declaration: `package expo.modules.loqaaudiobridge`
@@ -56,6 +59,7 @@ So that native Android functionality is validated.
 - [ ] Update module imports and instantiations
 
 ### Task 2: Migrate Android Instrumented Test Files
+
 - [ ] Create android/src/androidTest/java/expo/modules/loqaaudiobridge/ directory structure
 - [ ] Copy v0.2.0 VoicelineDSPIntegrationTest.kt → android/src/androidTest/java/expo/modules/loqaaudiobridge/LoqaAudioBridgeIntegrationTest.kt
 - [ ] Update package declaration: `package expo.modules.loqaaudiobridge`
@@ -63,6 +67,7 @@ So that native Android functionality is validated.
 - [ ] Update module imports and instantiations
 
 ### Task 3: Update Test Dependencies in build.gradle
+
 - [ ] Open android/build.gradle
 - [ ] Verify testImplementation dependencies present:
   - `testImplementation 'junit:junit:4.13.2'`
@@ -73,6 +78,7 @@ So that native Android functionality is validated.
 - [ ] Run `./gradlew --refresh-dependencies` if needed
 
 ### Task 4: Run Unit Tests and Fix Failures
+
 - [ ] Navigate to android/ directory
 - [ ] Run unit tests: `./gradlew test`
 - [ ] Review test output for failures
@@ -81,12 +87,14 @@ So that native Android functionality is validated.
 - [ ] Re-run until all unit tests pass
 
 ### Task 5: Set Up Android Emulator for Instrumented Tests
+
 - [ ] Check if Android emulator running: `adb devices`
 - [ ] If not running: Start emulator from Android Studio or command line
 - [ ] Verify emulator connected: `adb devices` shows device online
 - [ ] Note: Instrumented tests require running emulator or physical device
 
 ### Task 6: Run Instrumented Tests and Fix Failures
+
 - [ ] Run instrumented tests: `./gradlew connectedAndroidTest`
 - [ ] Review test output for failures
 - [ ] If failures: debug and fix one-by-one
@@ -94,6 +102,7 @@ So that native Android functionality is validated.
 - [ ] Re-run until all instrumented tests pass
 
 ### Task 7: Validate Test Coverage
+
 - [ ] Verify AudioRecord initialization tests exist
 - [ ] Verify audio format configuration tests exist (sample rate, buffer size)
 - [ ] Verify RMS calculation accuracy tests exist (VAD validation)
@@ -102,6 +111,7 @@ So that native Android functionality is validated.
 - [ ] Confirm all critical paths tested
 
 ### Task 8: Verify Test Exclusion from Distribution
+
 - [ ] Confirm Gradle auto-excludes src/test/ from AAR (Layer 2)
 - [ ] Confirm Gradle auto-excludes src/androidTest/ from AAR (Layer 2)
 - [ ] Confirm .npmignore includes android/src/test/ (Layer 3)
@@ -121,12 +131,14 @@ So that native Android functionality is validated.
 ### Android Test Types
 
 **Unit Tests** (src/test/):
+
 - Pure Kotlin tests, no Android framework dependencies
 - Fast execution, no emulator required
 - Use JUnit 4 + Mockito for mocking
 - Example: Logic tests, calculations, data transformations
 
 **Instrumented Tests** (src/androidTest/):
+
 - Android framework tests, require real Android environment
 - Slower execution, emulator or device required
 - Use AndroidX Test + Espresso
@@ -135,6 +147,7 @@ So that native Android functionality is validated.
 ### Package Name Updates
 
 **Pattern to Find/Replace**:
+
 ```kotlin
 // OLD (v0.2.0):
 package expo.modules.voicelinedsp
@@ -148,6 +161,7 @@ import expo.modules.loqaaudiobridge.LoqaAudioBridgeModule
 ### Expected Test Files
 
 **LoqaAudioBridgeModuleTest.kt** (Unit Tests):
+
 - Module instantiation test
 - Configuration validation test
 - RMS calculation accuracy test (pure math, no hardware)
@@ -155,6 +169,7 @@ import expo.modules.loqaaudiobridge.LoqaAudioBridgeModule
 - State management test (isRecording flag)
 
 **LoqaAudioBridgeIntegrationTest.kt** (Instrumented Tests):
+
 - AudioRecord initialization test (requires Android framework)
 - Permission handling test (RECORD_AUDIO)
 - Battery level monitoring test (requires Android framework)
@@ -164,6 +179,7 @@ import expo.modules.loqaaudiobridge.LoqaAudioBridgeModule
 ### JUnit 4 Testing Framework
 
 **Example Unit Test**:
+
 ```kotlin
 import org.junit.Test
 import org.junit.Assert.*
@@ -192,6 +208,7 @@ class LoqaAudioBridgeModuleTest {
 ### AndroidX Test Framework
 
 **Example Instrumented Test**:
+
 ```kotlin
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
@@ -228,6 +245,7 @@ class LoqaAudioBridgeIntegrationTest {
 ### Critical Test Cases
 
 **AudioRecord Initialization**:
+
 ```kotlin
 @Test
 fun testAudioRecordInitialization() {
@@ -251,6 +269,7 @@ fun testAudioRecordInitialization() {
 ```
 
 **RMS Calculation (VAD)**:
+
 ```kotlin
 @Test
 fun testRMSAccuracy() {
@@ -267,6 +286,7 @@ private fun calculateRMS(samples: FloatArray): Float {
 ```
 
 **Battery Monitoring**:
+
 ```kotlin
 @Test
 fun testBatteryLevelRetrieval() {
@@ -279,6 +299,7 @@ fun testBatteryLevelRetrieval() {
 ```
 
 **Permission Handling**:
+
 ```kotlin
 @Test
 fun testRecordAudioPermission() {
@@ -296,6 +317,7 @@ fun testRecordAudioPermission() {
 ### Test Dependencies (build.gradle)
 
 **Verify these exist**:
+
 ```gradle
 dependencies {
     // Unit test dependencies
@@ -314,12 +336,14 @@ dependencies {
 ### Running Tests
 
 **Unit Tests** (no emulator required):
+
 ```bash
 cd modules/loqa-audio-bridge/android
 ./gradlew test
 ```
 
 **Instrumented Tests** (emulator required):
+
 ```bash
 # Start emulator first (Android Studio or command line)
 cd modules/loqa-audio-bridge/android
@@ -327,17 +351,20 @@ cd modules/loqa-audio-bridge/android
 ```
 
 **View Test Reports**:
+
 - Unit tests: `android/build/reports/tests/testDebugUnitTest/index.html`
 - Instrumented: `android/build/reports/androidTests/connected/index.html`
 
 ### Emulator Setup
 
 **Check Emulator Running**:
+
 ```bash
 adb devices
 ```
 
 **Start Emulator** (if using AVD):
+
 ```bash
 emulator -avd Pixel_5_API_34
 ```
@@ -347,30 +374,37 @@ emulator -avd Pixel_5_API_34
 ### Troubleshooting Common Test Failures
 
 **Issue: "Package expo.modules.loqaaudiobridge does not exist"**
+
 - **Fix**: Update package declaration and imports in test files
 
 **Issue: "AudioRecord.ERROR_BAD_VALUE"**
+
 - **Fix**: Check sample rate and buffer size are valid for device
 
 **Issue: "Permission denied for RECORD_AUDIO"**
+
 - **Fix**: Add permission to androidTest/AndroidManifest.xml:
   ```xml
   <uses-permission android:name="android.permission.RECORD_AUDIO"/>
   ```
 
 **Issue: "No connected devices!"**
+
 - **Fix**: Start Android emulator or connect physical device
 
 **Issue: "Test failed: Expected true, got false"**
+
 - **Fix**: Debug specific test, may indicate feature regression - DO NOT ignore
 
 ### Test Exclusion (Gradle Convention)
 
 **Automatic Exclusion** (no config needed):
+
 - Gradle convention: `src/test/` excluded from AAR
 - Gradle convention: `src/androidTest/` excluded from AAR
 
 **Additional Defense** (.npmignore):
+
 ```
 android/src/test/
 android/src/androidTest/
@@ -379,12 +413,14 @@ android/src/androidTest/
 ### Learning from Story 2.4
 
 **If Story 2.4 revealed Kotlin implementation changes**, update tests:
+
 - [Note: Update after Story 2.4 completion]
 - Example: "Story 2.4 changed AudioRecord initialization - updated integration test"
 
 ### Test Output Expected
 
 **Unit Tests**:
+
 ```
 > Task :loqaaudiobridge:testDebugUnitTest
 
@@ -397,6 +433,7 @@ BUILD SUCCESSFUL in 3s
 ```
 
 **Instrumented Tests**:
+
 ```
 > Task :loqaaudiobridge:connectedDebugAndroidTest
 
@@ -450,11 +487,13 @@ BUILD SUCCESSFUL in 12s
 ## Dev Agent Record
 
 ### Implementation Date
+
 2025-11-17
 
 ### Debug Log
 
 **Task 1-3: Migration Phase (Completed)**
+
 - ✅ Created directory structure: `android/src/test/java/expo/modules/loqaaudiobridge/`
 - ✅ Created directory structure: `android/src/androidTest/java/expo/modules/loqaaudiobridge/`
 - ✅ Migrated VoicelineDSPModuleTest.kt → LoqaAudioBridgeModuleTest.kt (723 lines)
@@ -472,6 +511,7 @@ BUILD SUCCESSFUL in 12s
   - Kotlinx Coroutines Test 1.7.3
 
 **Task 4-6: Test Execution Phase (BLOCKED)**
+
 - ⚠️ Attempted to run `./gradlew test` from example/android
 - ❌ **BLOCKER**: Java Runtime Environment (JRE) not installed
 - ❌ Error: "Unable to locate a Java Runtime"
@@ -479,6 +519,7 @@ BUILD SUCCESSFUL in 12s
 - ❌ Cannot execute instrumented tests without JRE + emulator
 
 **Task 7: Test Coverage Validation (Completed via Code Review)**
+
 - ✅ Manual code review of LoqaAudioBridgeModuleTest.kt:
   - 28 unit tests covering all functionality
   - Permission checking, AudioRecord initialization, buffer calculations
@@ -494,6 +535,7 @@ BUILD SUCCESSFUL in 12s
   - Performance latency measurements
 
 **Task 8: Test Exclusion Validation (Completed)**
+
 - ✅ Verified .npmignore contains:
   - `/android/src/androidTest/`
   - `/android/src/test/`
@@ -510,6 +552,7 @@ BUILD SUCCESSFUL in 12s
 
 **Migration Status: COMPLETE** ✅
 All Android test files (1,371 lines) have been successfully migrated with:
+
 - Correct package names (expo.modules.loqaaudiobridge)
 - Correct class names (LoqaAudioBridgeModuleTest, LoqaAudioBridgeIntegrationTest)
 - All test dependencies configured in build.gradle
@@ -519,29 +562,34 @@ All Android test files (1,371 lines) have been successfully migrated with:
 Cannot execute tests due to missing Java Runtime Environment. This is consistent with Story 2.6 (iOS tests) which faced similar execution blockers.
 
 **Options for Resolution:**
+
 1. **Install JRE/JDK**: Install Java 17+ and Android SDK to execute tests locally
 2. **Defer to Epic 3**: Story 3-2 (Android autolinking validation) will create fresh Expo project with working Android build environment
 3. **Defer to Epic 5**: Story 5-2 (GitHub Actions CI) will provide automated test execution in CI environment
 
 **Recommendation: Defer to Epic 3-2**
+
 - Epic 3-2 explicitly validates Android autolinking in fresh Expo project
 - That environment will have complete Android SDK + JRE setup
 - Tests can be executed as part of autolinking validation
 - Mirrors approach taken for Story 2.6 (iOS tests deferred to Epic 3-1)
 
 **Risk Assessment:**
+
 - **Low Risk**: Tests are direct copies from v0.2.0 with only name changes
 - **Verification**: Both test files pass manual code review
 - **Coverage**: 41 total tests (28 unit + 13 integration) covering all v0.2.0 functionality
 - **Exclusion**: npm pack confirms zero test files ship to production
 
 ### File List
+
 - `modules/loqa-audio-bridge/android/src/test/java/expo/modules/loqaaudiobridge/LoqaAudioBridgeModuleTest.kt` (new, 723 lines)
 - `modules/loqa-audio-bridge/android/src/androidTest/java/expo/modules/loqaaudiobridge/LoqaAudioBridgeIntegrationTest.kt` (new, 648 lines)
 - `modules/loqa-audio-bridge/android/build.gradle` (modified, added dependencies section)
 - `docs/loqa-audio-bridge/sprint-artifacts/sprint-status.yaml` (modified, 2-7-migrate-and-run-android-tests: ready-for-dev → in-progress)
 
 ### Change Log
+
 - 2025-11-17: Migrated Android tests (1,371 lines), updated package/class names, configured dependencies, verified test exclusion; blocked on JRE for execution
 
 ---

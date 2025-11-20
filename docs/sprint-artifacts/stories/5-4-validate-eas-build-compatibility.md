@@ -11,11 +11,13 @@ So that cloud builds succeed without special configuration.
 ## Acceptance Criteria
 
 1. **Create test Expo project**:
+
    - Command: `npx create-expo-app eas-test`
    - Install package: `npx expo install @loqalabs/loqa-audio-bridge`
    - Package installed successfully in dependencies
 
 2. **Configure EAS Build** with eas.json:
+
    ```json
    {
      "build": {
@@ -31,6 +33,7 @@ So that cloud builds succeed without special configuration.
    ```
 
 3. **iOS EAS Build succeeds**:
+
    - Command: `eas build --platform ios --profile development`
    - EAS cloud build completes without errors
    - Build logs show LoqaAudioBridge linking correctly
@@ -38,6 +41,7 @@ So that cloud builds succeed without special configuration.
    - Audio streaming works on device
 
 4. **Android EAS Build succeeds**:
+
    - Command: `eas build --platform android --profile development`
    - EAS cloud build completes without errors
    - Build logs show LoqaAudioBridge linking correctly
@@ -45,6 +49,7 @@ So that cloud builds succeed without special configuration.
    - Audio streaming works on device
 
 5. **No special EAS configuration required**:
+
    - Standard eas.json works (no custom plugins)
    - No special app.json config needed for module
    - No build hooks or scripts required
@@ -58,16 +63,19 @@ So that cloud builds succeed without special configuration.
 ## Tasks / Subtasks
 
 - [ ] Set up EAS Build test environment (AC: 1)
+
   - [ ] Create fresh Expo project: npx create-expo-app eas-test
   - [ ] Install published package or use local tarball for testing
   - [ ] Verify package in dependencies
 
 - [ ] Create eas.json configuration (AC: 2)
+
   - [ ] Initialize EAS: eas build:configure
   - [ ] Configure development profile (internal distribution)
   - [ ] Configure production profile (store distribution)
 
 - [ ] Test iOS EAS Build (AC: 3)
+
   - [ ] Run: eas build --platform ios --profile development
   - [ ] Monitor build logs in EAS dashboard
   - [ ] Verify LoqaAudioBridge appears in build logs
@@ -77,6 +85,7 @@ So that cloud builds succeed without special configuration.
   - [ ] Verify zero errors or warnings
 
 - [ ] Test Android EAS Build (AC: 4)
+
   - [ ] Run: eas build --platform android --profile development
   - [ ] Monitor build logs in EAS dashboard
   - [ ] Verify LoqaAudioBridge appears in build logs
@@ -86,12 +95,14 @@ So that cloud builds succeed without special configuration.
   - [ ] Verify zero errors or warnings
 
 - [ ] Validate standard configuration works (AC: 5)
+
   - [ ] Confirm no custom Expo plugins needed
   - [ ] Confirm no special app.json modifications
   - [ ] Confirm no build hooks or scripts
   - [ ] Document that standard Expo config is sufficient
 
 - [ ] Document EAS Build compatibility (AC: 6)
+
   - [ ] Add EAS Build section to README.md
   - [ ] Add EAS Build section to INTEGRATION_GUIDE.md
   - [ ] Include example eas.json
@@ -115,15 +126,18 @@ So that cloud builds succeed without special configuration.
 ### Project Structure Notes
 
 **File Location:**
+
 - Test project: `/tmp/eas-test` or similar temporary directory
 - Documentation updates: README.md, INTEGRATION_GUIDE.md
 
 **Dependencies:**
+
 - Requires Story 5.3 (npm publishing) complete so package is published
 - Requires Epic 3 (autolinking validation) for local autolinking baseline
 - Requires Stories 4.1, 4.2 (docs) for documentation updates
 
 **Alignment with Architecture:**
+
 - Supports FR38 (Work with EAS Build without special configuration)
 - Validates FR36 (Compatible with Expo 52, 53, 54)
 - Validates FR37 (Compatible with React Native 0.72+)
@@ -134,6 +148,7 @@ So that cloud builds succeed without special configuration.
 **From Story 5.3 (create-automated-npm-publishing-workflow):**
 
 Key integration points:
+
 - Package must be published to npm for EAS Build to install it
 - Published package version should match what's being tested
 - EAS Build pulls from npm registry (or can use local tarball for pre-publish testing)

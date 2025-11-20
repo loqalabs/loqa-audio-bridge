@@ -36,9 +36,11 @@ So that Metro bundler can correctly resolve the compiled code (prevents Story 3-
 ### AC1: No Root-Level TypeScript Files
 
 **When** I check for root-level TypeScript files (except config files):
+
 ```bash
 find . -maxdepth 1 -name "*.ts" ! -name "*.config.ts" ! -name "jest.setup.ts"
 ```
+
 **Then** the command returns empty (no root-level TypeScript source files)
 
 **And** all TypeScript source files are in `src/` or `hooks/` directories
@@ -46,9 +48,11 @@ find . -maxdepth 1 -name "*.ts" ! -name "*.config.ts" ! -name "jest.setup.ts"
 ### AC2: TypeScript Config Compiles Only from Source Directories
 
 **When** I check `tsconfig.json` includes:
+
 ```bash
 grep '"include":' tsconfig.json
 ```
+
 **Then** it contains only `["./src"]` or `["./src", "./hooks"]`
 
 **And** it does NOT include root-level files like `["./index.ts"]`
@@ -56,9 +60,11 @@ grep '"include":' tsconfig.json
 ### AC3: Package.json Points to Compiled JavaScript
 
 **When** I check `package.json` main entry point:
+
 ```bash
 grep '"main":' package.json
 ```
+
 **Then** it points to `"build/index.js"` (compiled output)
 
 **And** it does NOT point to TypeScript source like `"index.ts"` or `"src/index.ts"`
@@ -66,10 +72,12 @@ grep '"main":' package.json
 ### AC4: Compiled Output Exists and Contains Exports
 
 **When** I check the compiled output:
+
 ```bash
 ls -la build/index.js
 grep "export" build/index.js
 ```
+
 **Then** `build/index.js` exists and is not empty
 
 **And** it contains the expected module exports (e.g., `startAudioStream`, `stopAudioStream`)
@@ -79,17 +87,21 @@ grep "export" build/index.js
 ## Tasks/Subtasks
 
 ### Task 1: Create Module Structure Validation Script
+
 - [ ] Create `scripts/validate-module-structure.sh`
 - [ ] Add shebang and error handling:
+
   ```bash
   #!/bin/bash
   set -e  # Exit on error
 
   echo "🔍 Validating Expo Module Structure..."
   ```
+
 - [ ] Make script executable: `chmod +x scripts/validate-module-structure.sh`
 
 ### Task 2: Implement Root-Level TypeScript Check
+
 - [ ] Add check for root-level TypeScript files:
   ```bash
   echo "1️⃣ Checking for root-level TypeScript files..."
@@ -103,6 +115,7 @@ grep "export" build/index.js
   ```
 
 ### Task 3: Implement tsconfig.json Validation
+
 - [ ] Add check for tsconfig.json includes:
   ```bash
   echo "2️⃣ Checking tsconfig.json includes..."
@@ -117,6 +130,7 @@ grep "export" build/index.js
   ```
 
 ### Task 4: Implement package.json Main Entry Validation
+
 - [ ] Add check for package.json main entry:
   ```bash
   echo "3️⃣ Checking package.json main entry..."
@@ -130,7 +144,9 @@ grep "export" build/index.js
   ```
 
 ### Task 5: Implement Compiled Output Validation
+
 - [ ] Add check for compiled output:
+
   ```bash
   echo "4️⃣ Checking compiled output..."
   if [ ! -f "build/index.js" ]; then
@@ -152,6 +168,7 @@ grep "export" build/index.js
   ```
 
 ### Task 6: Add Success Summary
+
 - [ ] Add final success message:
   ```bash
   echo ""
@@ -164,12 +181,14 @@ grep "export" build/index.js
   ```
 
 ### Task 7: Test Validation Script
+
 - [ ] Navigate to module root
 - [ ] Run validation script: `./scripts/validate-module-structure.sh`
 - [ ] Verify all checks pass
 - [ ] Test with intentionally broken structure to verify error detection
 
 ### Task 8: Add to package.json Scripts
+
 - [ ] Add validation script to package.json:
   ```json
   {
@@ -181,6 +200,7 @@ grep "export" build/index.js
 - [ ] Test running via npm: `npm run validate:structure`
 
 ### Task 9: Update Epic 5 CI/CD Story
+
 - [ ] Document that Story 5-2 (CI/CD) should include module structure validation
 - [ ] Add to CI pipeline checklist:
   ```yaml
@@ -189,6 +209,7 @@ grep "export" build/index.js
   ```
 
 ### Task 10: Document in README
+
 - [ ] Add "Module Structure Validation" section to development docs
 - [ ] Explain why this validation is necessary (Metro bundler compatibility)
 - [ ] Include instructions for running validation locally
@@ -238,12 +259,14 @@ loqa-audio-bridge/
 **Example Scenario**:
 
 1. **Root-level index.ts** contains:
+
    ```typescript
    import LoqaAudioBridgeModule from './src/LoqaAudioBridgeModule';
    export * from './src/types';
    ```
 
 2. **TypeScript compilation** (`npx tsc`) succeeds:
+
    - Compiles to `build/index.js`
    - Resolves `./src/*` paths correctly
    - Zero errors, zero warnings ✅
@@ -256,6 +279,7 @@ loqa-audio-bridge/
    - Runtime error: `addAudioSampleListener is not a function` ❌
 
 **The Fix**:
+
 - Move `index.ts` → `src/api.ts`
 - Update `src/index.ts` to `export * from './api'`
 - Now Metro only sees `build/index.js` at root level
@@ -263,12 +287,12 @@ loqa-audio-bridge/
 
 ### Validation vs Compilation
 
-| Check Type | What It Validates | Tool | Story |
-|------------|-------------------|------|-------|
-| **Compilation** | Type correctness, syntax | `npx tsc` | Story 2-8 |
-| **Linting** | Code style, best practices | `npm run lint` | Story 2-8 |
-| **Structure** | Module layout, Metro compatibility | This script | Story 2-10 |
-| **Runtime** | End-to-end functionality | Example app | Story 3-4 |
+| Check Type      | What It Validates                  | Tool           | Story      |
+| --------------- | ---------------------------------- | -------------- | ---------- |
+| **Compilation** | Type correctness, syntax           | `npx tsc`      | Story 2-8  |
+| **Linting**     | Code style, best practices         | `npm run lint` | Story 2-8  |
+| **Structure**   | Module layout, Metro compatibility | This script    | Story 2-10 |
+| **Runtime**     | End-to-end functionality           | Example app    | Story 3-4  |
 
 All four are required for production readiness.
 
@@ -287,7 +311,7 @@ jobs:
       - name: Linting
         run: npm run lint
 
-      - name: Module Structure Validation  # NEW
+      - name: Module Structure Validation # NEW
         run: npm run validate:structure
 
       - name: Unit Tests
@@ -336,11 +360,13 @@ When creating new Expo modules or refactoring existing ones:
 ## Success Metrics
 
 **Before This Story**:
+
 - TypeScript compilation succeeds
 - Linting passes
 - But Metro bundler can still fail at runtime
 
 **After This Story**:
+
 - All compilation/linting checks pass
 - Module structure validated
 - Metro bundler compatibility ensured

@@ -21,13 +21,13 @@ This design package documents the complete architectural approach for VoicelineD
 
 ### Deliverables
 
-| Document | Description | Status |
-|----------|-------------|--------|
-| [VoicelineDSP v0.2.0 API Spec](./voicelinedsp-v0.2.0-api-spec.md) | TypeScript API specification with complete type definitions | ✅ Complete |
-| [iOS Audio Streaming Design](./ios-audio-streaming-design.md) | iOS implementation approach with AVAudioEngine | ✅ Complete |
-| [Android Audio Streaming Design](./android-audio-streaming-design.md) | Android implementation approach with AudioRecord | ✅ Complete |
-| [Audio Streaming Architecture](./audio-streaming-architecture.md) | Unified architecture covering buffer management, error handling, performance, cross-platform consistency | ✅ Complete |
-| [Design Review Package](./2d-1-design-review-package.md) | This document - consolidated review materials | ✅ Complete |
+| Document                                                              | Description                                                                                              | Status      |
+| --------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------- | ----------- |
+| [VoicelineDSP v0.2.0 API Spec](./voicelinedsp-v0.2.0-api-spec.md)     | TypeScript API specification with complete type definitions                                              | ✅ Complete |
+| [iOS Audio Streaming Design](./ios-audio-streaming-design.md)         | iOS implementation approach with AVAudioEngine                                                           | ✅ Complete |
+| [Android Audio Streaming Design](./android-audio-streaming-design.md) | Android implementation approach with AudioRecord                                                         | ✅ Complete |
+| [Audio Streaming Architecture](./audio-streaming-architecture.md)     | Unified architecture covering buffer management, error handling, performance, cross-platform consistency | ✅ Complete |
+| [Design Review Package](./2d-1-design-review-package.md)              | This document - consolidated review materials                                                            | ✅ Complete |
 
 ---
 
@@ -296,7 +296,7 @@ const sub = VoicelineDSP.addAudioSampleListener((event) => {
 
 await VoicelineDSP.startAudioStream({
   sampleRate: 16000,
-  bufferSize: 2048
+  bufferSize: 2048,
 });
 
 // Cleanup
@@ -314,12 +314,12 @@ sub.remove();
 
 **Validation:**
 
-| Feature | iOS | Android | Consistent? |
-|---------|-----|---------|-------------|
-| TypeScript API | ✅ | ✅ | ✅ Yes |
-| Event payloads | ✅ | ✅ | ✅ Yes |
-| Error codes | ✅ | ✅ | ✅ Yes |
-| Default config | ✅ | ✅ | ✅ Yes |
+| Feature        | iOS | Android | Consistent? |
+| -------------- | --- | ------- | ----------- |
+| TypeScript API | ✅  | ✅      | ✅ Yes      |
+| Event payloads | ✅  | ✅      | ✅ Yes      |
+| Error codes    | ✅  | ✅      | ✅ Yes      |
+| Default config | ✅  | ✅      | ✅ Yes      |
 
 **Platform Differences Documented:**
 
@@ -356,23 +356,23 @@ sub.remove();
 
 ```typescript
 // ✅ Trauma-informed
-"Voice features require microphone access to analyze your voice in real-time."
-"Your audio is processed locally and never leaves your device."
-"You can enable microphone access in Settings anytime."
+'Voice features require microphone access to analyze your voice in real-time.';
+'Your audio is processed locally and never leaves your device.';
+'You can enable microphone access in Settings anytime.';
 
 // ❌ Aggressive (avoided)
-"Grant microphone permission now or the app won't work!"
+"Grant microphone permission now or the app won't work!";
 ```
 
 **Error Messaging:**
 
 ```typescript
 // ✅ User-friendly
-"We're having trouble connecting to your microphone."
-"This might be resolved by restarting the app."
+"We're having trouble connecting to your microphone.";
+'This might be resolved by restarting the app.';
 
 // ❌ Technical jargon (avoided)
-"AudioRecord initialization failed (error -1)"
+'AudioRecord initialization failed (error -1)';
 ```
 
 **Result:** ✅ User-centric messaging throughout design
@@ -557,9 +557,9 @@ This design enables the following implementation stories:
 
 ## Document History
 
-| Version | Date | Author | Changes |
-|---------|------|--------|---------|
-| 1.0 | 2025-11-12 | Loqa Dev Agent | Initial design review package for Story 2D.1 |
+| Version | Date       | Author         | Changes                                      |
+| ------- | ---------- | -------------- | -------------------------------------------- |
+| 1.0     | 2025-11-12 | Loqa Dev Agent | Initial design review package for Story 2D.1 |
 
 ---
 

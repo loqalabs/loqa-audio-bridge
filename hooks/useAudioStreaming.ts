@@ -19,7 +19,12 @@ import {
   addStreamStatusListener,
   addStreamErrorListener,
 } from '../src/api';
-import type { AudioSampleEvent, StreamConfig, StreamStatusEvent, StreamErrorEvent } from '../src/types';
+import type {
+  AudioSampleEvent,
+  StreamConfig,
+  StreamStatusEvent,
+  StreamErrorEvent,
+} from '../src/types';
 
 /**
  * Options for useAudioStreaming hook

@@ -12,10 +12,12 @@
 This document captures the architectural decisions for transforming the VoicelineDSP v0.2.0 working prototype into **@loqalabs/loqa-audio-bridge v0.3.0**, a production-grade npm package. The architecture focuses on proper Expo module packaging, automated distribution, comprehensive testing infrastructure, and zero-friction integration for Expo/React Native applications.
 
 **Key Transformation**:
+
 - **v0.2.0**: Working code, manual integration (9 hours to integrate)
 - **v0.3.0**: Production package with autolinking (<30 minutes to integrate)
 
 **Package Naming Decision**: Changed from `@loqalabs/voiceline-dsp` to `@loqalabs/loqa-audio-bridge` to:
+
 1. Align with Loqa Labs branding
 2. Distinguish from existing `loqa-voice-dsp` Rust crate (DSP algorithms)
 3. Clarify purpose: Audio I/O streaming bridge (not DSP algorithms)
@@ -45,10 +47,10 @@ This document captures the architectural decisions for transforming the Voicelin
 
 ### 1.2 Distinction from loqa-voice-dsp
 
-| Package | Purpose | Language | Scope |
-|---------|---------|----------|-------|
-| **loqa-voice-dsp** | DSP algorithms (pitch, formants, FFT, spectral analysis) | Rust | Algorithm library with FFI/JNI bindings |
-| **@loqalabs/loqa-audio-bridge** | Audio I/O streaming bridge | TypeScript/Swift/Kotlin | React Native event-driven audio capture |
+| Package                         | Purpose                                                  | Language                | Scope                                   |
+| ------------------------------- | -------------------------------------------------------- | ----------------------- | --------------------------------------- |
+| **loqa-voice-dsp**              | DSP algorithms (pitch, formants, FFT, spectral analysis) | Rust                    | Algorithm library with FFI/JNI bindings |
+| **@loqalabs/loqa-audio-bridge** | Audio I/O streaming bridge                               | TypeScript/Swift/Kotlin | React Native event-driven audio capture |
 
 **Relationship**: `loqa-audio-bridge` captures audio samples; `loqa-voice-dsp` analyzes them. They are complementary but independent packages.
 
@@ -91,17 +93,20 @@ This document captures the architectural decisions for transforming the Voicelin
 **Selected**: **Option B - Use `create-expo-module` as starter template**
 
 **Rationale**:
+
 - Official Expo scaffolding ensures correct structure
 - Includes autolinking configuration out-of-the-box
 - Provides proper `expo-module.config.json` and `.podspec` templates
 - Reduces risk of missing critical packaging files (root cause of v0.2.0 failures)
 
 **Action Items**:
+
 1. Run `npx create-expo-module@latest loqa-audio-bridge`
 2. Copy v0.2.0 implementation code into scaffolded structure
 3. Validate autolinking works with fresh Expo app
 
 **Rejected Options**:
+
 - A) Manually add config files to v0.2.0 (too error-prone)
 - C) Use third-party template (not officially maintained)
 
@@ -112,6 +117,7 @@ This document captures the architectural decisions for transforming the Voicelin
 **Selected**: **Single version with broad peer dependencies**
 
 **Configuration**:
+
 ```json
 {
   "name": "@loqalabs/loqa-audio-bridge",
@@ -125,12 +131,14 @@ This document captures the architectural decisions for transforming the Voicelin
 ```
 
 **Rationale**:
+
 - Expo 52+ provides stable Modules API
 - React Native 0.72+ covers 95% of active projects
 - Single package simplifies maintenance
 - Semantic versioning provides clear upgrade paths
 
 **Breaking Change Policy**:
+
 - MAJOR: Expo Modules API changes, TypeScript API breaking changes
 - MINOR: New features, non-breaking enhancements
 - PATCH: Bug fixes, documentation updates
@@ -167,6 +175,7 @@ This document captures the architectural decisions for transforming the Voicelin
 #### 3.2 Build Exclusion Strategy (Multi-Layered Defense)
 
 **Layer 1: iOS Podspec Exclusion**
+
 ```ruby
 Pod::Spec.new do |s|
   # ... other config ...
@@ -188,12 +197,14 @@ end
 ```
 
 **Layer 2: Android Gradle (Auto-Exclusion)**
+
 ```gradle
 // Gradle automatically excludes src/test/ and src/androidTest/
 // No explicit configuration needed - this is Gradle convention
 ```
 
 **Layer 3: npm Package Exclusion (.npmignore)**
+
 ```
 # Test files
 __tests__/
@@ -217,6 +228,7 @@ example/
 ```
 
 **Layer 4: TypeScript Compilation (tsconfig.json)**
+
 ```json
 {
   "exclude": [
@@ -234,6 +246,7 @@ example/
 #### 3.3 CI Validation Pipeline
 
 **Pre-Publish Validation** (GitHub Actions):
+
 ```yaml
 name: Validate Distribution Package
 
@@ -297,6 +310,7 @@ jobs:
 ```
 
 **Success Criteria**:
+
 - ✅ No `*.test.ts`, `*.spec.ts`, `*Tests.swift` files in tarball
 - ✅ No `ios/Tests/`, `__tests__/`, `example/` directories in tarball
 - ✅ Podspec contains `exclude_files` for tests
@@ -309,6 +323,7 @@ jobs:
 **Selected**: **GitHub Actions with manual trigger (git tag-based)**
 
 **Workflow**:
+
 ```yaml
 # .github/workflows/publish-npm.yml
 name: Publish to npm
@@ -316,7 +331,7 @@ name: Publish to npm
 on:
   push:
     tags:
-      - 'v*.*.*'  # Trigger on version tags (e.g., v0.3.0)
+      - 'v*.*.*' # Trigger on version tags (e.g., v0.3.0)
 
 jobs:
   publish:
@@ -340,6 +355,7 @@ jobs:
 ```
 
 **Publishing Process**:
+
 1. Update version in `package.json` (e.g., `0.3.0`)
 2. Commit: `git commit -m "Release v0.3.0"`
 3. Tag: `git tag v0.3.0`
@@ -347,6 +363,7 @@ jobs:
 5. GitHub Actions automatically publishes to npm
 
 **Rationale**:
+
 - Git tags provide version audit trail
 - Manual trigger prevents accidental publishes
 - Automated validation ensures quality gate
@@ -359,6 +376,7 @@ jobs:
 **Selected**: **Strict mode with ESNext targeting**
 
 **Configuration** (`tsconfig.json`):
+
 ```json
 {
   "compilerOptions": {
@@ -375,17 +393,12 @@ jobs:
     "outDir": "./build"
   },
   "include": ["src/**/*", "index.ts"],
-  "exclude": [
-    "__tests__",
-    "**/*.test.ts",
-    "example",
-    "ios/Tests",
-    "android/src/test"
-  ]
+  "exclude": ["__tests__", "**/*.test.ts", "example", "ios/Tests", "android/src/test"]
 }
 ```
 
 **Rationale**:
+
 - `strict: true` catches type errors early
 - ES2020 targets modern RN versions (0.72+)
 - `declaration: true` generates `.d.ts` for TypeScript consumers
@@ -400,6 +413,7 @@ jobs:
 **Configuration**:
 
 **ESLint** (`.eslintrc.js`):
+
 ```javascript
 module.exports = {
   extends: ['expo', 'prettier'],
@@ -411,6 +425,7 @@ module.exports = {
 ```
 
 **Prettier** (`.prettierrc`):
+
 ```json
 {
   "semi": true,
@@ -422,6 +437,7 @@ module.exports = {
 ```
 
 **Rationale**:
+
 - `@expo/eslint-config` optimized for Expo modules
 - Prettier ensures consistent formatting
 - Pre-commit hooks optional (not enforced in v0.3.0 to reduce friction)
@@ -487,16 +503,16 @@ module.exports = {
 
 ### 3.2 Critical Files
 
-| File | Purpose | Generated By | Must Edit |
-|------|---------|--------------|-----------|
-| `package.json` | npm package metadata, dependencies | `create-expo-module` | ✅ Yes |
-| `expo-module.config.json` | Expo autolinking configuration | `create-expo-module` | ✅ Yes (platforms, iOS deployment target) |
-| `LoqaAudioBridge.podspec` | CocoaPods specification for iOS | `create-expo-module` | ✅ Yes (add `exclude_files`) |
-| `tsconfig.json` | TypeScript compiler configuration | Manual | ✅ Yes |
-| `.npmignore` | Files to exclude from npm package | Manual | ✅ Yes (add test exclusions) |
-| `index.ts` | Main API entry point | Copy from v0.2.0 | ✅ Yes |
-| `ios/LoqaAudioBridgeModule.swift` | iOS native implementation | Copy from v0.2.0 | ✅ Yes |
-| `android/.../LoqaAudioBridgeModule.kt` | Android native implementation | Copy from v0.2.0 | ✅ Yes |
+| File                                   | Purpose                            | Generated By         | Must Edit                                 |
+| -------------------------------------- | ---------------------------------- | -------------------- | ----------------------------------------- |
+| `package.json`                         | npm package metadata, dependencies | `create-expo-module` | ✅ Yes                                    |
+| `expo-module.config.json`              | Expo autolinking configuration     | `create-expo-module` | ✅ Yes (platforms, iOS deployment target) |
+| `LoqaAudioBridge.podspec`              | CocoaPods specification for iOS    | `create-expo-module` | ✅ Yes (add `exclude_files`)              |
+| `tsconfig.json`                        | TypeScript compiler configuration  | Manual               | ✅ Yes                                    |
+| `.npmignore`                           | Files to exclude from npm package  | Manual               | ✅ Yes (add test exclusions)              |
+| `index.ts`                             | Main API entry point               | Copy from v0.2.0     | ✅ Yes                                    |
+| `ios/LoqaAudioBridgeModule.swift`      | iOS native implementation          | Copy from v0.2.0     | ✅ Yes                                    |
+| `android/.../LoqaAudioBridgeModule.kt` | Android native implementation      | Copy from v0.2.0     | ✅ Yes                                    |
 
 ---
 
@@ -505,12 +521,14 @@ module.exports = {
 ### 4.1 Build Process
 
 **TypeScript Compilation**:
+
 ```bash
 npx tsc
 # Outputs: build/*.js, build/*.d.ts
 ```
 
 **iOS Build** (via CocoaPods):
+
 ```bash
 cd ios
 pod install
@@ -518,6 +536,7 @@ xcodebuild -workspace LoqaAudioBridge.xcworkspace -scheme LoqaAudioBridge
 ```
 
 **Android Build**:
+
 ```bash
 cd android
 ./gradlew build
@@ -526,6 +545,7 @@ cd android
 ### 4.2 npm Package Contents
 
 **Included**:
+
 - `package.json`
 - `index.js` (compiled from `index.ts`)
 - `src/*.js` (compiled TypeScript)
@@ -538,6 +558,7 @@ cd android
 - `LoqaAudioBridge.podspec`
 
 **Excluded** (via `.npmignore`):
+
 - `__tests__/`
 - `*.test.ts`, `*.spec.ts`
 - `ios/Tests/`
@@ -549,12 +570,14 @@ cd android
 ### 4.3 Installation (Consumer Perspective)
 
 **For Expo Managed Workflow**:
+
 ```bash
 npx expo install @loqalabs/loqa-audio-bridge
 # Autolinking happens automatically
 ```
 
 **For React Native CLI**:
+
 ```bash
 npm install @loqalabs/loqa-audio-bridge
 cd ios && pod install  # iOS only
@@ -569,28 +592,31 @@ cd ios && pod install  # iOS only
 
 ### 5.1 Test Types & Locations
 
-| Test Type | Location | Purpose | Run Command | Excluded from npm? |
-|-----------|----------|---------|-------------|-------------------|
-| **TypeScript Unit** | `__tests__/*.test.ts` | API contracts, buffer utils | `npm test` | ✅ Yes |
-| **iOS Unit** | `ios/Tests/*Tests.swift` | Native module logic | `xcodebuild test` | ✅ Yes |
-| **iOS Integration** | `ios/Tests/*IntegrationTests.swift` | Audio engine, events | `xcodebuild test` | ✅ Yes |
-| **Android Unit** | `android/src/test/` | Native module logic | `./gradlew test` | ✅ Yes (auto) |
-| **Android Integration** | `android/src/androidTest/` | AudioRecord, permissions | `./gradlew connectedAndroidTest` | ✅ Yes (auto) |
-| **Example App** | `example/__tests__/` | End-to-end integration | `npm test` (in example/) | ✅ Yes |
+| Test Type               | Location                            | Purpose                     | Run Command                      | Excluded from npm? |
+| ----------------------- | ----------------------------------- | --------------------------- | -------------------------------- | ------------------ |
+| **TypeScript Unit**     | `__tests__/*.test.ts`               | API contracts, buffer utils | `npm test`                       | ✅ Yes             |
+| **iOS Unit**            | `ios/Tests/*Tests.swift`            | Native module logic         | `xcodebuild test`                | ✅ Yes             |
+| **iOS Integration**     | `ios/Tests/*IntegrationTests.swift` | Audio engine, events        | `xcodebuild test`                | ✅ Yes             |
+| **Android Unit**        | `android/src/test/`                 | Native module logic         | `./gradlew test`                 | ✅ Yes (auto)      |
+| **Android Integration** | `android/src/androidTest/`          | AudioRecord, permissions    | `./gradlew connectedAndroidTest` | ✅ Yes (auto)      |
+| **Example App**         | `example/__tests__/`                | End-to-end integration      | `npm test` (in example/)         | ✅ Yes             |
 
 ### 5.2 Test Coverage Goals
 
 **v0.3.0 Baseline**:
+
 - TypeScript: 80% coverage (API, buffer utils)
 - iOS: 70% coverage (core streaming logic)
 - Android: 70% coverage (core streaming logic)
 
 **Future (v0.4.0+)**:
+
 - Increase to 90%+ with platform-specific edge cases
 
 ### 5.3 Test Exclusion Validation
 
 **Pre-Commit Hook** (optional, not enforced):
+
 ```bash
 #!/bin/bash
 # Warn if test files modified without updating exclusions
@@ -600,6 +626,7 @@ fi
 ```
 
 **CI Validation** (enforced):
+
 - See Decision 3.3 - runs on every PR and push to main
 
 ---
@@ -611,6 +638,7 @@ fi
 **Trigger**: Every PR and push to `main`
 
 **Jobs**:
+
 1. **Lint**: `npm run lint`
 2. **TypeScript Tests**: `npm test`
 3. **iOS Build**: `xcodebuild build`
@@ -624,6 +652,7 @@ fi
 **Trigger**: Git tag push (e.g., `v0.3.0`)
 
 **Jobs**:
+
 1. **Validation**: Run CI pipeline
 2. **Build**: Compile TypeScript, native modules
 3. **Publish**: `npm publish` to public registry
@@ -638,6 +667,7 @@ fi
 ### 7.1 Autolinking Configuration
 
 **expo-module.config.json**:
+
 ```json
 {
   "platforms": ["ios", "android"],
@@ -652,11 +682,13 @@ fi
 ```
 
 **iOS Autolinking** (via CocoaPods):
+
 - Expo CLI reads `LoqaAudioBridge.podspec`
 - Automatically adds to `Podfile`
 - `pod install` links native Swift code
 
 **Android Autolinking** (via Gradle):
+
 - Expo CLI modifies `settings.gradle`
 - Adds module to `build.gradle` dependencies
 - Gradle links native Kotlin code
@@ -664,11 +696,13 @@ fi
 ### 7.2 Consumer Integration Flow
 
 **Step 1**: Install package
+
 ```bash
 npx expo install @loqalabs/loqa-audio-bridge
 ```
 
 **Step 2**: Import and use (no manual linking!)
+
 ```typescript
 import { startAudioStream, addAudioSamplesListener } from '@loqalabs/loqa-audio-bridge';
 
@@ -683,6 +717,7 @@ const subscription = addAudioSamplesListener((event) => {
 ```
 
 **Step 3**: Run app
+
 ```bash
 npx expo run:ios
 npx expo run:android
@@ -696,17 +731,18 @@ npx expo run:android
 
 ### 8.1 Identified Risks
 
-| Risk | Probability | Impact | Mitigation |
-|------|-------------|--------|------------|
-| **Tests ship to clients** (v0.2.0 failure) | Medium | High | Multi-layered exclusion + CI validation (Decision 3) |
-| **Autolinking fails** | Low | High | Use `create-expo-module` scaffolding (Decision 1) |
-| **Breaking API changes** | Low | Medium | Semantic versioning + deprecation warnings |
-| **Platform-specific bugs** | Medium | Medium | Comprehensive test suite + example app testing |
-| **Dependency conflicts** | Low | Low | Broad peer dependencies (Decision 2) |
+| Risk                                       | Probability | Impact | Mitigation                                           |
+| ------------------------------------------ | ----------- | ------ | ---------------------------------------------------- |
+| **Tests ship to clients** (v0.2.0 failure) | Medium      | High   | Multi-layered exclusion + CI validation (Decision 3) |
+| **Autolinking fails**                      | Low         | High   | Use `create-expo-module` scaffolding (Decision 1)    |
+| **Breaking API changes**                   | Low         | Medium | Semantic versioning + deprecation warnings           |
+| **Platform-specific bugs**                 | Medium      | Medium | Comprehensive test suite + example app testing       |
+| **Dependency conflicts**                   | Low         | Low    | Broad peer dependencies (Decision 2)                 |
 
 ### 8.2 Rollback Plan
 
 If v0.3.0 has critical issues:
+
 1. Publish patch version (e.g., `0.3.1`) with fix
 2. If unfixable, deprecate on npm: `npm deprecate @loqalabs/loqa-audio-bridge@0.3.0 "Critical bug, use 0.3.1"`
 3. Communicate on GitHub Issues and Voiceline Slack
@@ -717,28 +753,29 @@ If v0.3.0 has critical issues:
 
 ### 9.1 Production Dependencies
 
-| Dependency | Version | Purpose |
-|------------|---------|---------|
-| `expo` | `>=52.0.0` | Expo Modules Core (peer dependency) |
-| `react` | `>=18.0.0` | React library (peer dependency) |
+| Dependency     | Version    | Purpose                                |
+| -------------- | ---------- | -------------------------------------- |
+| `expo`         | `>=52.0.0` | Expo Modules Core (peer dependency)    |
+| `react`        | `>=18.0.0` | React library (peer dependency)        |
 | `react-native` | `>=0.72.0` | React Native runtime (peer dependency) |
 
 **Note**: All are peer dependencies - consumers provide these.
 
 ### 9.2 Development Dependencies
 
-| Dependency | Version | Purpose |
-|------------|---------|---------|
-| `typescript` | `^5.3.0` | TypeScript compiler |
-| `@types/react` | `^18.0.0` | React type definitions |
-| `eslint` | `^8.0.0` | Code linting |
-| `prettier` | `^3.0.0` | Code formatting |
-| `jest` | `^29.0.0` | TypeScript testing |
+| Dependency                      | Version   | Purpose                        |
+| ------------------------------- | --------- | ------------------------------ |
+| `typescript`                    | `^5.3.0`  | TypeScript compiler            |
+| `@types/react`                  | `^18.0.0` | React type definitions         |
+| `eslint`                        | `^8.0.0`  | Code linting                   |
+| `prettier`                      | `^3.0.0`  | Code formatting                |
+| `jest`                          | `^29.0.0` | TypeScript testing             |
 | `@testing-library/react-native` | `^12.0.0` | React Native testing utilities |
 
 ### 9.3 Native Dependencies (iOS)
 
 **CocoaPods** (`LoqaAudioBridge.podspec`):
+
 ```ruby
 s.dependency 'ExpoModulesCore'
 # No other iOS dependencies (uses native AVAudioEngine)
@@ -747,6 +784,7 @@ s.dependency 'ExpoModulesCore'
 ### 9.4 Native Dependencies (Android)
 
 **Gradle** (`android/build.gradle`):
+
 ```gradle
 dependencies {
   implementation project(':expo-modules-core')
@@ -761,6 +799,7 @@ dependencies {
 ### 10.1 v0.4.0+ Roadmap
 
 **Potential Features** (not committed):
+
 1. **Audio Processing Pipeline**: Allow consumers to chain DSP processors
 2. **WebRTC Integration**: Provide stream to WebRTC for real-time communication
 3. **Background Audio**: Support background audio capture (requires permissions changes)
@@ -770,6 +809,7 @@ dependencies {
 ### 10.2 Maintenance Strategy
 
 **Long-term Support**:
+
 - v0.3.x: Maintain for 12 months after v0.4.0 release
 - Security patches: Backport critical fixes to v0.3.x
 - Deprecation policy: 6-month notice before removing features
@@ -777,6 +817,7 @@ dependencies {
 ### 10.3 Community Contribution
 
 **Open Source**:
+
 - License: MIT (permissive)
 - Contributions welcome via GitHub PRs
 - Issue tracker: GitHub Issues
@@ -787,6 +828,7 @@ dependencies {
 ## Appendix A: Architecture Decision Records (ADRs)
 
 ### ADR-001: Use create-expo-module as Foundation
+
 - **Date**: 2025-11-13
 - **Status**: Accepted
 - **Context**: v0.2.0 failed due to missing packaging files
@@ -794,6 +836,7 @@ dependencies {
 - **Consequences**: Reduces risk but requires code migration from v0.2.0
 
 ### ADR-002: Rename to @loqalabs/loqa-audio-bridge
+
 - **Date**: 2025-11-13
 - **Status**: Accepted
 - **Context**: Confusion with existing `loqa-voice-dsp` Rust crate
@@ -801,6 +844,7 @@ dependencies {
 - **Consequences**: Clear naming but requires updating all documentation
 
 ### ADR-003: Multi-Layered Test Exclusion
+
 - **Date**: 2025-11-13
 - **Status**: Accepted
 - **Context**: v0.2.0 shipped tests causing XCTest import errors
@@ -808,6 +852,7 @@ dependencies {
 - **Consequences**: Complex but prevents repeat failures
 
 ### ADR-004: Git Tag-Based Publishing
+
 - **Date**: 2025-11-13
 - **Status**: Accepted
 - **Context**: Need balance between automation and manual control
@@ -819,18 +864,21 @@ dependencies {
 ## Appendix B: Key Learnings from v0.2.0
 
 ### What Worked
+
 1. Event-driven architecture (8Hz streaming)
 2. Native VAD implementation (30-50% battery savings)
 3. Cross-platform API design
 4. React hook (`useAudioStreaming`)
 
 ### What Failed
+
 1. **No packaging files** → Manual integration required
 2. **Tests shipped to clients** → XCTest import errors
 3. **Missing documentation** → 9-hour integration time
 4. **No example app** → Hard to validate integration
 
 ### How v0.3.0 Addresses Failures
+
 1. **Packaging**: `create-expo-module` scaffolding + autolinking
 2. **Tests**: Multi-layered exclusion + CI validation (Decision 3)
 3. **Documentation**: Comprehensive README + API.md + example app
@@ -840,13 +888,14 @@ dependencies {
 
 ## Document Change History
 
-| Version | Date | Author | Changes |
-|---------|------|--------|---------|
-| 1.0 | 2025-11-13 | Claude (bmad:bmm:workflows:architecture) | Initial architecture document |
+| Version | Date       | Author                                   | Changes                       |
+| ------- | ---------- | ---------------------------------------- | ----------------------------- |
+| 1.0     | 2025-11-13 | Claude (bmad:bmm:workflows:architecture) | Initial architecture document |
 
 ---
 
 **Next Steps**:
+
 1. Execute Epic 1: Project Scaffolding (run `create-expo-module`)
 2. Migrate v0.2.0 code into scaffolded structure
 3. Implement test exclusion layers (podspec, .npmignore, tsconfig)

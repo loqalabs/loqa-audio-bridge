@@ -23,28 +23,37 @@ So that consumers understand how to use the module (FR30, FR33).
 **When** I create example/App.tsx with the following features:
 
 1. **Import Section** (with clear comments):
+
 ```typescript
 // Import the audio streaming module
-import { startAudioStream, stopAudioStream, addAudioSamplesListener } from '@loqalabs/loqa-audio-bridge';
+import {
+  startAudioStream,
+  stopAudioStream,
+  addAudioSamplesListener,
+} from '@loqalabs/loqa-audio-bridge';
 import { useState, useEffect } from 'react';
 ```
 
 2. **Permission Handling**:
+
 - Request microphone permission on mount
 - Show permission status to user
 - Handle denied permission gracefully
 
 3. **Start/Stop Controls**:
+
 - Button to start audio streaming
 - Button to stop streaming
 - Visual indicator showing streaming status (green = active, red = stopped)
 
 4. **Real-time Visualization**:
+
 - Display RMS (volume level) from audio samples
 - Simple bar chart or numeric display updating in real-time
 - Show sample rate and buffer size
 
 5. **Event Handling** (with clear comments):
+
 ```typescript
 // Listen for audio samples
 const subscription = addAudioSamplesListener((event) => {
@@ -56,6 +65,7 @@ const subscription = addAudioSamplesListener((event) => {
 ```
 
 **Then** the app UI includes:
+
 - Clear title: "Loqa Audio Bridge Example"
 - Permission status display
 - Start/Stop buttons with clear labels
@@ -63,25 +73,28 @@ const subscription = addAudioSamplesListener((event) => {
 - Current configuration display (sample rate, buffer size)
 
 **And** when user taps "Start Streaming":
+
 - Microphone permission requested (if not granted)
 - Audio streaming begins
 - RMS visualization updates in real-time (~8 Hz)
 - Status shows "Streaming: Active"
 
 **And** when user taps "Stop Streaming":
+
 - Audio streaming stops
 - Visualization freezes at last value
 - Status shows "Streaming: Stopped"
 
 **And** all code includes **clear explanatory comments** (FR33):
+
 ```typescript
 // Configure audio stream: 16kHz sample rate, 2048 buffer size
 // This gives ~8 Hz event rate (2048 samples / 16000 Hz = 0.128s per event)
 await startAudioStream({
   sampleRate: 16000,
   bufferSize: 2048,
-  channels: 1,  // Mono
-  enableVAD: true,  // Enable Voice Activity Detection for battery savings
+  channels: 1, // Mono
+  enableVAD: true, // Enable Voice Activity Detection for battery savings
 });
 ```
 
@@ -90,12 +103,17 @@ await startAudioStream({
 ## Tasks/Subtasks
 
 ### Task 1: Set Up Component Structure and State (AC: Import section, state management) ✅
+
 - [x] Open example/App.tsx
 - [x] Clear default template content
 - [x] Add imports with comments:
   ```typescript
   // Import the audio streaming module
-  import { startAudioStream, stopAudioStream, addAudioSampleListener } from '@loqalabs/loqa-audio-bridge';
+  import {
+    startAudioStream,
+    stopAudioStream,
+    addAudioSampleListener,
+  } from '@loqalabs/loqa-audio-bridge';
   import { useState, useEffect } from 'react';
   import { StyleSheet, Text, View, Button } from 'react-native';
   import { Audio } from 'expo-av';
@@ -104,11 +122,14 @@ await startAudioStream({
   ```typescript
   const [isStreaming, setIsStreaming] = useState(false);
   const [rmsLevel, setRmsLevel] = useState(0);
-  const [permissionStatus, setPermissionStatus] = useState<'granted' | 'denied' | 'pending'>('pending');
+  const [permissionStatus, setPermissionStatus] = useState<'granted' | 'denied' | 'pending'>(
+    'pending'
+  );
   const [error, setError] = useState<string | null>(null);
   ```
 
 ### Task 2: Implement Permission Handling (AC: Permission handling) ✅
+
 - [x] Add permission request function:
   ```typescript
   const requestPermissions = async () => {
@@ -133,7 +154,9 @@ await startAudioStream({
 - [x] Handle permission denial gracefully
 
 ### Task 3: Implement Start Streaming Function (AC: Start button functionality) ✅
+
 - [x] Add startStreaming function with comments:
+
   ```typescript
   const handleStartStreaming = async () => {
     try {
@@ -151,8 +174,8 @@ await startAudioStream({
       await startAudioStream({
         sampleRate: 16000,
         bufferSize: 2048,
-        channels: 1,  // Mono
-        enableVAD: true,  // Enable Voice Activity Detection for battery savings
+        channels: 1, // Mono
+        enableVAD: true, // Enable Voice Activity Detection for battery savings
       });
 
       setIsStreaming(true);
@@ -165,6 +188,7 @@ await startAudioStream({
   ```
 
 ### Task 4: Implement Stop Streaming Function (AC: Stop button functionality) ✅
+
 - [x] Add stopStreaming function:
   ```typescript
   const handleStopStreaming = async () => {
@@ -179,7 +203,9 @@ await startAudioStream({
   ```
 
 ### Task 5: Implement Audio Sample Listener (AC: Real-time visualization) ✅
+
 - [x] Add useEffect for audio samples listener:
+
   ```typescript
   useEffect(() => {
     // Listen for audio samples
@@ -201,7 +227,9 @@ await startAudioStream({
   ```
 
 ### Task 6: Create UI Layout (AC: UI with title, status, buttons) ✅
+
 - [x] Implement render method with UI structure:
+
   ```tsx
   return (
     <View style={styles.container}>
@@ -211,7 +239,9 @@ await startAudioStream({
       {/* Permission Status */}
       <View style={styles.statusSection}>
         <Text style={styles.label}>Permission Status:</Text>
-        <Text style={[styles.status, permissionStatus === 'granted' ? styles.granted : styles.denied]}>
+        <Text
+          style={[styles.status, permissionStatus === 'granted' ? styles.granted : styles.denied]}
+        >
           {permissionStatus === 'granted' ? '✓ Granted' : '✗ Not Granted'}
         </Text>
       </View>
@@ -270,6 +300,7 @@ await startAudioStream({
   ```
 
 ### Task 7: Add Styles (AC: Visual design) ✅
+
 - [x] Create StyleSheet with clean, readable design:
   ```typescript
   const styles = StyleSheet.create({
@@ -371,6 +402,7 @@ await startAudioStream({
   ```
 
 ### Task 8: Add expo-av Dependency (AC: Permission handling) ✅
+
 - [x] Navigate to example/ directory
 - [x] Install expo-av for permission handling:
   ```bash
@@ -380,6 +412,7 @@ await startAudioStream({
 - [x] Dependencies resolved successfully
 
 ### Task 9: Test on iOS Simulator (AC: iOS functionality) ✅ COMPLETE
+
 - [x] Build and run on iOS:
   ```bash
   npx expo run:ios
@@ -400,6 +433,7 @@ await startAudioStream({
 - [x] iOS functionality validated - All features working
 
 ### Task 10: Test on Android Emulator (AC: Android functionality) - DEFERRED TO EPIC 5-2
+
 - [x] Attempted Android build
 - [x] Identified environmental blocker: Android SDK not configured on development machine
 - [x] Decision: Defer Android runtime testing to Epic 5-2 (CI/CD)
@@ -421,6 +455,7 @@ await startAudioStream({
 **Completion Status**: Tasks 1-10 COMPLETE ✅ (iOS fully tested, Android deferred to Epic 5-2)
 
 **Implementation**: Complete 253-line example app with:
+
 - Permission handling using expo-av
 - Start/Stop streaming controls
 - Real-time RMS visualization (numeric + bar chart)
@@ -430,14 +465,17 @@ await startAudioStream({
 - **iOS audio streaming working** (Story 2-9 resolved format mismatch)
 
 **Critical Achievements**:
+
 1. **Metro Bundler Fix**: Resolved module resolution issue that would have blocked all downstream consumers
 2. **iOS Audio Format Fix**: Implemented hardware format detection + AVAudioConverter (Story 2-9)
 
 **Known Issues**:
+
 - ~~iOS audio streaming blocked~~ ✅ RESOLVED (Story 2-9)
 - Android testing not started (deferred per Decision 4)
 
 **Files Modified**:
+
 - [modules/loqa-audio-bridge/example/App.tsx](../../modules/loqa-audio-bridge/example/App.tsx) - Complete rewrite (253 lines)
 - [modules/loqa-audio-bridge/src/api.ts](../../modules/loqa-audio-bridge/src/api.ts) - Moved from root index.ts, fixed imports
 - [modules/loqa-audio-bridge/src/index.ts](../../modules/loqa-audio-bridge/src/index.ts) - Simplified to re-export
@@ -445,6 +483,7 @@ await startAudioStream({
 - [modules/loqa-audio-bridge/example/package.json](../../modules/loqa-audio-bridge/example/package.json) - Added expo-av
 
 **Documentation Created**:
+
 - `CRITICAL-LEARNINGS-METRO-BUNDLER.md` - Complete documentation of Metro bundler fix
 - `KNOWN-ISSUE-IOS-AUDIO-FORMAT.md` - iOS audio format mismatch issue
 
@@ -458,12 +497,14 @@ await startAudioStream({
 ### Code Comments Strategy
 
 **Comment Density**: Every major section includes explanatory comments
+
 - Import statements explain what each module does
 - Function parameters documented inline
 - Configuration values explained (why 16kHz? why 2048 buffer?)
 - Event payload structure documented
 
 **Target Audience**: Developers new to the module
+
 - Comments assume no prior knowledge
 - Explain React Native concepts (subscriptions, cleanup)
 - Clarify audio concepts (sample rate, RMS, VAD)
@@ -471,11 +512,13 @@ await startAudioStream({
 ### Permission Handling Differences
 
 **iOS**:
+
 - NSMicrophoneUsageDescription in Info.plist (configured in app.json)
 - Permission request dialog managed by system
 - expo-av Audio.requestPermissionsAsync() triggers system dialog
 
 **Android**:
+
 - RECORD_AUDIO in AndroidManifest.xml (configured in app.json)
 - Runtime permission required on Android 6.0+ (API 23+)
 - expo-av handles runtime permission request
@@ -485,17 +528,20 @@ await startAudioStream({
 ### RMS Visualization Explanation
 
 **What is RMS**:
+
 - Root Mean Square = measure of audio signal magnitude
 - Range: 0.0 (silence) to 1.0 (max volume)
 - Used for volume level indication
 - Basis for Voice Activity Detection (VAD)
 
 **Visualization Choices**:
+
 - **Numeric Display**: Shows exact RMS value to 4 decimal places
-- **Bar Chart**: Visual feedback, width = RMS * 100%
+- **Bar Chart**: Visual feedback, width = RMS \* 100%
 - **Color**: Green for active, gray for inactive
 
 **Why Simple Visualization**:
+
 - Focus on integration code, not fancy UI
 - Easy to understand and replicate
 - Demonstrates real-time event handling
@@ -512,6 +558,7 @@ await startAudioStream({
 ```
 
 **Event Rate Calculation**:
+
 - Event rate = sampleRate / bufferSize
 - 16000 / 2048 ≈ 7.8 Hz (every ~128ms)
 - Fast enough for real-time visualization
@@ -520,6 +567,7 @@ await startAudioStream({
 ### Event Listener Cleanup
 
 **Critical Pattern**:
+
 ```typescript
 useEffect(() => {
   const subscription = addAudioSamplesListener(...);
@@ -531,6 +579,7 @@ useEffect(() => {
 ```
 
 **Why Important**:
+
 - React Native subscriptions must be cleaned up
 - Prevents memory leaks
 - Stops native audio processing when component unmounts
@@ -544,11 +593,13 @@ useEffect(() => {
 #### The Problem
 
 After implementing the example app, iOS build succeeded but the app crashed at runtime with:
+
 ```
 TypeError: addAudioSampleListener is not a function (it is undefined)
 ```
 
 Despite:
+
 - TypeScript compilation succeeding without errors
 - All exports present in `build/index.js` (319 lines, verified)
 - Module correctly installed in `node_modules`
@@ -561,6 +612,7 @@ Despite:
 When using `file:..` dependencies, npm creates symlinks that include ALL files from the source package. Metro preferentially resolves TypeScript source files over compiled JavaScript, even when `package.json` specifies `"main": "build/index.js"`.
 
 The root `index.ts` (11,651 bytes) contained imports like:
+
 ```typescript
 import LoqaAudioBridgeModule from './src/LoqaAudioBridgeModule';
 ```
@@ -587,6 +639,7 @@ When Metro tried to bundle this source file directly, these paths failed because
 #### Verification
 
 **After Fix**:
+
 - Metro bundled 726 modules (vs 792 before - 66 fewer = removed incorrect source resolution)
 - iOS build succeeded: 0 errors, 33 warnings
 - App launched with ZERO JavaScript errors
@@ -604,6 +657,7 @@ When Metro tried to bundle this source file directly, these paths failed because
 This issue would have **blocked all downstream consumers** including the Voiceline team. The fix establishes the correct Expo module structure that prevents Metro bundler resolution failures with `file:..` dependencies.
 
 **See**: `CRITICAL-LEARNINGS-METRO-BUNDLER.md` for complete documentation of this issue, including:
+
 - Detailed discovery timeline
 - Standard Expo module structure
 - Prevention checklist for Voiceline team
@@ -614,12 +668,14 @@ This issue would have **blocked all downstream consumers** including the Voiceli
 ### Learnings from Story 3.3
 
 **Story 3.3 (Scaffolding)**:
+
 - Example app structure created
 - Permissions configured in app.json
 - Native projects generated with prebuild
 - Module autolinked successfully
 
 **Applying to 3.4**:
+
 - Build on existing scaffolding
 - Use configured permissions
 - Module already installed and linked
@@ -628,16 +684,19 @@ This issue would have **blocked all downstream consumers** including the Voiceli
 ### UI Design Principles
 
 **Simplicity**:
+
 - Single screen, no navigation
 - All controls visible at once
 - No complex interactions
 
 **Clarity**:
+
 - Clear labels for every section
 - Status indicators (● ○ ✓ ✗)
 - Error messages display prominently
 
 **Accessibility**:
+
 - Large touch targets (buttons)
 - High contrast colors
 - Clear text hierarchy
@@ -645,11 +704,13 @@ This issue would have **blocked all downstream consumers** including the Voiceli
 ### Testing Microphone Input
 
 **iOS Simulator**:
+
 - Uses Mac's built-in microphone
 - Speak into Mac mic to test
 - RMS should react to voice/sounds
 
 **Android Emulator**:
+
 - Virtual audio input (may need configuration)
 - Or use physical device for real mic
 - Emulator mic settings in AVD Manager
@@ -657,16 +718,19 @@ This issue would have **blocked all downstream consumers** including the Voiceli
 ### Error Handling
 
 **Permission Denied**:
+
 - Show clear error message
 - Explain why permission is needed
 - Provide button to re-request
 
 **Streaming Fails**:
+
 - Catch and display error
 - Log to console for debugging
 - Don't crash the app
 
 **Edge Cases**:
+
 - App backgrounds while streaming → auto-stop
 - Multiple start attempts → ignore if already streaming
 - Permission revoked mid-stream → handle gracefully
@@ -674,11 +738,13 @@ This issue would have **blocked all downstream consumers** including the Voiceli
 ### Performance Considerations
 
 **UI Updates**:
+
 - RMS updates ~8 times/second
 - React Native handles this well
 - Bar chart animates smoothly
 
 **Memory**:
+
 - Audio samples not stored (processed immediately)
 - Subscription cleaned up on unmount
 - No memory leaks
@@ -686,6 +752,7 @@ This issue would have **blocked all downstream consumers** including the Voiceli
 ### Code Quality (FR33)
 
 **Comment Requirements (FR33)**:
+
 - ✅ Every import explained
 - ✅ Function parameters documented
 - ✅ Configuration values explained

@@ -2,6 +2,7 @@
 
 Production-grade Expo native module for real-time audio streaming with Voice Activity Detection and battery optimization
 
+[![CI](https://github.com/loqalabs/loqa-audio-bridge/actions/workflows/ci.yml/badge.svg)](https://github.com/loqalabs/loqa-audio-bridge/actions/workflows/ci.yml)
 [![npm version](https://badge.fury.io/js/%40loqalabs%2Floqa-audio-bridge.svg)](https://www.npmjs.com/package/@loqalabs/loqa-audio-bridge)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 
@@ -31,7 +32,7 @@ await startAudioStream({ sampleRate: 16000, bufferSize: 2048 });
 
 // Listen for audio samples
 const subscription = addAudioSampleListener((event) => {
-  console.log('RMS:', event.rms);  // Volume level
+  console.log('RMS:', event.rms); // Volume level
   // Access audio samples: event.samples (number[])
 });
 
@@ -60,10 +61,10 @@ Configure sample rate, buffer size, channels, and enable VAD for your use case:
 
 ```typescript
 await startAudioStream({
-  sampleRate: 16000,      // 8000, 16000, 32000, 44100, 48000
-  bufferSize: 2048,       // 512-8192 samples
-  channels: 1,            // 1 (mono) or 2 (stereo)
-  vadEnabled: true,       // Voice Activity Detection
+  sampleRate: 16000, // 8000, 16000, 32000, 44100, 48000
+  bufferSize: 2048, // 512-8192 samples
+  channels: 1, // 1 (mono) or 2 (stereo)
+  vadEnabled: true, // Voice Activity Detection
 });
 ```
 
@@ -75,18 +76,18 @@ Subscribe to audio samples, status changes, and errors:
 import {
   addAudioSampleListener,
   addStreamStatusListener,
-  addStreamErrorListener
+  addStreamErrorListener,
 } from '@loqalabs/loqa-audio-bridge';
 
 // Audio samples (~8 Hz at 16kHz/2048 buffer)
 const audioSub = addAudioSampleListener((event) => {
-  const samples = event.samples;  // number[] of audio data
-  const rms = event.rms;          // Volume level (0.0-1.0)
+  const samples = event.samples; // number[] of audio data
+  const rms = event.rms; // Volume level (0.0-1.0)
 });
 
 // Stream status changes
 const statusSub = addStreamStatusListener((event) => {
-  console.log('Status:', event.status);  // "streaming" | "stopped" | "paused"
+  console.log('Status:', event.status); // "streaming" | "stopped" | "paused"
 });
 
 // Stream errors

@@ -236,7 +236,13 @@ export interface StreamErrorEvent {
    * - DEVICE_NOT_AVAILABLE: Microphone hardware unavailable
    * - BUFFER_OVERFLOW: Audio processing overloaded (rare)
    */
-  error: StreamErrorCode | 'PERMISSION_DENIED' | 'SESSION_CONFIG_FAILED' | 'ENGINE_START_FAILED' | 'DEVICE_NOT_AVAILABLE' | 'BUFFER_OVERFLOW';
+  error:
+    | StreamErrorCode
+    | 'PERMISSION_DENIED'
+    | 'SESSION_CONFIG_FAILED'
+    | 'ENGINE_START_FAILED'
+    | 'DEVICE_NOT_AVAILABLE'
+    | 'BUFFER_OVERFLOW';
 
   /**
    * User-friendly error message with actionable guidance
@@ -294,13 +300,13 @@ export enum StreamErrorCode {
 
 All configuration parameters for `StreamConfig`:
 
-| Parameter | Type | Default | Description | Valid Values | Platform Notes |
-|-----------|------|---------|-------------|--------------|----------------|
-| `sampleRate` | `number` | `16000` | Audio sample rate in Hz | `8000`, `16000`, `32000`, `44100`, `48000` | iOS: Hardware rate detected, downsampled to requested rate |
-| `bufferSize` | `number` | `2048` | Buffer size in samples | `512` - `8192` | **iOS: Must be power of 2** (512, 1024, 2048, 4096, 8192)<br>Android: Any value in range |
-| `channels` | `number` | `1` | Mono (1) or Stereo (2) | `1`, `2` | Stereo automatically converted to mono |
-| `vadEnabled` | `boolean` | `true` | Voice Activity Detection | `true`, `false` | Skips frames with RMS < 0.01 |
-| `adaptiveProcessing` | `boolean` | `true` | Battery-aware frame skipping | `true`, `false` | Reduces frame rate to ~4Hz when battery < 20% |
+| Parameter            | Type      | Default | Description                  | Valid Values                               | Platform Notes                                                                           |
+| -------------------- | --------- | ------- | ---------------------------- | ------------------------------------------ | ---------------------------------------------------------------------------------------- |
+| `sampleRate`         | `number`  | `16000` | Audio sample rate in Hz      | `8000`, `16000`, `32000`, `44100`, `48000` | iOS: Hardware rate detected, downsampled to requested rate                               |
+| `bufferSize`         | `number`  | `2048`  | Buffer size in samples       | `512` - `8192`                             | **iOS: Must be power of 2** (512, 1024, 2048, 4096, 8192)<br>Android: Any value in range |
+| `channels`           | `number`  | `1`     | Mono (1) or Stereo (2)       | `1`, `2`                                   | Stereo automatically converted to mono                                                   |
+| `vadEnabled`         | `boolean` | `true`  | Voice Activity Detection     | `true`, `false`                            | Skips frames with RMS < 0.01                                                             |
+| `adaptiveProcessing` | `boolean` | `true`  | Battery-aware frame skipping | `true`, `false`                            | Reduces frame rate to ~4Hz when battery < 20%                                            |
 
 ---
 
@@ -310,7 +316,7 @@ All configuration parameters for `StreamConfig`:
 
 Starts audio streaming from the device microphone.
 
-```typescript
+````typescript
 /**
  * Start audio streaming session
  *
@@ -350,7 +356,7 @@ Starts audio streaming from the device microphone.
  * @platform android Uses AudioRecord with ENCODING_PCM_FLOAT
  */
 export async function startAudioStream(config: StreamConfig): Promise<boolean>;
-```
+````
 
 **Behavior:**
 
@@ -378,7 +384,7 @@ export async function startAudioStream(config: StreamConfig): Promise<boolean>;
 
 Stops audio streaming and releases resources.
 
-```typescript
+````typescript
 /**
  * Stop audio streaming session
  *
@@ -399,7 +405,7 @@ Stops audio streaming and releases resources.
  * @platform android Cancels coroutine, stops and releases AudioRecord
  */
 export function stopAudioStream(): boolean;
-```
+````
 
 **Behavior:**
 
@@ -415,7 +421,7 @@ export function stopAudioStream(): boolean;
 
 Checks if audio streaming is currently active.
 
-```typescript
+````typescript
 /**
  * Check if audio streaming is active
  *
@@ -431,7 +437,7 @@ Checks if audio streaming is currently active.
  * ```
  */
 export function isStreaming(): boolean;
-```
+````
 
 **Usage Notes:**
 
@@ -461,7 +467,7 @@ export interface EventSubscription {
 
 Registers a listener for audio sample events.
 
-```typescript
+````typescript
 /**
  * Add listener for audio sample events
  *
@@ -505,7 +511,7 @@ Registers a listener for audio sample events.
 export function addAudioSampleListener(
   listener: (event: AudioSampleEvent) => void
 ): EventSubscription;
-```
+````
 
 **Event Frequency:**
 
@@ -521,7 +527,7 @@ Consider offloading heavy processing to Web Worker or async queue.
 
 Registers a listener for stream status change events.
 
-```typescript
+````typescript
 /**
  * Add listener for stream status change events
  *
@@ -559,7 +565,7 @@ Registers a listener for stream status change events.
 export function addStreamStatusListener(
   listener: (event: StreamStatusEvent) => void
 ): EventSubscription;
-```
+````
 
 **Status Transitions:**
 
@@ -573,7 +579,7 @@ export function addStreamStatusListener(
 
 Registers a listener for stream error events.
 
-```typescript
+````typescript
 /**
  * Add listener for stream error events
  *
@@ -619,7 +625,7 @@ Registers a listener for stream error events.
 export function addStreamErrorListener(
   listener: (event: StreamErrorEvent) => void
 ): EventSubscription;
-```
+````
 
 **Error Handling Strategy:**
 
@@ -745,7 +751,9 @@ function StreamingExample() {
 
   return (
     <View>
-      <Button onPress={start} disabled={isStreaming}>Start</Button>
+      <Button onPress={start} disabled={isStreaming}>
+        Start
+      </Button>
       {error && (
         <View>
           <Text style={{ color: 'red' }}>{error}</Text>
@@ -837,7 +845,7 @@ const subscription = addAudioSampleListener((event) => {
 await startAudioStream({
   sampleRate: 16000,
   bufferSize: 2048,
-  vadEnabled: true,  // Skip silent frames (RMS < 0.01)
+  vadEnabled: true, // Skip silent frames (RMS < 0.01)
 });
 
 // Later: cleanup
@@ -875,7 +883,9 @@ const errorSub = addStreamErrorListener((event) => {
       break;
 
     case StreamErrorCode.BUFFER_OVERFLOW:
-      console.warn('Audio processing overloaded - consider increasing buffer size or reducing processing');
+      console.warn(
+        'Audio processing overloaded - consider increasing buffer size or reducing processing'
+      );
       break;
 
     case StreamErrorCode.ENGINE_START_FAILED:
@@ -909,8 +919,8 @@ const statusSub = addStreamStatusListener((event) => {
 await startAudioStream({
   sampleRate: 16000,
   bufferSize: 2048,
-  adaptiveProcessing: true,  // Auto-reduce frame rate when battery < 20%
-  vadEnabled: true,           // Skip silent frames for additional battery savings
+  adaptiveProcessing: true, // Auto-reduce frame rate when battery < 20%
+  vadEnabled: true, // Skip silent frames for additional battery savings
 });
 
 // Cleanup
@@ -977,7 +987,13 @@ const styles = StyleSheet.create({
   container: { flex: 1, padding: 20, justifyContent: 'center' },
   title: { fontSize: 24, fontWeight: 'bold', marginBottom: 20, textAlign: 'center' },
   statusContainer: { marginVertical: 20 },
-  barContainer: { height: 30, backgroundColor: '#e0e0e0', borderRadius: 15, overflow: 'hidden', marginVertical: 20 },
+  barContainer: {
+    height: 30,
+    backgroundColor: '#e0e0e0',
+    borderRadius: 15,
+    overflow: 'hidden',
+    marginVertical: 20,
+  },
   bar: { height: '100%', backgroundColor: '#4CAF50' },
   error: { color: '#F44336', marginTop: 10, textAlign: 'center' },
 });
@@ -991,17 +1007,18 @@ export default VoicePracticeScreen;
 
 ### Error Codes
 
-| Error Code | Description | Recovery Strategy | Platform |
-|------------|-------------|-------------------|----------|
-| `PERMISSION_DENIED` | Microphone permission not granted | Prompt user to enable in Settings | Android |
-| `SESSION_CONFIG_FAILED` | Audio session setup failed | Retry with fallback config, inform user | iOS |
-| `ENGINE_START_FAILED` | Audio engine/recorder failed to start | Check device availability, retry once | Both |
-| `DEVICE_NOT_AVAILABLE` | Microphone hardware unavailable | Inform user, disable audio features | Both |
-| `BUFFER_OVERFLOW` | Audio frames being dropped | Increase buffer size, reduce processing load | Both |
+| Error Code              | Description                           | Recovery Strategy                            | Platform |
+| ----------------------- | ------------------------------------- | -------------------------------------------- | -------- |
+| `PERMISSION_DENIED`     | Microphone permission not granted     | Prompt user to enable in Settings            | Android  |
+| `SESSION_CONFIG_FAILED` | Audio session setup failed            | Retry with fallback config, inform user      | iOS      |
+| `ENGINE_START_FAILED`   | Audio engine/recorder failed to start | Check device availability, retry once        | Both     |
+| `DEVICE_NOT_AVAILABLE`  | Microphone hardware unavailable       | Inform user, disable audio features          | Both     |
+| `BUFFER_OVERFLOW`       | Audio frames being dropped            | Increase buffer size, reduce processing load | Both     |
 
 ### Error Handling Best Practices
 
 1. **Always register error listener before starting stream**
+
    ```typescript
    const errorSub = addStreamErrorListener((event) => {
      console.error('Stream error:', event.error);
@@ -1010,6 +1027,7 @@ export default VoicePracticeScreen;
    ```
 
 2. **Handle PERMISSION_DENIED gracefully** with clear user messaging
+
    ```typescript
    if (event.error === StreamErrorCode.PERMISSION_DENIED) {
      Alert.alert('Microphone Access Required', event.message);
@@ -1017,6 +1035,7 @@ export default VoicePracticeScreen;
    ```
 
 3. **Retry transient errors** (ENGINE_START_FAILED) once with exponential backoff
+
    ```typescript
    let retryCount = 0;
    const maxRetries = 1;
@@ -1025,13 +1044,14 @@ export default VoicePracticeScreen;
      if (event.error === StreamErrorCode.ENGINE_START_FAILED && retryCount < maxRetries) {
        retryCount++;
        console.log(`Retrying... (${retryCount}/${maxRetries})`);
-       await new Promise(resolve => setTimeout(resolve, 1000)); // Wait 1s
+       await new Promise((resolve) => setTimeout(resolve, 1000)); // Wait 1s
        await startAudioStream(config);
      }
    });
    ```
 
 4. **Degrade gracefully** for DEVICE_NOT_AVAILABLE (hide audio features)
+
    ```typescript
    if (event.error === StreamErrorCode.DEVICE_NOT_AVAILABLE) {
      setAudioFeaturesAvailable(false);
@@ -1101,12 +1121,12 @@ export default VoicePracticeScreen;
 
 ### Buffer Size Selection
 
-| Sample Rate | Buffer Size | Latency | Event Rate | Use Case |
-|-------------|-------------|---------|------------|----------|
-| 16kHz | 2048 samples | 128ms | ~8 Hz | Voice analysis (recommended) |
-| 16kHz | 4096 samples | 256ms | ~4 Hz | Lower event rate, better frequency resolution |
-| 44.1kHz | 4096 samples | 93ms | ~11 Hz | High-quality capture |
-| 48kHz | 4096 samples | 85ms | ~12 Hz | Professional audio |
+| Sample Rate | Buffer Size  | Latency | Event Rate | Use Case                                      |
+| ----------- | ------------ | ------- | ---------- | --------------------------------------------- |
+| 16kHz       | 2048 samples | 128ms   | ~8 Hz      | Voice analysis (recommended)                  |
+| 16kHz       | 4096 samples | 256ms   | ~4 Hz      | Lower event rate, better frequency resolution |
+| 44.1kHz     | 4096 samples | 93ms    | ~11 Hz     | High-quality capture                          |
+| 48kHz       | 4096 samples | 85ms    | ~12 Hz     | Professional audio                            |
 
 **Recommendation:** 16kHz + 2048 samples for voice analysis (optimal balance of latency and frequency resolution)
 

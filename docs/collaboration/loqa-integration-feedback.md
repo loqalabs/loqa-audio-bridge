@@ -16,6 +16,7 @@ The VoicelineDSP v0.2.0 module was successfully integrated into the Voiceline ap
 **Issue**: The module was delivered without essential configuration files required for Expo module integration.
 
 **Impact**: The module could not be recognized by Expo's autolinking system, resulting in runtime error:
+
 ```
 Error: Cannot find native module 'VoicelineDSP'
 ```
@@ -23,11 +24,13 @@ Error: Cannot find native module 'VoicelineDSP'
 **Required Files Missing**:
 
 #### 1.1 package.json
+
 **Location**: `modules/voiceline-dsp/package.json`
 
 **Purpose**: Required for npm to recognize the module as a package and define metadata/dependencies.
 
 **Solution Applied**:
+
 ```json
 {
   "name": "voiceline-dsp",
@@ -49,11 +52,13 @@ Error: Cannot find native module 'VoicelineDSP'
 ---
 
 #### 1.2 expo-module.config.json
+
 **Location**: `modules/voiceline-dsp/expo-module.config.json`
 
 **Purpose**: Tells Expo this is a native module and specifies platform configurations.
 
 **Solution Applied**:
+
 ```json
 {
   "platforms": ["ios", "android"],
@@ -71,11 +76,13 @@ Error: Cannot find native module 'VoicelineDSP'
 ---
 
 #### 1.3 voiceline-dsp.podspec
+
 **Location**: `modules/voiceline-dsp/voiceline-dsp.podspec`
 
 **Purpose**: CocoaPods specification required for iOS module linking.
 
 **Solution Applied**:
+
 ```ruby
 require 'json'
 
@@ -108,6 +115,7 @@ end
 ```
 
 **Key Points**:
+
 - Must exclude test files with `s.exclude_files = "ios/Tests/**/*"`
 - Requires `ExpoModulesCore` dependency
 - Should read version from package.json for consistency
@@ -127,6 +135,7 @@ end
 **Workarounds Required**:
 
 #### 2.1 Manual Podfile Entry
+
 **Location**: `ios/Podfile` (end of file)
 
 ```ruby
@@ -138,6 +147,7 @@ This manual entry makes the pod discoverable by autolinking.
 **Issue**: The `ios/` directory is typically gitignored in Expo projects, so this manual entry must be re-added after each clone.
 
 #### 2.2 Manual ExpoModulesProvider Registration
+
 **Location**: `ios/Pods/Target Support Files/Pods-voiceline/ExpoModulesProvider.swift`
 
 After each `npx expo prebuild`, this auto-generated file must be manually edited to add:
@@ -151,6 +161,7 @@ VoicelineDSPModule.self,
 ```
 
 **Automation**: This can be automated with sed commands:
+
 ```bash
 # Add import
 sed -i '' '/import ExpoLinking/a\
@@ -167,6 +178,7 @@ sed -i '' 's/ExpoLinkingModule.self,/ExpoLinkingModule.self,\
 1. **Publish to npm** (Preferred): Even as a private npm package, this would make autolinking work seamlessly without manual steps.
 
 2. **Provide Working Config Plugin**: The `app.plugin.js` file delivered with the module doesn't properly handle ExpoModulesProvider registration. A working config plugin should:
+
    - Run after prebuild
    - Modify ExpoModulesProvider.swift to add the import and module registration
    - Persist across multiple prebuild cycles
@@ -180,19 +192,23 @@ sed -i '' 's/ExpoLinkingModule.self,/ExpoLinkingModule.self,\
 **Issue**: Two Swift compilation errors prevented the module from building.
 
 #### 3.1 Missing 'required' Modifier
+
 **Location**: `modules/voiceline-dsp/ios/VoicelineDSPModule.swift:93`
 
 **Error**:
+
 ```
 'override' is implied when overriding a required initializer
 ```
 
 **Original Code**:
+
 ```swift
 public override init(appContext: AppContext) {
 ```
 
 **Fix Applied**:
+
 ```swift
 public required override init(appContext: AppContext) {
 ```
@@ -202,19 +218,23 @@ public required override init(appContext: AppContext) {
 ---
 
 #### 3.2 Deprecated Bluetooth API
+
 **Location**: `modules/voiceline-dsp/ios/VoicelineDSPModule.swift:220`
 
 **Warning**:
+
 ```
 'allowBluetooth' was deprecated in iOS 8.0
 ```
 
 **Original Code**:
+
 ```swift
 options: [.allowBluetooth]
 ```
 
 **Fix Applied**:
+
 ```swift
 options: [.allowBluetoothA2DP]
 ```
@@ -230,6 +250,7 @@ options: [.allowBluetoothA2DP]
 **Issue**: Integration tests were included in the podspec source files, causing XCTest import errors during compilation.
 
 **Error**:
+
 ```
 modules/voiceline-dsp/ios/Tests/VoicelineDSPIntegrationTests.swift:1:8
 import XCTest
@@ -247,6 +268,7 @@ import XCTest
 **Issue**: The handoff documentation (HANDOFF-VERIFICATION.md, INTEGRATION-PLAN.md) provided excellent architectural overview but lacked step-by-step integration instructions for Expo projects.
 
 **Missing Documentation**:
+
 1. Required configuration files and their contents
 2. Autolinking limitations and workarounds for local modules
 3. Post-prebuild steps required for Expo projects
@@ -254,12 +276,14 @@ import XCTest
 5. Android-specific gradle/manifest modifications (if any)
 
 **What Was Done Well**:
+
 - Comprehensive API documentation in TypeScript types
 - Clear architectural diagrams
 - Thorough module capabilities overview
 - Performance benchmarks and battery usage data
 
 **Recommendation**: Add an "Expo Integration Guide" document that includes:
+
 - Prerequisites (Expo version, RN version)
 - Step-by-step installation instructions
 - Required configuration files with examples
@@ -317,20 +341,26 @@ To ensure smooth integration for future clients, include:
 Consider these options for easier integration:
 
 ### Option 1: npm Package (Recommended)
+
 Publish to npm (public or private registry). Benefits:
+
 - Autolinking works out of box
 - Standard npm workflows (npm install, version management)
 - No manual Podfile/build file modifications
 - Easier to distribute updates
 
 ### Option 2: Template Repository
+
 Provide a complete Expo template project with VoicelineDSP pre-integrated. Benefits:
+
 - Clients can clone and start immediately
 - No integration steps required
 - Demonstrates best practices
 
 ### Option 3: Expo Module Template
+
 Use `create-expo-module` to scaffold the module structure. Benefits:
+
 - Generates all required config files automatically
 - Follows Expo module best practices
 - Includes working config plugin template

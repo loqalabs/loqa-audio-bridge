@@ -80,6 +80,7 @@ npx expo install @loqalabs/loqa-audio-bridge
 **Why `npx expo install`?** This command ensures version compatibility with your Expo SDK version. It's preferred over `npm install` for Expo projects.
 
 **Expected Output**:
+
 ```
 ✔ Added dependencies
 ```
@@ -93,11 +94,13 @@ npx expo prebuild --clean
 ```
 
 **What this does**:
+
 - Generates iOS and Android native projects from your Expo configuration
 - Links the native module to both platforms automatically (autolinking)
 - The `--clean` flag ensures a fresh rebuild without cached artifacts
 
 **Expected Output**:
+
 ```
 ✔ Config synced
 ✔ Created native directories
@@ -115,6 +118,7 @@ npx expo-doctor
 ```
 
 **Expected Output**:
+
 ```
 ✔ Check Expo config for common issues
 ✔ Check package.json for common issues
@@ -150,6 +154,7 @@ iOS requires you to declare why your app needs microphone access. Add this to yo
 **Customize the message**: Replace the description with text that explains your specific use case. This message will be shown to users when requesting permission.
 
 **Examples of good permission messages**:
+
 - "Record audio for speech-to-text transcription"
 - "Capture audio for voice analysis and feedback"
 - "Record audio during coaching sessions"
@@ -183,9 +188,7 @@ Add microphone permission to your `app.json`:
   "expo": {
     "name": "YourAppName",
     "android": {
-      "permissions": [
-        "RECORD_AUDIO"
-      ]
+      "permissions": ["RECORD_AUDIO"]
     }
   }
 }
@@ -253,7 +256,7 @@ Alert.alert(
   'Please enable microphone access in Settings to use audio features.',
   [
     { text: 'Cancel', style: 'cancel' },
-    { text: 'Open Settings', onPress: openAppSettings }
+    { text: 'Open Settings', onPress: openAppSettings },
   ]
 );
 ```
@@ -275,7 +278,11 @@ npx expo prebuild --clean
 Here's a full component demonstrating audio streaming with proper error handling and permission requests:
 
 ```typescript
-import { startAudioStream, stopAudioStream, addAudioSampleListener } from '@loqalabs/loqa-audio-bridge';
+import {
+  startAudioStream,
+  stopAudioStream,
+  addAudioSampleListener,
+} from '@loqalabs/loqa-audio-bridge';
 import { useState, useEffect } from 'react';
 import { View, Button, Text, Alert } from 'react-native';
 import { Audio } from 'expo-av';
@@ -325,11 +332,11 @@ export default function AudioStreamingComponent() {
 
       // Start audio stream with configuration
       await startAudioStream({
-        sampleRate: 16000,       // 16kHz (optimal for speech recognition)
-        bufferSize: 2048,        // ~8 Hz event rate (2048/16000 = 0.128s per event)
-        channels: 1,             // Mono audio
-        vadEnabled: true,        // Enable Voice Activity Detection for battery savings
-        adaptiveProcessing: true // Reduce frame rate on low battery
+        sampleRate: 16000, // 16kHz (optimal for speech recognition)
+        bufferSize: 2048, // ~8 Hz event rate (2048/16000 = 0.128s per event)
+        channels: 1, // Mono audio
+        vadEnabled: true, // Enable Voice Activity Detection for battery savings
+        adaptiveProcessing: true, // Reduce frame rate on low battery
       });
 
       setIsStreaming(true);
@@ -371,11 +378,7 @@ export default function AudioStreamingComponent() {
         disabled={isStreaming || !permissionGranted}
       />
 
-      <Button
-        title="Stop Streaming"
-        onPress={handleStopStreaming}
-        disabled={!isStreaming}
-      />
+      <Button title="Stop Streaming" onPress={handleStopStreaming} disabled={!isStreaming} />
     </View>
   );
 }
@@ -384,11 +387,13 @@ export default function AudioStreamingComponent() {
 ### 4.2 Configuration Options Explained
 
 #### Sample Rate
+
 ```typescript
-sampleRate: 16000  // Options: 8000, 16000, 32000, 44100, 48000
+sampleRate: 16000; // Options: 8000, 16000, 32000, 44100, 48000
 ```
 
 **Recommended values**:
+
 - **8000 Hz**: Voice communication, minimal bandwidth
 - **16000 Hz**: Speech recognition (optimal quality/performance balance)
 - **44100 Hz**: Music recording, high fidelity audio
@@ -397,23 +402,27 @@ sampleRate: 16000  // Options: 8000, 16000, 32000, 44100, 48000
 **Trade-offs**: Higher sample rates provide better quality but increase CPU usage, battery consumption, and data size.
 
 #### Buffer Size
+
 ```typescript
-bufferSize: 2048  // Options: 512, 1024, 2048, 4096, 8192
+bufferSize: 2048; // Options: 512, 1024, 2048, 4096, 8192
 ```
 
 **Event rate calculation**: `bufferSize / sampleRate = seconds per event`
+
 - 2048 @ 16kHz = 0.128s = ~8 Hz event rate
 - 4096 @ 16kHz = 0.256s = ~4 Hz event rate
 
 **Trade-offs**:
+
 - **Smaller buffers** (512-1024): Lower latency, higher CPU usage, more events per second
 - **Larger buffers** (4096-8192): Lower CPU usage, higher latency, fewer events per second
 
 **Recommended**: 2048 (good balance for most applications)
 
 #### Voice Activity Detection (VAD)
+
 ```typescript
-vadEnabled: true  // Default: true
+vadEnabled: true; // Default: true
 ```
 
 **What it does**: Skips processing silent audio frames (RMS < 0.01) to save battery.
@@ -423,8 +432,9 @@ vadEnabled: true  // Default: true
 **When to disable**: Real-time audio visualization or when you need continuous samples
 
 #### Adaptive Processing
+
 ```typescript
-adaptiveProcessing: true  // Default: true
+adaptiveProcessing: true; // Default: true
 ```
 
 **What it does**: Automatically reduces frame rate by 50% when battery < 20%
@@ -536,6 +546,7 @@ This section covers 90% of common integration issues based on v0.2.0 user feedba
 ### Issue 1: "Cannot find native module 'LoqaAudioBridge'"
 
 **Symptom**: App crashes with error:
+
 ```
 Error: Cannot find native module 'LoqaAudioBridge'
 ```
@@ -545,11 +556,13 @@ Error: Cannot find native module 'LoqaAudioBridge'
 **Solution**:
 
 1. **Clean rebuild**:
+
    ```bash
    npx expo prebuild --clean
    ```
 
 2. **For iOS, install CocoaPods**:
+
    ```bash
    cd ios
    pod install
@@ -557,6 +570,7 @@ Error: Cannot find native module 'LoqaAudioBridge'
    ```
 
 3. **Verify autolinking** by checking:
+
    - iOS: `ios/Pods/Pods.xcodeproj` should contain `LoqaAudioBridge` target
    - Android: `android/app/build.gradle` should reference the module
 
@@ -573,6 +587,7 @@ Error: Cannot find native module 'LoqaAudioBridge'
 ### Issue 2: iOS CocoaPods Errors
 
 **Symptom**: Pod install fails with errors like:
+
 ```
 [!] Unable to find a specification for 'LoqaAudioBridge'
 ```
@@ -580,6 +595,7 @@ Error: Cannot find native module 'LoqaAudioBridge'
 **Solution**:
 
 1. **Clear CocoaPods cache**:
+
    ```bash
    cd ios
    pod cache clean --all
@@ -589,6 +605,7 @@ Error: Cannot find native module 'LoqaAudioBridge'
    ```
 
 2. **Update CocoaPods**:
+
    ```bash
    sudo gem install cocoapods
    ```
@@ -605,6 +622,7 @@ Error: Cannot find native module 'LoqaAudioBridge'
 ### Issue 3: Android Gradle "Duplicate class" Errors
 
 **Symptom**: Android build fails with:
+
 ```
 Duplicate class expo.modules.loqaaudiobridge.LoqaAudioBridgeModule found in modules
 ```
@@ -614,6 +632,7 @@ Duplicate class expo.modules.loqaaudiobridge.LoqaAudioBridgeModule found in modu
 **Solution**:
 
 1. **Clean Gradle cache**:
+
    ```bash
    cd android
    ./gradlew clean
@@ -621,6 +640,7 @@ Duplicate class expo.modules.loqaaudiobridge.LoqaAudioBridgeModule found in modu
    ```
 
 2. **Delete build directories**:
+
    ```bash
    rm -rf android/app/build
    rm -rf android/build
@@ -643,10 +663,12 @@ Duplicate class expo.modules.loqaaudiobridge.LoqaAudioBridgeModule found in modu
 **iOS Solution**:
 
 1. **Check Info.plist**:
+
    - Open `ios/YourApp/Info.plist`
    - Verify `NSMicrophoneUsageDescription` key exists
 
 2. **Reset permissions** (if testing repeatedly):
+
    - Settings → Privacy & Security → Microphone → YourApp → Toggle off/on
 
 3. **Rebuild** after changing `app.json`:
@@ -657,10 +679,12 @@ Duplicate class expo.modules.loqaaudiobridge.LoqaAudioBridgeModule found in modu
 **Android Solution**:
 
 1. **Verify manifest**:
+
    - Open `android/app/src/main/AndroidManifest.xml`
    - Confirm `<uses-permission android:name="android.permission.RECORD_AUDIO" />`
 
 2. **Request permission at runtime**:
+
    ```typescript
    import { Audio } from 'expo-av';
    const { status } = await Audio.requestPermissionsAsync();
@@ -686,22 +710,25 @@ Duplicate class expo.modules.loqaaudiobridge.LoqaAudioBridgeModule found in modu
 **Solution**:
 
 1. **Validate configuration**:
+
    ```typescript
    await startAudioStream({
-     sampleRate: 16000,  // Must be supported: 8000, 16000, 32000, 44100, 48000
-     bufferSize: 2048,   // Must be power of 2 on iOS: 512, 1024, 2048, 4096, 8192
-     channels: 1,        // 1 or 2
+     sampleRate: 16000, // Must be supported: 8000, 16000, 32000, 44100, 48000
+     bufferSize: 2048, // Must be power of 2 on iOS: 512, 1024, 2048, 4096, 8192
+     channels: 1, // 1 or 2
    });
    ```
 
 2. **Disable VAD temporarily** (for testing):
+
    ```typescript
    await startAudioStream({
-     vadEnabled: false,  // Disables silence filtering
+     vadEnabled: false, // Disables silence filtering
    });
    ```
 
 3. **Register listener BEFORE starting stream**:
+
    ```typescript
    // ✅ Correct order
    const subscription = addAudioSampleListener((event) => {
@@ -725,6 +752,7 @@ Duplicate class expo.modules.loqaaudiobridge.LoqaAudioBridgeModule found in modu
 **Symptom**: App uses excessive CPU (>10%) or drains battery quickly.
 
 **Causes**:
+
 - Buffer size too small (generating too many events per second)
 - VAD disabled (processing all audio including silence)
 - Sample rate too high for use case
@@ -732,23 +760,26 @@ Duplicate class expo.modules.loqaaudiobridge.LoqaAudioBridgeModule found in modu
 **Solution**:
 
 1. **Increase buffer size** (reduce event rate):
+
    ```typescript
-   bufferSize: 4096  // Reduces event rate from ~8 Hz to ~4 Hz
+   bufferSize: 4096; // Reduces event rate from ~8 Hz to ~4 Hz
    ```
 
 2. **Enable VAD** (skip silent frames):
+
    ```typescript
-   vadEnabled: true  // 30-50% battery savings during silence
+   vadEnabled: true; // 30-50% battery savings during silence
    ```
 
 3. **Lower sample rate** (if quality allows):
+
    ```typescript
-   sampleRate: 8000  // Half the data of 16kHz
+   sampleRate: 8000; // Half the data of 16kHz
    ```
 
 4. **Enable adaptive processing**:
    ```typescript
-   adaptiveProcessing: true  // Auto-reduces rate on low battery
+   adaptiveProcessing: true; // Auto-reduces rate on low battery
    ```
 
 **Validation**: CPU usage should be 2-5% during active streaming, battery drain 3-8% per hour with VAD enabled.
@@ -764,6 +795,7 @@ Duplicate class expo.modules.loqaaudiobridge.LoqaAudioBridgeModule found in modu
 **Solution**:
 
 1. **Add to app.json** (if not already present):
+
    ```json
    {
      "expo": {
@@ -777,6 +809,7 @@ Duplicate class expo.modules.loqaaudiobridge.LoqaAudioBridgeModule found in modu
    ```
 
 2. **Rebuild**:
+
    ```bash
    npx expo prebuild --clean
    ```
@@ -806,7 +839,7 @@ While the package doesn't expose threshold configuration in v0.3.0, you can impl
 
 ```typescript
 addAudioSampleListener((event) => {
-  const customThreshold = 0.02;  // Stricter than default 0.01
+  const customThreshold = 0.02; // Stricter than default 0.01
 
   if (event.rms < customThreshold) {
     // Skip silent frame
@@ -821,16 +854,19 @@ addAudioSampleListener((event) => {
 #### VAD Use Cases
 
 **Enable VAD (vadEnabled: true)** for:
+
 - Speech recognition applications (skip silence between words)
 - Voice commands (save battery when user not speaking)
 - Podcast recording (reduce file size by removing silence)
 
 **Disable VAD (vadEnabled: false)** for:
+
 - Real-time audio visualization (need continuous waveform)
 - Music recording (silence is part of the composition)
 - Environmental sound monitoring (silence is meaningful data)
 
 **Battery Impact**:
+
 - VAD enabled: 3-8% battery per hour
 - VAD disabled: 5-12% battery per hour
 - **Savings**: 30-50% reduction during typical speech patterns
@@ -844,6 +880,7 @@ addAudioSampleListener((event) => {
 Adaptive processing automatically reduces frame rate by 50% when device battery drops below 20%.
 
 **How it works**:
+
 ```
 Normal battery (>20%):  8 Hz event rate (2048 @ 16kHz)
 Low battery (<20%):     4 Hz event rate (skips every 2nd frame)
@@ -872,14 +909,15 @@ For maximum battery efficiency, combine multiple strategies:
 
 ```typescript
 await startAudioStream({
-  sampleRate: 8000,          // Lower sample rate = less data
-  bufferSize: 4096,          // Larger buffer = fewer events
-  vadEnabled: true,          // Skip silence
-  adaptiveProcessing: true,  // Auto-reduce on low battery
+  sampleRate: 8000, // Lower sample rate = less data
+  bufferSize: 4096, // Larger buffer = fewer events
+  vadEnabled: true, // Skip silence
+  adaptiveProcessing: true, // Auto-reduce on low battery
 });
 ```
 
 **Estimated battery usage** with above config:
+
 - Active speaking: 2-4% per hour
 - Mostly silent: 1-2% per hour
 
@@ -890,34 +928,38 @@ await startAudioStream({
 #### Understanding the Trade-off
 
 **Buffer size affects two key metrics**:
+
 1. **Latency**: Time between sound occurring and your code receiving it
 2. **CPU Usage**: Processing overhead from frequent events
 
 #### Buffer Size Comparison Table
 
-| Buffer Size | Sample Rate | Event Rate | Latency | CPU Usage | Use Case |
-|-------------|-------------|------------|---------|-----------|----------|
-| 512 | 16kHz | ~31 Hz | 32ms | High (5-8%) | Real-time pitch detection |
-| 1024 | 16kHz | ~16 Hz | 64ms | Medium (3-6%) | Interactive audio visualizer |
-| 2048 | 16kHz | ~8 Hz | 128ms | Low (2-5%) | Speech recognition (balanced) |
-| 4096 | 16kHz | ~4 Hz | 256ms | Very Low (1-3%) | Podcast recording |
-| 8192 | 16kHz | ~2 Hz | 512ms | Minimal (<2%) | Batch audio processing |
+| Buffer Size | Sample Rate | Event Rate | Latency | CPU Usage       | Use Case                      |
+| ----------- | ----------- | ---------- | ------- | --------------- | ----------------------------- |
+| 512         | 16kHz       | ~31 Hz     | 32ms    | High (5-8%)     | Real-time pitch detection     |
+| 1024        | 16kHz       | ~16 Hz     | 64ms    | Medium (3-6%)   | Interactive audio visualizer  |
+| 2048        | 16kHz       | ~8 Hz      | 128ms   | Low (2-5%)      | Speech recognition (balanced) |
+| 4096        | 16kHz       | ~4 Hz      | 256ms   | Very Low (1-3%) | Podcast recording             |
+| 8192        | 16kHz       | ~2 Hz      | 512ms   | Minimal (<2%)   | Batch audio processing        |
 
 **Calculation**: `Latency (ms) = (bufferSize / sampleRate) * 1000`
 
 #### Choosing Buffer Size
 
 **Low latency required** (< 100ms): Use 512-2048
+
 - Real-time audio effects
 - Interactive music applications
 - Live pitch correction
 
 **CPU efficiency priority**: Use 4096-8192
+
 - Background audio recording
 - Batch speech transcription
 - Non-interactive monitoring
 
 **Balanced (recommended)**: Use 2048
+
 - Most speech recognition use cases
 - Voice commands
 - General audio streaming
@@ -938,7 +980,7 @@ Android is more flexible but using power-of-2 ensures cross-platform compatibili
 await startAudioStream({
   sampleRate: 16000,
   bufferSize: 2048,
-  channels: 2,  // Stereo
+  channels: 2, // Stereo
 });
 ```
 
@@ -954,8 +996,8 @@ addAudioSampleListener((event) => {
 
     // Separate left and right channels
     for (let i = 0; i < event.samples.length; i += 2) {
-      leftChannel.push(event.samples[i]);      // Even indices = left
-      rightChannel.push(event.samples[i + 1]);  // Odd indices = right
+      leftChannel.push(event.samples[i]); // Even indices = left
+      rightChannel.push(event.samples[i + 1]); // Odd indices = right
     }
 
     console.log('Left RMS:', calculateRMS(leftChannel));
@@ -972,12 +1014,14 @@ function calculateRMS(samples: number[]): number {
 #### Stereo Use Cases
 
 **When to use stereo**:
+
 - Spatial audio recording (left/right positioning)
 - Music production applications
 - 3D audio analysis
 - Dual-microphone noise cancellation
 
 **When to use mono** (channels: 1):
+
 - Speech recognition (most models expect mono)
 - Voice commands
 - Transcription
@@ -1003,7 +1047,7 @@ addStreamErrorListener((event) => {
         'Microphone access is required. Please enable it in Settings.',
         [
           { text: 'Cancel', style: 'cancel' },
-          { text: 'Open Settings', onPress: () => Linking.openSettings() }
+          { text: 'Open Settings', onPress: () => Linking.openSettings() },
         ]
       );
       break;
@@ -1039,9 +1083,9 @@ addStreamErrorListener((event) => {
 ```typescript
 async function startStreamingWithFallback() {
   const configs = [
-    { sampleRate: 48000, bufferSize: 2048 },  // Ideal config
-    { sampleRate: 16000, bufferSize: 2048 },  // Fallback 1
-    { sampleRate: 8000, bufferSize: 4096 },   // Fallback 2
+    { sampleRate: 48000, bufferSize: 2048 }, // Ideal config
+    { sampleRate: 16000, bufferSize: 2048 }, // Fallback 1
+    { sampleRate: 8000, bufferSize: 4096 }, // Fallback 2
   ];
 
   for (const config of configs) {

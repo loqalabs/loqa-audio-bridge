@@ -14,19 +14,20 @@
 
 ### Key Metrics Summary
 
-| Metric | iOS | Android | Target | Status |
-|--------|-----|---------|--------|--------|
-| **Latency (95th percentile)** | ___ms | ___ms | <100ms | [Pass/Fail] |
-| **Battery (30 min)** | ___%  | ___%  | <5% | [Pass/Fail] |
-| **Memory Usage** | ___MB | ___MB | <10MB | [Pass/Fail] |
-| **Dropout Rate** | ___%  | ___%  | <0.1% | [Pass/Fail] |
-| **Integration Tests** | [Pass/Fail] | [Pass/Fail] | All Pass | [Pass/Fail] |
+| Metric                        | iOS         | Android     | Target   | Status      |
+| ----------------------------- | ----------- | ----------- | -------- | ----------- |
+| **Latency (95th percentile)** | \_\_\_ms    | \_\_\_ms    | <100ms   | [Pass/Fail] |
+| **Battery (30 min)**          | \_\_\_%     | \_\_\_%     | <5%      | [Pass/Fail] |
+| **Memory Usage**              | \_\_\_MB    | \_\_\_MB    | <10MB    | [Pass/Fail] |
+| **Dropout Rate**              | \_\_\_%     | \_\_\_%     | <0.1%    | [Pass/Fail] |
+| **Integration Tests**         | [Pass/Fail] | [Pass/Fail] | All Pass | [Pass/Fail] |
 
 ### Recommendation
 
 **[APPROVED / CHANGES NEEDED / BLOCKED]** for Voiceline integration.
 
 **Rationale:**
+
 - [TO BE FILLED: Brief explanation of approval decision]
 - [List any blocking issues or concerns]
 - [Highlight exceptional performance areas]
@@ -37,25 +38,25 @@
 
 ### iOS Testing Environment
 
-| Device | OS Version | Xcode Version | Test Date |
-|--------|------------|---------------|-----------|
-| iPhone 12 | iOS 15.x | 15.0 | [Date] |
-| iPhone 13 Pro | iOS 16.x | 15.0 | [Date] |
-| iPhone 14 | iOS 17.x | 15.0 | [Date] |
-| iPad Air | iOS 16.x | 15.0 | [Date] |
-| iOS Simulator (Intel) | iOS 17.0 | 15.0 | [Date] |
-| iOS Simulator (Apple Silicon) | iOS 17.0 | 15.0 | [Date] |
+| Device                        | OS Version | Xcode Version | Test Date |
+| ----------------------------- | ---------- | ------------- | --------- |
+| iPhone 12                     | iOS 15.x   | 15.0          | [Date]    |
+| iPhone 13 Pro                 | iOS 16.x   | 15.0          | [Date]    |
+| iPhone 14                     | iOS 17.x   | 15.0          | [Date]    |
+| iPad Air                      | iOS 16.x   | 15.0          | [Date]    |
+| iOS Simulator (Intel)         | iOS 17.0   | 15.0          | [Date]    |
+| iOS Simulator (Apple Silicon) | iOS 17.0   | 15.0          | [Date]    |
 
 ### Android Testing Environment
 
-| Device | OS Version | Android Studio | Test Date |
-|--------|------------|----------------|-----------|
-| Samsung Galaxy S21 | Android 12 (OneUI) | [Version] | [Date] |
-| Google Pixel 6 | Android 13 (Stock) | [Version] | [Date] |
-| OnePlus 9 | Android 12 (OxygenOS) | [Version] | [Date] |
-| Android Emulator (x86) | API 26 (8.0) | [Version] | [Date] |
-| Android Emulator (ARM) | API 30 (11.0) | [Version] | [Date] |
-| Android Emulator (ARM) | API 33 (13.0) | [Version] | [Date] |
+| Device                 | OS Version            | Android Studio | Test Date |
+| ---------------------- | --------------------- | -------------- | --------- |
+| Samsung Galaxy S21     | Android 12 (OneUI)    | [Version]      | [Date]    |
+| Google Pixel 6         | Android 13 (Stock)    | [Version]      | [Date]    |
+| OnePlus 9              | Android 12 (OxygenOS) | [Version]      | [Date]    |
+| Android Emulator (x86) | API 26 (8.0)          | [Version]      | [Date]    |
+| Android Emulator (ARM) | API 30 (11.0)         | [Version]      | [Date]    |
+| Android Emulator (ARM) | API 33 (13.0)         | [Version]      | [Date]    |
 
 ---
 
@@ -65,47 +66,47 @@
 
 **iOS:**
 
-| Statistic | Latency (ms) | Target | Status |
-|-----------|--------------|--------|--------|
-| Minimum | ___ | N/A | N/A |
-| 50th Percentile (Median) | ___ | <75ms | [Pass/Fail] |
-| 95th Percentile | ___ | <100ms | [Pass/Fail] |
-| 99th Percentile | ___ | <120ms | [Pass/Fail] |
-| Maximum | ___ | N/A | N/A |
-| Mean | ___ | N/A | N/A |
+| Statistic                | Latency (ms) | Target | Status      |
+| ------------------------ | ------------ | ------ | ----------- |
+| Minimum                  | \_\_\_       | N/A    | N/A         |
+| 50th Percentile (Median) | \_\_\_       | <75ms  | [Pass/Fail] |
+| 95th Percentile          | \_\_\_       | <100ms | [Pass/Fail] |
+| 99th Percentile          | \_\_\_       | <120ms | [Pass/Fail] |
+| Maximum                  | \_\_\_       | N/A    | N/A         |
+| Mean                     | \_\_\_       | N/A    | N/A         |
 
 **Android:**
 
-| Statistic | Latency (ms) | Target | Status |
-|-----------|--------------|--------|--------|
-| Minimum | ___ | N/A | N/A |
-| 50th Percentile (Median) | ___ | <85ms | [Pass/Fail] |
-| 95th Percentile | ___ | <100ms | [Pass/Fail] |
-| 99th Percentile | ___ | <120ms | [Pass/Fail] |
-| Maximum | ___ | N/A | N/A |
-| Mean | ___ | N/A | N/A |
+| Statistic                | Latency (ms) | Target | Status      |
+| ------------------------ | ------------ | ------ | ----------- |
+| Minimum                  | \_\_\_       | N/A    | N/A         |
+| 50th Percentile (Median) | \_\_\_       | <85ms  | [Pass/Fail] |
+| 95th Percentile          | \_\_\_       | <100ms | [Pass/Fail] |
+| 99th Percentile          | \_\_\_       | <120ms | [Pass/Fail] |
+| Maximum                  | \_\_\_       | N/A    | N/A         |
+| Mean                     | \_\_\_       | N/A    | N/A         |
 
 ### Component Latency Breakdown
 
 **iOS Component Analysis:**
 
-| Component | Median (ms) | 95th Percentile (ms) | % of Total | Target |
-|-----------|-------------|----------------------|------------|--------|
-| Native (mic → buffer) | ___ | ___ | ___% | <40ms |
-| Bridge (native → JS) | ___ | ___ | ___% | <10ms |
-| Processing (JS analysis) | ___ | ___ | ___% | <15ms |
-| Visual (Skia render) | ___ | ___ | ___% | <10ms |
-| **Total (E2E)** | **___** | **___** | **100%** | **<100ms** |
+| Component                | Median (ms) | 95th Percentile (ms) | % of Total | Target     |
+| ------------------------ | ----------- | -------------------- | ---------- | ---------- |
+| Native (mic → buffer)    | \_\_\_      | \_\_\_               | \_\_\_%    | <40ms      |
+| Bridge (native → JS)     | \_\_\_      | \_\_\_               | \_\_\_%    | <10ms      |
+| Processing (JS analysis) | \_\_\_      | \_\_\_               | \_\_\_%    | <15ms      |
+| Visual (Skia render)     | \_\_\_      | \_\_\_               | \_\_\_%    | <10ms      |
+| **Total (E2E)**          | **\_\_\_**  | **\_\_\_**           | **100%**   | **<100ms** |
 
 **Android Component Analysis:**
 
-| Component | Median (ms) | 95th Percentile (ms) | % of Total | Target |
-|-----------|-------------|----------------------|------------|--------|
-| Native (mic → buffer) | ___ | ___ | ___% | <50ms |
-| Bridge (native → JS) | ___ | ___ | ___% | <15ms |
-| Processing (JS analysis) | ___ | ___ | ___% | <15ms |
-| Visual (Skia render) | ___ | ___ | ___% | <10ms |
-| **Total (E2E)** | **___** | **___** | **100%** | **<100ms** |
+| Component                | Median (ms) | 95th Percentile (ms) | % of Total | Target     |
+| ------------------------ | ----------- | -------------------- | ---------- | ---------- |
+| Native (mic → buffer)    | \_\_\_      | \_\_\_               | \_\_\_%    | <50ms      |
+| Bridge (native → JS)     | \_\_\_      | \_\_\_               | \_\_\_%    | <15ms      |
+| Processing (JS analysis) | \_\_\_      | \_\_\_               | \_\_\_%    | <15ms      |
+| Visual (Skia render)     | \_\_\_      | \_\_\_               | \_\_\_%    | <10ms      |
+| **Total (E2E)**          | **\_\_\_**  | **\_\_\_**           | **100%**   | **<100ms** |
 
 ### Latency Visualization
 
@@ -117,6 +118,7 @@
 ```
 
 **Key Observations:**
+
 - [TO BE FILLED: Analysis of latency results]
 - [Comparison between iOS and Android]
 - [Identification of any latency spikes or outliers]
@@ -129,33 +131,33 @@
 
 **iOS Battery Impact:**
 
-| Configuration | Battery Drain (%) | Energy (mWh) | Status | Notes |
-|---------------|-------------------|--------------|--------|-------|
-| Baseline (idle) | ___ | ___ | N/A | Reference measurement |
-| Streaming (no opt) | ___ | ___ | [Pass/Fail] | No VAD, no adaptive |
-| Streaming (VAD only) | ___ | ___ | [Pass/Fail] | VAD enabled |
-| Streaming (full opt) | ___ | ___ | [Pass/Fail] | VAD + adaptive |
-| **Overhead (full opt)** | **___** | **___** | **[Pass/Fail]** | **Target: <5%** |
+| Configuration           | Battery Drain (%) | Energy (mWh) | Status          | Notes                 |
+| ----------------------- | ----------------- | ------------ | --------------- | --------------------- |
+| Baseline (idle)         | \_\_\_            | \_\_\_       | N/A             | Reference measurement |
+| Streaming (no opt)      | \_\_\_            | \_\_\_       | [Pass/Fail]     | No VAD, no adaptive   |
+| Streaming (VAD only)    | \_\_\_            | \_\_\_       | [Pass/Fail]     | VAD enabled           |
+| Streaming (full opt)    | \_\_\_            | \_\_\_       | [Pass/Fail]     | VAD + adaptive        |
+| **Overhead (full opt)** | **\_\_\_**        | **\_\_\_**   | **[Pass/Fail]** | **Target: <5%**       |
 
 **Android Battery Impact:**
 
-| Configuration | Battery Drain (%) | Status | Notes |
-|---------------|-------------------|--------|-------|
-| Baseline (idle) | ___ | N/A | Reference measurement |
-| Streaming (no opt) | ___ | [Pass/Fail] | No VAD, no adaptive |
-| Streaming (VAD only) | ___ | [Pass/Fail] | VAD enabled |
-| Streaming (full opt) | ___ | [Pass/Fail] | VAD + adaptive |
-| **Overhead (full opt)** | **___** | **[Pass/Fail]** | **Target: <5%** |
+| Configuration           | Battery Drain (%) | Status          | Notes                 |
+| ----------------------- | ----------------- | --------------- | --------------------- |
+| Baseline (idle)         | \_\_\_            | N/A             | Reference measurement |
+| Streaming (no opt)      | \_\_\_            | [Pass/Fail]     | No VAD, no adaptive   |
+| Streaming (VAD only)    | \_\_\_            | [Pass/Fail]     | VAD enabled           |
+| Streaming (full opt)    | \_\_\_            | [Pass/Fail]     | VAD + adaptive        |
+| **Overhead (full opt)** | **\_\_\_**        | **[Pass/Fail]** | **Target: <5%**       |
 
 ### Optimization Impact
 
 **Battery Savings Analysis:**
 
-| Optimization | iOS Savings (%) | Android Savings (%) | Target |
-|--------------|-----------------|---------------------|--------|
-| VAD (silence skipping) | ___ | ___ | 10-15% |
-| Adaptive Processing (<20% battery) | ___ | ___ | 15-25% |
-| **Combined Savings** | **___** | **___** | **25-40%** |
+| Optimization                       | iOS Savings (%) | Android Savings (%) | Target     |
+| ---------------------------------- | --------------- | ------------------- | ---------- |
+| VAD (silence skipping)             | \_\_\_          | \_\_\_              | 10-15%     |
+| Adaptive Processing (<20% battery) | \_\_\_          | \_\_\_              | 15-25%     |
+| **Combined Savings**               | **\_\_\_**      | **\_\_\_**          | **25-40%** |
 
 **Energy Breakdown (iOS - Xcode Instruments):**
 
@@ -163,14 +165,14 @@
 [INSERT INSTRUMENTS ENERGY LOG SCREENSHOT]
 ```
 
-| Component | Energy (mWh) | % of Total |
-|-----------|--------------|------------|
-| CPU | ___ | ___% |
-| GPU | ___ | ___% |
-| Network | ___ | ___% |
-| Display | ___ | ___% |
-| Audio Subsystem | ___ | ___% |
-| **Total** | **___** | **100%** |
+| Component       | Energy (mWh) | % of Total |
+| --------------- | ------------ | ---------- |
+| CPU             | \_\_\_       | \_\_\_%    |
+| GPU             | \_\_\_       | \_\_\_%    |
+| Network         | \_\_\_       | \_\_\_%    |
+| Display         | \_\_\_       | \_\_\_%    |
+| Audio Subsystem | \_\_\_       | \_\_\_%    |
+| **Total**       | **\_\_\_**   | **100%**   |
 
 **Battery Historian Analysis (Android):**
 
@@ -179,6 +181,7 @@
 ```
 
 **Key Observations:**
+
 - [TO BE FILLED: Analysis of battery results]
 - [Effectiveness of optimizations]
 - [Device-specific battery performance]
@@ -191,15 +194,16 @@
 
 **iOS Memory Analysis (Xcode Instruments):**
 
-| Metric | Start | 30 min | 1 hour | Target | Status |
-|--------|-------|--------|--------|--------|--------|
-| Total Allocations (MB) | ___ | ___ | ___ | <10MB | [Pass/Fail] |
-| Persistent Allocations (MB) | ___ | ___ | ___ | <10MB | [Pass/Fail] |
-| Leaks Detected | ___ | ___ | ___ | 0 | [Pass/Fail] |
+| Metric                      | Start  | 30 min | 1 hour | Target | Status      |
+| --------------------------- | ------ | ------ | ------ | ------ | ----------- |
+| Total Allocations (MB)      | \_\_\_ | \_\_\_ | \_\_\_ | <10MB  | [Pass/Fail] |
+| Persistent Allocations (MB) | \_\_\_ | \_\_\_ | \_\_\_ | <10MB  | [Pass/Fail] |
+| Leaks Detected              | \_\_\_ | \_\_\_ | \_\_\_ | 0      | [Pass/Fail] |
 
 **Cleanup Verification:**
-- Memory after stop: ___MB
-- Memory after warning: ___MB
+
+- Memory after stop: \_\_\_MB
+- Memory after warning: \_\_\_MB
 - Baseline recovered: [Yes/No]
 
 ```
@@ -208,17 +212,18 @@
 
 **Android Memory Analysis (Android Studio Profiler):**
 
-| Metric | Start | 30 min | 1 hour | Target | Status |
-|--------|-------|--------|--------|--------|--------|
-| Java Heap (MB) | ___ | ___ | ___ | <5MB | [Pass/Fail] |
-| Native Heap (MB) | ___ | ___ | ___ | <5MB | [Pass/Fail] |
-| Graphics (MB) | ___ | ___ | ___ | <2MB | [Pass/Fail] |
-| **Total Memory (MB)** | **___** | **___** | **___** | **<10MB** | **[Pass/Fail]** |
-| Leaks Detected | ___ | ___ | ___ | 0 | [Pass/Fail] |
+| Metric                | Start      | 30 min     | 1 hour     | Target    | Status          |
+| --------------------- | ---------- | ---------- | ---------- | --------- | --------------- |
+| Java Heap (MB)        | \_\_\_     | \_\_\_     | \_\_\_     | <5MB      | [Pass/Fail]     |
+| Native Heap (MB)      | \_\_\_     | \_\_\_     | \_\_\_     | <5MB      | [Pass/Fail]     |
+| Graphics (MB)         | \_\_\_     | \_\_\_     | \_\_\_     | <2MB      | [Pass/Fail]     |
+| **Total Memory (MB)** | **\_\_\_** | **\_\_\_** | **\_\_\_** | **<10MB** | **[Pass/Fail]** |
+| Leaks Detected        | \_\_\_     | \_\_\_     | \_\_\_     | 0         | [Pass/Fail]     |
 
 **Cleanup Verification:**
-- Memory after stop: ___MB
-- Memory after GC: ___MB
+
+- Memory after stop: \_\_\_MB
+- Memory after GC: \_\_\_MB
 - Baseline recovered: [Yes/No]
 
 ```
@@ -228,17 +233,20 @@
 ### Memory Leak Analysis
 
 **iOS Leak Instruments:**
-- Total leaks detected: ___
+
+- Total leaks detected: \_\_\_
 - Leaked objects: [List if any]
 - Leak sources: [Analysis if leaks found]
 
 **Android Heap Dump:**
-- AudioRecord instances leaked: ___
-- Coroutine jobs not cancelled: ___
-- Event listeners not removed: ___
+
+- AudioRecord instances leaked: \_\_\_
+- Coroutine jobs not cancelled: \_\_\_
+- Event listeners not removed: \_\_\_
 - Other leaked objects: [List if any]
 
 **Key Observations:**
+
 - [TO BE FILLED: Analysis of memory stability]
 - [Any memory growth patterns]
 - [Effectiveness of buffer pooling]
@@ -251,12 +259,13 @@
 
 **Stress Test Results (High CPU Load):**
 
-| Platform | Total Frames | Dropped Frames | Dropout Rate (%) | Target | Status |
-|----------|--------------|----------------|------------------|--------|--------|
-| iOS | ___ | ___ | ___ | <0.1% | [Pass/Fail] |
-| Android | ___ | ___ | ___ | <0.1% | [Pass/Fail] |
+| Platform | Total Frames | Dropped Frames | Dropout Rate (%) | Target | Status      |
+| -------- | ------------ | -------------- | ---------------- | ------ | ----------- |
+| iOS      | \_\_\_       | \_\_\_         | \_\_\_           | <0.1%  | [Pass/Fail] |
+| Android  | \_\_\_       | \_\_\_         | \_\_\_           | <0.1%  | [Pass/Fail] |
 
 **Test Conditions:**
+
 - Concurrent CPU load: [Geekbench / CPU stress test]
 - Duration: [X minutes]
 - Device: [Specific device model]
@@ -265,18 +274,20 @@
 
 **Sample Value Comparison:**
 
-| Metric | Value | Target | Status |
-|--------|-------|--------|--------|
-| Mean Absolute Difference | ___ | <0.01 | [Pass/Fail] |
-| Max Sample Difference | ___ | <0.05 | [Pass/Fail] |
-| Correlation Coefficient | ___ | >0.99 | [Pass/Fail] |
+| Metric                   | Value  | Target | Status      |
+| ------------------------ | ------ | ------ | ----------- |
+| Mean Absolute Difference | \_\_\_ | <0.01  | [Pass/Fail] |
+| Max Sample Difference    | \_\_\_ | <0.05  | [Pass/Fail] |
+| Correlation Coefficient  | \_\_\_ | >0.99  | [Pass/Fail] |
 
 **Test Setup:**
+
 - Identical audio input: [WAV file name/description]
 - Duration: 10 seconds
 - Sample rate: 16kHz
 
 **Key Observations:**
+
 - [TO BE FILLED: Analysis of cross-platform parity]
 - [Any systematic differences between platforms]
 
@@ -284,16 +295,17 @@
 
 **Speech Onset/Offset Capture:**
 
-| Test | iOS | Android | Expected | Status |
-|------|-----|---------|----------|--------|
-| First phoneme captured | [Yes/No] | [Yes/No] | Yes | [Pass/Fail] |
-| Last phoneme captured | [Yes/No] | [Yes/No] | Yes | [Pass/Fail] |
-| Silence skipped (RMS <0.01) | [Yes/No] | [Yes/No] | Yes | [Pass/Fail] |
+| Test                        | iOS      | Android  | Expected | Status      |
+| --------------------------- | -------- | -------- | -------- | ----------- |
+| First phoneme captured      | [Yes/No] | [Yes/No] | Yes      | [Pass/Fail] |
+| Last phoneme captured       | [Yes/No] | [Yes/No] | Yes      | [Pass/Fail] |
+| Silence skipped (RMS <0.01) | [Yes/No] | [Yes/No] | Yes      | [Pass/Fail] |
 
 **VAD Threshold Analysis:**
+
 - Threshold: 0.01 (RMS)
-- False positives (speech marked as silence): ___
-- False negatives (silence marked as speech): ___
+- False positives (speech marked as silence): \_\_\_
+- False negatives (silence marked as speech): \_\_\_
 - Recommendation: [Threshold appropriate / Needs adjustment]
 
 ---
@@ -304,32 +316,35 @@
 
 **Event Emission Reduction:**
 
-| Scenario | iOS Events/sec | Android Events/sec | Reduction (%) |
-|----------|----------------|-------------------|---------------|
-| No VAD (all frames) | ~8 Hz | ~8 Hz | 0% |
-| VAD (silence skipped) | ___ Hz | ___ Hz | ___% |
+| Scenario              | iOS Events/sec | Android Events/sec | Reduction (%) |
+| --------------------- | -------------- | ------------------ | ------------- |
+| No VAD (all frames)   | ~8 Hz          | ~8 Hz              | 0%            |
+| VAD (silence skipped) | \_\_\_ Hz      | \_\_\_ Hz          | \_\_\_%       |
 
 **Battery Impact:**
-- Without VAD: ___%
-- With VAD: ___%
-- **Savings: ___%** (Target: 10-15%)
+
+- Without VAD: \_\_\_%
+- With VAD: \_\_\_%
+- **Savings: \_\_\_%** (Target: 10-15%)
 
 **CPU Impact:**
-- Without VAD: ___% CPU
-- With VAD: ___% CPU
-- **Savings: ___%**
+
+- Without VAD: \_\_\_% CPU
+- With VAD: \_\_\_% CPU
+- **Savings: \_\_\_%**
 
 ### Adaptive Processing Savings
 
 **Low Battery Mode (<20% battery):**
 
-| Metric | Normal Mode | Adaptive Mode | Savings (%) |
-|--------|-------------|---------------|-------------|
-| Event rate (Hz) | ~8 | ~4 | 50% |
-| Battery drain (iOS) | ___% | ___% | ___% |
-| Battery drain (Android) | ___% | ___% | ___% |
+| Metric                  | Normal Mode | Adaptive Mode | Savings (%) |
+| ----------------------- | ----------- | ------------- | ----------- |
+| Event rate (Hz)         | ~8          | ~4            | 50%         |
+| Battery drain (iOS)     | \_\_\_%     | \_\_\_%       | \_\_\_%     |
+| Battery drain (Android) | \_\_\_%     | \_\_\_%       | \_\_\_%     |
 
 **Quality Impact:**
+
 - Visual responsiveness: [Maintained / Degraded]
 - Analysis accuracy: [Maintained / Degraded]
 - User experience: [Acceptable / Issues noted]
@@ -338,11 +353,11 @@
 
 **Memory Allocation Reduction:**
 
-| Configuration | Allocations/sec | Memory Churn (MB/sec) |
-|---------------|-----------------|----------------------|
-| No pooling | ___ | ___ |
-| Buffer pooling | ___ | ___ |
-| **Reduction** | **___%** | **___%** |
+| Configuration  | Allocations/sec | Memory Churn (MB/sec) |
+| -------------- | --------------- | --------------------- |
+| No pooling     | \_\_\_          | \_\_\_                |
+| Buffer pooling | \_\_\_          | \_\_\_                |
+| **Reduction**  | **\_\_\_%**     | **\_\_\_%**           |
 
 ---
 
@@ -350,28 +365,30 @@
 
 ### iOS Device Compatibility Matrix
 
-| Device | OS | Integration Tests | Latency (p95) | Battery (30min) | Memory | Notes |
-|--------|-----|-------------------|---------------|-----------------|--------|-------|
-| iPhone 12 | iOS 15 | [Pass/Fail] | ___ms | ___%  | ___MB | |
-| iPhone 13 Pro | iOS 16 | [Pass/Fail] | ___ms | ___%  | ___MB | |
-| iPhone 14 | iOS 17 | [Pass/Fail] | ___ms | ___%  | ___MB | |
-| iPad Air | iOS 16 | [Pass/Fail] | ___ms | ___%  | ___MB | |
+| Device        | OS     | Integration Tests | Latency (p95) | Battery (30min) | Memory   | Notes |
+| ------------- | ------ | ----------------- | ------------- | --------------- | -------- | ----- |
+| iPhone 12     | iOS 15 | [Pass/Fail]       | \_\_\_ms      | \_\_\_%         | \_\_\_MB |       |
+| iPhone 13 Pro | iOS 16 | [Pass/Fail]       | \_\_\_ms      | \_\_\_%         | \_\_\_MB |       |
+| iPhone 14     | iOS 17 | [Pass/Fail]       | \_\_\_ms      | \_\_\_%         | \_\_\_MB |       |
+| iPad Air      | iOS 16 | [Pass/Fail]       | \_\_\_ms      | \_\_\_%         | \_\_\_MB |       |
 
 **Device-Specific Observations:**
+
 - [TO BE FILLED: Any device-specific issues or optimizations]
 
 ### Android Device Compatibility Matrix
 
-| Device | OS | Integration Tests | Latency (p95) | Battery (30min) | Memory | Notes |
-|--------|-----|-------------------|---------------|-----------------|--------|-------|
-| Samsung Galaxy S21 | Android 12 | [Pass/Fail] | ___ms | ___%  | ___MB | OneUI |
-| Google Pixel 6 | Android 13 | [Pass/Fail] | ___ms | ___%  | ___MB | Stock |
-| OnePlus 9 | Android 12 | [Pass/Fail] | ___ms | ___%  | ___MB | OxygenOS |
-| Emulator (x86) | API 26 | [Pass/Fail] | ___ms | N/A | ___MB | Slowest |
-| Emulator (ARM) | API 30 | [Pass/Fail] | ___ms | N/A | ___MB | |
-| Emulator (ARM) | API 33 | [Pass/Fail] | ___ms | N/A | ___MB | Latest |
+| Device             | OS         | Integration Tests | Latency (p95) | Battery (30min) | Memory   | Notes    |
+| ------------------ | ---------- | ----------------- | ------------- | --------------- | -------- | -------- |
+| Samsung Galaxy S21 | Android 12 | [Pass/Fail]       | \_\_\_ms      | \_\_\_%         | \_\_\_MB | OneUI    |
+| Google Pixel 6     | Android 13 | [Pass/Fail]       | \_\_\_ms      | \_\_\_%         | \_\_\_MB | Stock    |
+| OnePlus 9          | Android 12 | [Pass/Fail]       | \_\_\_ms      | \_\_\_%         | \_\_\_MB | OxygenOS |
+| Emulator (x86)     | API 26     | [Pass/Fail]       | \_\_\_ms      | N/A             | \_\_\_MB | Slowest  |
+| Emulator (ARM)     | API 30     | [Pass/Fail]       | \_\_\_ms      | N/A             | \_\_\_MB |          |
+| Emulator (ARM)     | API 33     | [Pass/Fail]       | \_\_\_ms      | N/A             | \_\_\_MB | Latest   |
 
 **Device-Specific Observations:**
+
 - [TO BE FILLED: Any OEM-specific issues, performance variations]
 
 ---
@@ -388,20 +405,21 @@
 
 **Test Results:**
 
-| Test | Status | Notes |
-|------|--------|-------|
-| testStreamingLifecycle | [Pass/Fail] | |
-| testEventRate | [Pass/Fail] | |
-| testSampleValueRange | [Pass/Fail] | |
-| testRMSPrecomputed | [Pass/Fail] | |
-| testVADSkipsSilence | [Pass/Fail] | |
-| testAdaptiveProcessingLowBattery | [Pass/Fail] | |
-| testErrorEvents | [Pass/Fail] | |
-| testSimulatorCompatibility | [Pass/Fail] | |
-| testCleanupNoMemoryLeaks | [Pass/Fail] | |
-| testTapCallbackLatency | [Pass/Fail] | |
+| Test                             | Status      | Notes |
+| -------------------------------- | ----------- | ----- |
+| testStreamingLifecycle           | [Pass/Fail] |       |
+| testEventRate                    | [Pass/Fail] |       |
+| testSampleValueRange             | [Pass/Fail] |       |
+| testRMSPrecomputed               | [Pass/Fail] |       |
+| testVADSkipsSilence              | [Pass/Fail] |       |
+| testAdaptiveProcessingLowBattery | [Pass/Fail] |       |
+| testErrorEvents                  | [Pass/Fail] |       |
+| testSimulatorCompatibility       | [Pass/Fail] |       |
+| testCleanupNoMemoryLeaks         | [Pass/Fail] |       |
+| testTapCallbackLatency           | [Pass/Fail] |       |
 
 **Failed Tests (if any):**
+
 - [Test name]: [Reason for failure]
 - [Test name]: [Reason for failure]
 
@@ -415,21 +433,22 @@
 
 **Test Results:**
 
-| Test | Status | Notes |
-|------|--------|-------|
-| testPermissionHandling | [Pass/Fail] | |
-| testStreamingLifecycle | [Pass/Fail] | |
-| testEventRate | [Pass/Fail] | |
-| testSampleValueRange | [Pass/Fail] | |
-| testRMSPrecomputed | [Pass/Fail] | |
-| testVADSkipsSilence | [Pass/Fail] | |
-| testAdaptiveProcessingLowBattery | [Pass/Fail] | |
-| testErrorEvents | [Pass/Fail] | |
-| testEmulatorCompatibility | [Pass/Fail] | |
-| testCleanupNoMemoryLeaks | [Pass/Fail] | |
-| testReadOperationLatency | [Pass/Fail] | |
+| Test                             | Status      | Notes |
+| -------------------------------- | ----------- | ----- |
+| testPermissionHandling           | [Pass/Fail] |       |
+| testStreamingLifecycle           | [Pass/Fail] |       |
+| testEventRate                    | [Pass/Fail] |       |
+| testSampleValueRange             | [Pass/Fail] |       |
+| testRMSPrecomputed               | [Pass/Fail] |       |
+| testVADSkipsSilence              | [Pass/Fail] |       |
+| testAdaptiveProcessingLowBattery | [Pass/Fail] |       |
+| testErrorEvents                  | [Pass/Fail] |       |
+| testEmulatorCompatibility        | [Pass/Fail] |       |
+| testCleanupNoMemoryLeaks         | [Pass/Fail] |       |
+| testReadOperationLatency         | [Pass/Fail] |       |
 
 **Failed Tests (if any):**
+
 - [Test name]: [Reason for failure]
 - [Test name]: [Reason for failure]
 
@@ -440,6 +459,7 @@
 ### Identified Issues
 
 **High Priority:**
+
 - [Issue #1]: [Description]
   - Impact: [Functional / Performance / UX]
   - Affected platforms: [iOS / Android / Both]
@@ -447,9 +467,11 @@
   - Fix timeline: [Immediate / Before release / Post-MVP]
 
 **Medium Priority:**
+
 - [Issue #2]: [Description]
 
 **Low Priority:**
+
 - [Issue #3]: [Description]
 
 ### Limitations
@@ -464,11 +486,13 @@
 ### For Voiceline Team
 
 **Integration Guidance:**
+
 1. [Recommendation #1]
 2. [Recommendation #2]
 3. [Recommendation #3]
 
 **Configuration Recommendations:**
+
 - Sample rate: 16kHz (recommended for voice)
 - Buffer size: 2048 samples (128ms at 16kHz)
 - VAD: Enabled by default
@@ -477,18 +501,22 @@
 **Platform-Specific Considerations:**
 
 **iOS:**
+
 - [iOS-specific recommendation]
 
 **Android:**
+
 - [Android-specific recommendation]
 
 ### For Future Enhancements
 
 **Performance Optimizations:**
+
 - [Optimization idea #1]
 - [Optimization idea #2]
 
 **Feature Additions:**
+
 - [Feature idea #1]
 - [Feature idea #2]
 
@@ -499,12 +527,14 @@
 **Final Assessment:** [APPROVED / CHANGES NEEDED / BLOCKED]
 
 **Summary:**
+
 - [Overall performance assessment]
 - [Readiness for Voiceline integration]
 - [Any blocking issues requiring resolution]
 - [Exceptional achievements worth highlighting]
 
 **Sign-Off:**
+
 - Anna (Loqa Architect): [Approved / Conditional / Rejected]
 - Date: [TO BE FILLED]
 

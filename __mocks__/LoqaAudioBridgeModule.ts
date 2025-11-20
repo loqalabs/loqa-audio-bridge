@@ -29,7 +29,7 @@ const LoqaAudioBridgeModule = {
     isCurrentlyStreaming = true;
 
     // Simulate async native initialization
-    await new Promise(resolve => setTimeout(resolve, 10));
+    await new Promise((resolve) => setTimeout(resolve, 10));
 
     // Emit initial status event
     setTimeout(() => {
@@ -41,7 +41,9 @@ const LoqaAudioBridgeModule = {
       const emitSamples = () => {
         if (isCurrentlyStreaming) {
           mockEmitter.emit('onAudioSamples', {
-            samples: new Array(config.bufferSize || 2048).fill(0).map(() => Math.random() * 0.02 - 0.01),
+            samples: new Array(config.bufferSize || 2048)
+              .fill(0)
+              .map(() => Math.random() * 0.02 - 0.01),
             sampleRate: config.sampleRate || 16000,
             frameLength: config.bufferSize || 2048,
             timestamp: Date.now(),

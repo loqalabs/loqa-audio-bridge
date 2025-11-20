@@ -6,7 +6,12 @@
  */
 
 import { StreamErrorCode } from '../src/types';
-import type { AudioSampleEvent, StreamStatusEvent, StreamErrorEvent, StreamConfig } from '../src/types';
+import type {
+  AudioSampleEvent,
+  StreamStatusEvent,
+  StreamErrorEvent,
+  StreamConfig,
+} from '../src/types';
 
 describe('API Type Contracts', () => {
   describe('StreamErrorCode Enum', () => {

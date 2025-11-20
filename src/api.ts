@@ -12,21 +12,12 @@
 
 import { EventEmitter, type EventSubscription } from 'expo-modules-core';
 import LoqaAudioBridgeModule from './LoqaAudioBridgeModule';
-import type {
-  AudioSampleEvent,
-  StreamStatusEvent,
-  StreamErrorEvent,
-  StreamConfig,
-} from './types';
+import type { AudioSampleEvent, StreamStatusEvent, StreamErrorEvent, StreamConfig } from './types';
 import { StreamErrorCode } from './types';
+import { BUFFER_SIZE_MIN, BUFFER_SIZE_MAX } from './buffer-utils';
 
 // Export types for consumers
-export type {
-  AudioSampleEvent,
-  StreamStatusEvent,
-  StreamErrorEvent,
-  StreamConfig,
-};
+export type { AudioSampleEvent, StreamStatusEvent, StreamErrorEvent, StreamConfig };
 export { StreamErrorCode };
 
 // Export buffer management utilities
@@ -44,9 +35,6 @@ export {
   BUFFER_SIZE_MAX,
 } from './buffer-utils';
 export type { Platform, BufferValidationResult } from './buffer-utils';
-
-// Import constants for internal use
-import { BUFFER_SIZE_MIN, BUFFER_SIZE_MAX } from './buffer-utils';
 
 // Export React hooks
 export { useAudioStreaming } from '../hooks/useAudioStreaming';

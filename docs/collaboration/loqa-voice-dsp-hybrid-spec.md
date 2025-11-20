@@ -56,6 +56,7 @@ This specification defines a **shared Rust crate (`loqa-voice-dsp`)** that provi
 ## Rust Crate API Specification
 
 ### Crate Name
+
 `loqa-voice-dsp`
 
 ### Core Modules
@@ -87,6 +88,7 @@ pub fn extract_formants(
 ```
 
 **Implementation Details:**
+
 - Pre-emphasis filter (α = 0.97)
 - Hamming window application
 - Autocorrelation calculation
@@ -124,6 +126,7 @@ pub fn detect_pitch(
 ```
 
 **Implementation Details:**
+
 - YIN algorithm (Difference function + Cumulative Mean Normalized Difference)
 - Absolute threshold (typically 0.1)
 - Parabolic interpolation for sub-sample accuracy
@@ -157,6 +160,7 @@ pub fn compute_fft(
 ```
 
 **Implementation Details:**
+
 - Use `rustfft` crate for FFT computation
 - Hamming window application
 - Magnitude calculation (sqrt(re² + im²))
@@ -186,6 +190,7 @@ pub fn analyze_spectrum(
 ```
 
 **Implementation Details:**
+
 - Spectral centroid: weighted mean of frequencies
 - Spectral tilt: slope of log-magnitude spectrum
 - Rolloff: frequency below which 95% of energy resides
@@ -355,12 +360,14 @@ pub extern "system" fn Java_com_voiceline_VoicelineDSP_extractFormants(
 ### Responsibility Boundaries
 
 **Rust handles:**
+
 - ✅ Formant extraction (LPC algorithm)
 - ✅ Pitch detection (YIN algorithm)
 - ✅ FFT computation (spectral analysis)
 - ✅ Spectral features (centroid, tilt, rolloff)
 
 **JavaScript handles:**
+
 - ✅ Intonation pattern classification (rising, falling, upturn, flat)
 - ✅ Progress comparison (baseline → current → guide)
 - ✅ UI data transformations
@@ -375,8 +382,8 @@ import { VoicelineDSP } from './native-modules/VoicelineDSP';
 // 1. Extract formants using Rust
 const formantResult = await VoicelineDSP.extractFormants(
   audioSamples,
-  44100,  // sample rate
-  12      // LPC order
+  44100, // sample rate
+  12 // LPC order
 );
 
 // 2. Classify intonation in JavaScript (pure logic)
@@ -408,7 +415,7 @@ function calculateProximityProgress(userCurrent, userBaseline, guideTarget) {
 
   return {
     progressPercent: Math.max(0, Math.min(100, progressPercent)),
-    status: progressPercent > 60 ? 'approaching' : 'exploring'
+    status: progressPercent > 60 ? 'approaching' : 'exploring',
   };
 }
 ```
@@ -420,18 +427,21 @@ function calculateProximityProgress(userCurrent, userBaseline, guideTarget) {
 ### Week 1 (Days 1-5): Core Rust Crate Development
 
 **Day 1-2: Project Setup**
+
 - Initialize Rust crate with Cargo
 - Set up CI/CD for testing
 - Configure `rustfft` and `ndarray` dependencies
 - Create module structure (formants, pitch, fft, spectral)
 
 **Day 3-4: Core DSP Implementation**
+
 - Implement formant extraction (LPC, Levinson-Durbin)
 - Implement pitch detection (YIN algorithm)
 - Implement FFT utilities
 - Implement spectral analysis (centroid, tilt)
 
 **Day 5: Unit Testing**
+
 - Write comprehensive unit tests
 - Test with synthetic audio signals
 - Validate against known reference implementations
@@ -439,18 +449,21 @@ function calculateProximityProgress(userCurrent, userBaseline, guideTarget) {
 ### Week 2 (Days 6-10): FFI Bridges & Integration
 
 **Day 6-7: iOS FFI Bridge**
+
 - Create C-compatible FFI functions
 - Build Swift wrapper classes
 - Test on iOS simulator
 - Profile performance
 
 **Day 8-9: Android JNI Bridge**
+
 - Create JNI bindings
 - Build Java wrapper classes
 - Test on Android emulator
 - Profile performance
 
 **Day 10: Integration Testing & Documentation**
+
 - End-to-end testing with real audio
 - Performance benchmarking
 - API documentation
@@ -498,11 +511,7 @@ mod tests {
 describe('VoicelineDSP Integration', () => {
   it('should extract formants from real audio', async () => {
     const audioBuffer = await loadTestAudio('vowel_a.wav');
-    const formants = await VoicelineDSP.extractFormants(
-      audioBuffer,
-      44100,
-      12
-    );
+    const formants = await VoicelineDSP.extractFormants(audioBuffer, 44100, 12);
 
     expect(formants.f1).toBeGreaterThan(600);
     expect(formants.f1).toBeLessThan(800);
@@ -515,12 +524,12 @@ describe('VoicelineDSP Integration', () => {
 
 ## Performance Requirements
 
-| Operation | Target Latency | Notes |
-|-----------|---------------|-------|
-| Formant extraction | < 50ms | For 500ms audio window |
-| Pitch detection | < 20ms | For 100ms audio window |
-| FFT computation | < 10ms | For 2048-point FFT |
-| Spectral analysis | < 5ms | Post-FFT processing |
+| Operation          | Target Latency | Notes                  |
+| ------------------ | -------------- | ---------------------- |
+| Formant extraction | < 50ms         | For 500ms audio window |
+| Pitch detection    | < 20ms         | For 100ms audio window |
+| FFT computation    | < 10ms         | For 2048-point FFT     |
+| Spectral analysis  | < 5ms          | Post-FFT processing    |
 
 **Memory:** Maximum 10MB allocated during processing
 
@@ -555,7 +564,7 @@ approx = "0.5"  # For float comparisons in tests
 ```json
 {
   "dependencies": {
-    "react-native-fs": "^2.20.0"  // For loading audio files in tests
+    "react-native-fs": "^2.20.0" // For loading audio files in tests
   }
 }
 ```
@@ -567,6 +576,7 @@ approx = "0.5"  # For float comparisons in tests
 The Rust crate can be used identically in both contexts:
 
 **Mobile (via FFI):**
+
 ```javascript
 // React Native
 import { VoicelineDSP } from './native-modules/VoicelineDSP';
@@ -574,6 +584,7 @@ const formants = await VoicelineDSP.extractFormants(audioSamples, 44100, 12);
 ```
 
 **Backend (native Rust):**
+
 ```python
 # Python backend using PyO3 bindings
 import loqa_voice_dsp
@@ -582,6 +593,7 @@ formants = loqa_voice_dsp.extract_formants(audio_samples, 44100, 12)
 ```
 
 This ensures:
+
 - ✅ **Consistency**: Identical DSP algorithms across platforms
 - ✅ **Maintainability**: Single source of truth for core logic
 - ✅ **Testing**: Shared test suite for both mobile and backend
@@ -591,14 +603,17 @@ This ensures:
 ## Open Questions for Loqa Team
 
 1. **Backend Integration Preference:**
+
    - Would you prefer PyO3 (Python bindings) or direct Rust server integration?
    - Any existing Rust infrastructure we should align with?
 
 2. **Formant Validation:**
+
    - Do you have reference audio samples with known formant values for validation?
    - Any specific edge cases we should test (accents, voice conditions)?
 
 3. **Delivery Format:**
+
    - Preferred delivery method for Rust crate (Git repo, Cargo registry)?
    - Documentation format preferences (rustdoc, separate markdown)?
 
@@ -611,16 +626,19 @@ This ensures:
 ## Next Steps
 
 1. **Loqa Team Review** (2-3 days)
+
    - Review this specification
    - Provide feedback on API design
    - Answer open questions
 
 2. **Kickoff Meeting** (1 day)
+
    - Align on implementation details
    - Establish communication channels
    - Set up shared Git repository
 
 3. **Development Sprints** (7-10 days)
+
    - Week 1: Core Rust crate development
    - Week 2: FFI bridges and integration testing
 
@@ -634,12 +652,15 @@ This ensures:
 ## Contact
 
 **Voiceline Team:**
+
 - Anna (Developer)
 
 **Loqa Team:**
+
 - [To be filled in]
 
 **Collaboration Channel:**
+
 - [To be determined - Slack, GitHub Discussions, etc.]
 
 ---

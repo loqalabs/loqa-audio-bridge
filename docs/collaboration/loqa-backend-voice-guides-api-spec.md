@@ -7,6 +7,7 @@
 **Version:** 1.0
 
 **Related Documents:**
+
 - [Voice Guides Specification](./voice-guides-specification.md) - Full feature context
 - [Voiceline PRD](./PRD.md) - Product requirements
 - [Epic 5: Loqa Backend Integration](./epics.md) - Implementation stories
@@ -22,6 +23,7 @@ The Voice Guides system enables Voiceline users to select celebrity or custom vo
 3. **Generate adaptive coaching suggestions** based on guide alignment
 
 **Key Principles:**
+
 - Privacy-first: All communication via localhost (user's personal Loqa server)
 - Optional enhancement: Voiceline works offline; Loqa adds advanced ML features
 - Trauma-informed: Progress framed as exploration, not evaluation/comparison
@@ -444,13 +446,13 @@ GET /voice/guide-suggestions?userId={userId}&guideId={guideId}
 ```typescript
 // Built-in guides (bundled with Loqa)
 interface VoiceGuide {
-  id: string;                  // "guide_emma_watson"
+  id: string; // "guide_emma_watson"
   displayName: string;
   type: 'builtin' | 'custom';
 
   voiceCharacteristics: {
-    pitchRange: { mean: number; min: number; max: number; stdev: number; };
-    formants: { f1: number; f2: number; f3?: number; };
+    pitchRange: { mean: number; min: number; max: number; stdev: number };
+    formants: { f1: number; f2: number; f3?: number };
     resonance: string;
     intonationStyle: string;
     tempo: string;
@@ -473,18 +475,18 @@ interface VoiceGuide {
 
   metadata: {
     createdDate: string;
-    source: string;            // "Licensed from [agency]" or "User upload"
-    analysisVersion: string;   // Version of analysis algorithm used
+    source: string; // "Licensed from [agency]" or "User upload"
+    analysisVersion: string; // Version of analysis algorithm used
   };
 }
 
 // Custom guides (user-contributed)
 interface CustomVoiceGuide extends VoiceGuide {
-  userId: string;              // Owner
+  userId: string; // Owner
   customMetadata: {
     sourceAttribution: string;
     consentConfirmed: boolean;
-    manuallyDefined: boolean;  // True if characteristics set via sliders vs. ML
+    manuallyDefined: boolean; // True if characteristics set via sliders vs. ML
     originalFileName: string;
   };
 }
@@ -505,7 +507,7 @@ interface UserVoiceProfile {
   selectedGuides: Array<{
     guideId: string;
     selectedDate: string;
-    isPrimary: boolean;        // Primary guide for progress tracking
+    isPrimary: boolean; // Primary guide for progress tracking
   }>;
 
   // NEW: Guide-based progress tracking
@@ -534,17 +536,20 @@ interface UserVoiceProfile {
 ### Required Algorithms
 
 **1. Pitch Analysis:**
+
 - **Algorithm:** CREPE, pYIN, or YIN for robust F0 estimation
 - **Output:** Mean, min, max, stdev of F0 over session
 - **Accuracy requirement:** ±5Hz
 - **Latency:** <100ms per analysis window (for real-time if needed)
 
 **2. Formant Extraction:**
+
 - **Algorithm:** LPC (Linear Predictive Coding) or Praat backend
 - **Output:** F1, F2, F3 frequencies
 - **Use case:** Resonance classification (dark vs. bright)
 
 **3. Intonation Pattern Classification:**
+
 - **Algorithm:** Pitch contour analysis over 500-1000ms windows
 - **Output:** Pattern type (rising, falling, upturn, flat) + confidence
 - **Patterns to detect:**
@@ -554,21 +559,25 @@ interface UserVoiceProfile {
   - Flat (monotone)
 
 **4. Voice Quality Metrics:**
+
 - **HNR (Harmonics-to-Noise Ratio):** Measure of breathiness
 - **CPP (Cepstral Peak Prominence):** Voice quality indicator
 - **Spectral tilt:** Dark vs. bright resonance classification
 
 **5. Resonance Classification:**
+
 - **Input:** Formant frequencies (F1, F2) + spectral centroid
 - **Algorithm:** Rule-based classifier or trained model
 - **Output:** 'dark' | 'neutral' | 'bright' | 'dark-warm' | 'bright-forward'
 
 **6. Intonation Style Classification:**
+
 - **Input:** Pitch variation statistics (stdev, range) + pattern frequency
 - **Algorithm:** Threshold-based or ML classifier
 - **Output:** 'subtle' | 'moderate' | 'expressive' | 'expressive-melodic'
 
 **7. Tempo/Speaking Rate:**
+
 - **Input:** Audio duration + speech activity detection
 - **Algorithm:** Syllable counting or speech rate estimation
 - **Output:** Syllables per second + classification ('slow', 'moderate', 'fast')
@@ -705,12 +714,14 @@ def calculate_pattern_similarity(
 ### Critical Requirement: Positive Framing
 
 **DO:**
+
 - ✅ "Your pitch range is moving toward the characteristics you chose"
 - ✅ "Intonation expressiveness is increasing—aligning with [Guide]'s melodic style"
 - ✅ "Statement-upturn patterns appearing naturally"
 - ✅ "Continue exploring upward pitch patterns"
 
 **DON'T:**
+
 - ❌ "You're 65% similar to Emma Watson"
 - ❌ "Your pitch is still 15Hz below target"
 - ❌ "You failed to match the guide's intonation"
@@ -722,22 +733,22 @@ def calculate_pattern_similarity(
 // Progress summary templates
 const progressTemplates = {
   pitch: {
-    moving: "Your pitch range is moving toward the characteristics you chose",
-    aligned: "Your pitch range aligns beautifully with your selected guide",
-    exploring: "You're exploring pitch patterns in the range you chose"
+    moving: 'Your pitch range is moving toward the characteristics you chose',
+    aligned: 'Your pitch range aligns beautifully with your selected guide',
+    exploring: "You're exploring pitch patterns in the range you chose",
   },
   intonation: {
     emerging: "Intonation expressiveness is increasing—aligning with {guide}'s {style} style",
-    aligned: "Your intonation patterns beautifully reflect the {style} style you chose",
-    exploring: "You're discovering new intonation patterns"
-  }
+    aligned: 'Your intonation patterns beautifully reflect the {style} style you chose',
+    exploring: "You're discovering new intonation patterns",
+  },
 };
 
 // Coaching suggestion templates
 const coachingTemplates = {
   practice: "Try practicing {pattern}—listen to {guide}'s {example}",
-  listening: "This week, try watching {content}—notice {focus}",
-  exploration: "Continue exploring {characteristic} patterns"
+  listening: 'This week, try watching {content}—notice {focus}',
+  exploration: 'Continue exploring {characteristic} patterns',
 };
 ```
 
@@ -747,29 +758,29 @@ const coachingTemplates = {
 
 ### Latency Targets
 
-| Operation | Target Latency | Max Acceptable |
-|-----------|----------------|----------------|
-| POST /voice/analyze-progress | <500ms | 1000ms |
-| POST /voice/analyze-guide | <3s (30s audio) | 5s |
-| GET /voice/guide-suggestions | <200ms | 500ms |
+| Operation                    | Target Latency  | Max Acceptable |
+| ---------------------------- | --------------- | -------------- |
+| POST /voice/analyze-progress | <500ms          | 1000ms         |
+| POST /voice/analyze-guide    | <3s (30s audio) | 5s             |
+| GET /voice/guide-suggestions | <200ms          | 500ms          |
 
 ### Accuracy Requirements
 
-| Metric | Minimum Accuracy |
-|--------|------------------|
-| Pitch (F0) detection | ±5Hz or 95% confidence |
-| Formant extraction | ±50Hz for F1/F2 |
+| Metric                            | Minimum Accuracy                                |
+| --------------------------------- | ----------------------------------------------- |
+| Pitch (F0) detection              | ±5Hz or 95% confidence                          |
+| Formant extraction                | ±50Hz for F1/F2                                 |
 | Intonation pattern classification | 85% accuracy (validated against human labelers) |
-| Resonance classification | 80% accuracy |
+| Resonance classification          | 80% accuracy                                    |
 
 ### Storage Requirements
 
-| Data Type | Storage per User |
-|-----------|------------------|
-| User voice profile | ~10KB JSON |
-| Session features | ~5KB per session |
-| Custom guide audio | ~1-2MB per guide (compressed) |
-| Custom guide profile | ~5KB JSON |
+| Data Type            | Storage per User              |
+| -------------------- | ----------------------------- |
+| User voice profile   | ~10KB JSON                    |
+| Session features     | ~5KB per session              |
+| Custom guide audio   | ~1-2MB per guide (compressed) |
+| Custom guide profile | ~5KB JSON                     |
 
 **Total estimate:** 50-100MB per active user over 6 months
 
@@ -780,21 +791,25 @@ const coachingTemplates = {
 ### Data Handling Requirements
 
 **1. Local-Only Storage:**
+
 - All voice data stored in `~/.loqa/voice-intelligence/` with `chmod 700` (user-only access)
 - No external API calls or cloud transmission
 - No telemetry or analytics collection
 
 **2. Audio File Handling:**
+
 - Custom guide audio: Store original file locally, never transmit
 - Derived metrics only transmitted between Loqa backend and Voiceline app
 - Audio automatically deleted after analysis if user chooses
 
 **3. User Consent:**
+
 - Custom guide upload requires explicit consent confirmation
 - Warning against non-consensual recordings
 - Clear privacy statement in UI
 
 **4. Data Deletion:**
+
 - User can delete custom guides anytime
 - DELETE endpoint: `DELETE /voice/guide/:guideId`
 - Permanently removes audio and derived metrics
@@ -806,15 +821,18 @@ const coachingTemplates = {
 ### Unit Tests
 
 **1. Pitch Analysis:**
+
 - Test with synthetic sine waves at known frequencies
 - Verify ±5Hz accuracy
 - Edge cases: Very low pitch (80Hz), very high (400Hz), pitch jumps
 
 **2. Intonation Classification:**
+
 - Test with labeled audio samples (rising, falling, upturn, flat)
 - Target 85% classification accuracy
 
 **3. Progress Calculation:**
+
 - Test pitch alignment formula with known baseline/current/guide values
 - Verify 0-100 range output
 - Edge cases: User already at target, user beyond target
@@ -822,11 +840,13 @@ const coachingTemplates = {
 ### Integration Tests
 
 **1. Full Analysis Pipeline:**
+
 - Upload 30s audio → extract features → generate guide profile
 - Verify all characteristics populated
 - Measure end-to-end latency
 
 **2. Progress Tracking:**
+
 - Simulate user progression over multiple sessions
 - Verify progress metrics increase appropriately
 - Validate trauma-informed language generation
@@ -834,6 +854,7 @@ const coachingTemplates = {
 ### User Acceptance Testing
 
 **Critical Test Scenario:**
+
 - User selects Emma Watson as guide
 - Practices for 4 weeks (20 sessions)
 - Pitch moves from 165Hz → 195Hz (guide: 210Hz)
@@ -847,14 +868,18 @@ const coachingTemplates = {
 ## Deployment
 
 ### Phase 1: Story 5.3 (Guide-Aware Progress)
+
 **Endpoints Required:**
+
 - `POST /voice/analyze-progress-toward-guide`
 - `GET /voice/guide-suggestions`
 
 **Timeline:** After Epic 5 Stories 5.1-5.2 complete
 
 ### Phase 2: Story 5.8 (Custom Guides)
+
 **Endpoints Required:**
+
 - `POST /voice/analyze-guide`
 - `DELETE /voice/guide/:guideId`
 
@@ -871,20 +896,15 @@ const coachingTemplates = {
 ## Questions for Loqa Team
 
 **Technical Implementation:**
+
 1. Which pitch detection algorithm do you prefer? (CREPE, pYIN, YIN)
 2. Do you have existing formant extraction? (LPC vs. Praat backend)
 3. Current speaker embedding model? (ECAPA-TDNN, x-vector)
 4. Preferred audio format for upload? (WAV preferred for analysis quality)
 
-**Scope Clarification:**
-5. Is intonation pattern classification already implemented or new work?
-6. Do you have a resonance classification model or should we use rule-based?
-7. Any existing trauma-informed language generation patterns to follow?
+**Scope Clarification:** 5. Is intonation pattern classification already implemented or new work? 6. Do you have a resonance classification model or should we use rule-based? 7. Any existing trauma-informed language generation patterns to follow?
 
-**Timeline & Capacity:**
-8. Estimated development time for Story 5.3 endpoints?
-9. Estimated development time for Story 5.8 custom guide analysis?
-10. Any dependencies or blockers we should know about?
+**Timeline & Capacity:** 8. Estimated development time for Story 5.3 endpoints? 9. Estimated development time for Story 5.8 custom guide analysis? 10. Any dependencies or blockers we should know about?
 
 ---
 
@@ -895,6 +915,7 @@ const coachingTemplates = {
 **Step 1: User completes practice session**
 
 Voiceline extracts on-device features:
+
 ```json
 {
   "pitch": { "mean": 195, "min": 175, "max": 215, "stdev": 12 },
@@ -969,6 +990,7 @@ curl -X POST http://localhost:3000/voice/analyze-progress-toward-guide \
 **Step 4: Voiceline displays "Your Voice Journey" to user**
 
 User sees:
+
 - Journey visualization (baseline → current → guide)
 - Positive progress narrative
 - Listening suggestion for this week
@@ -979,6 +1001,7 @@ User sees:
 **End of Specification**
 
 **Next Steps:**
+
 1. Loqa team reviews specification
 2. Schedule technical clarification meeting
 3. Estimate development timeline
@@ -986,5 +1009,6 @@ User sees:
 5. Establish testing/validation protocol
 
 **Contact:**
+
 - Voiceline: Anna (Product) / Mary (BA)
 - Loqa: [Your backend team contact]

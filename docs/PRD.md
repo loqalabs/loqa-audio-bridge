@@ -33,6 +33,7 @@ Most native modules focus on technical features but overlook the integration exp
 This is a **brownfield refactoring and packaging project** for an existing, functional native module (v0.2.0, previously named VoicelineDSP). The core technology - real-time audio streaming with Voice Activity Detection (VAD), adaptive battery optimization, and cross-platform support (iOS Swift + Android Kotlin) - is already implemented and tested. The v0.3.0 release focuses exclusively on **production-grade packaging, distribution infrastructure, and developer experience** to enable seamless integration into Expo applications.
 
 **Key Attributes:**
+
 - **Existing Codebase**: ~1,500 lines of production-quality Swift/Kotlin/TypeScript
 - **Proven Technology**: Successfully deployed to Voiceline team (v0.2.0)
 - **Integration Feedback**: Detailed 360-line feedback document identifies exact issues
@@ -47,18 +48,21 @@ Success for @loqalabs/loqa-audio-bridge v0.3.0 is measured by **developer experi
 ### Primary Success Criteria
 
 **Integration Time Reduction**
+
 - **Current State (v0.2.0)**: 9-hour integration requiring manual configuration
 - **Target State (v0.3.0)**: <30 minutes from `npm install` to working audio stream
 - **Measurement**: Time from package installation to successful `startAudioStream()` call
 - **Validation**: Fresh Expo project, no prior knowledge of module, following only README
 
 **Zero Manual Steps**
+
 - No manual Podfile edits required
 - No manual ExpoModulesProvider.swift modifications
 - No post-prebuild scripts or sed commands needed
 - Autolinking works seamlessly on both iOS and Android
 
 **Developer Confidence**
+
 - Example app demonstrates all features and runs immediately after installation
 - Clear error messages with actionable solutions (not "Cannot find native module")
 - Documentation answers integration questions before developers ask them
@@ -67,12 +71,14 @@ Success for @loqalabs/loqa-audio-bridge v0.3.0 is measured by **developer experi
 ### Secondary Success Criteria
 
 **Code Quality & Maintainability**
+
 - Zero Swift/Kotlin compilation warnings or errors
 - CI/CD pipeline validates builds on every commit
 - Semantic versioning with automated release process
 - Test coverage maintained at v0.2.0 levels (unit + integration tests)
 
 **Distribution & Accessibility**
+
 - Published to npm registry (@loqalabs/loqa-audio-bridge)
 - GitHub releases with changelogs and migration guides
 - Installation via single command: `npx expo install @loqalabs/loqa-audio-bridge`
@@ -80,6 +86,7 @@ Success for @loqalabs/loqa-audio-bridge v0.3.0 is measured by **developer experi
 ### What Success Looks Like
 
 **Developer Journey (v0.3.0):**
+
 1. Developer runs: `npx expo install @loqalabs/loqa-audio-bridge`
 2. Module installs, autolinking configures both platforms automatically
 3. Developer runs: `npx expo run:ios` (or run:android)
@@ -88,6 +95,7 @@ Success for @loqalabs/loqa-audio-bridge v0.3.0 is measured by **developer experi
 6. Audio streaming works immediately
 
 **Contrast with v0.2.0:**
+
 1. Developer copies module files into project
 2. Creates package.json, expo-module.config.json, and .podspec manually
 3. Edits Podfile to add manual entry
@@ -107,6 +115,7 @@ Success for @loqalabs/loqa-audio-bridge v0.3.0 is measured by **developer experi
 **Essential Deliverables for Production Release:**
 
 **1. Proper Expo Module Scaffolding**
+
 - Regenerate module structure using `create-expo-module` CLI
 - All required configuration files automatically generated:
   - `package.json` with proper metadata and peerDependencies
@@ -116,18 +125,21 @@ Success for @loqalabs/loqa-audio-bridge v0.3.0 is measured by **developer experi
 - Expo autolinking functional out of the box (no manual Podfile edits)
 
 **2. Code Quality & Compilation Fixes**
+
 - Fix Swift compilation error: Add `required` keyword to init override
 - Update deprecated iOS API: Change `.allowBluetooth` to `.allowBluetoothA2DP`
 - Exclude test files from production builds (update podspec)
 - Achieve zero compilation warnings on both platforms
 
 **3. npm Package Distribution**
+
 - Publish to npm registry as `@loqalabs/loqa-audio-bridge`
 - Semantic versioning (v0.3.0 initial release)
 - Package includes all source code, TypeScript types, and platform implementations
 - Installation via: `npx expo install @loqalabs/loqa-audio-bridge`
 
 **4. Core Functionality Preservation**
+
 - Maintain 100% of v0.2.0 features (no feature regression):
   - Real-time audio streaming (8kHz-48kHz configurable sample rates)
   - Voice Activity Detection (VAD) with battery optimization
@@ -138,12 +150,14 @@ Success for @loqalabs/loqa-audio-bridge v0.3.0 is measured by **developer experi
 - Preserve all existing tests (TypeScript, Swift, Kotlin)
 
 **5. Essential Documentation**
+
 - **README.md**: Installation, quick start, basic usage examples
 - **INTEGRATION_GUIDE.md**: Step-by-step Expo integration instructions
 - **API.md**: Migrate existing 730-line API reference (already excellent)
 - **MIGRATION.md**: v0.2.0 → v0.3.0 migration guide for existing users
 
 **6. Working Example App**
+
 - Minimal Expo app demonstrating:
   - Module installation and setup
   - Basic audio streaming with visualization
@@ -156,24 +170,28 @@ Success for @loqalabs/loqa-audio-bridge v0.3.0 is measured by **developer experi
 **Features to consider after successful MVP launch:**
 
 **1. Advanced Documentation & DX**
+
 - Video walkthrough of installation and usage (5-minute screencast)
 - Interactive documentation website (Docusaurus or similar)
 - Troubleshooting flowcharts for common issues
 - Performance tuning guide for different use cases
 
 **2. CI/CD & Automation**
+
 - Automated testing on GitHub Actions (iOS + Android builds)
 - Automated npm publishing via GitHub Releases
 - Integration test suite validating autolinking works
 - Pre-commit hooks for code quality (linting, type checking)
 
 **3. Enhanced Example Apps**
+
 - Advanced example: Real-time pitch detection visualization
 - Advanced example: Voice activity monitoring with waveform display
 - Advanced example: Multi-configuration testing app
 - Expo Snack for quick browser-based demos
 
 **4. Developer Tooling**
+
 - CLI tool for module configuration validation
 - Debug mode with verbose logging
 - Performance profiling utilities
@@ -184,23 +202,27 @@ Success for @loqalabs/loqa-audio-bridge v0.3.0 is measured by **developer experi
 **Long-term enhancements aligned with audio processing roadmap:**
 
 **1. Native DSP Features** (v0.4.0)
+
 - Native FFT computation for frequency domain analysis
 - Real-time pitch detection (fundamental frequency extraction)
 - Formant analysis for vocal tract resonance
 - Spectrogram data generation for visualization
 
 **2. Recording & Playback** (v0.4.0)
+
 - Audio recording to file (WAV, AAC formats)
 - Real-time audio playback with DSP effects
 - Audio file processing and analysis
 
 **3. Advanced Audio Features** (v0.5.0)
+
 - Multi-channel support (stereo, multi-mic arrays)
 - Audio source switching (microphone, line-in, Bluetooth)
 - Real-time audio effects (reverb, echo, filters)
 - WebRTC integration for voice communication
 
 **4. Ecosystem Integration** (v0.5.0+)
+
 - TensorFlow Lite integration for ML audio models
 - Cloud audio processing pipeline connectors
 - Audio visualization libraries (waveform, spectrogram)
@@ -213,6 +235,7 @@ Success for @loqalabs/loqa-audio-bridge v0.3.0 is measured by **developer experi
 ### Platform Requirements
 
 **iOS Platform:**
+
 - **Minimum Version**: iOS 13.4+
 - **Swift Version**: 5.4+
 - **Framework**: AVFoundation (AVAudioEngine, AVAudioSession)
@@ -222,6 +245,7 @@ Success for @loqalabs/loqa-audio-bridge v0.3.0 is measured by **developer experi
   - Background audio capability (optional, for background streaming)
 
 **Android Platform:**
+
 - **Minimum SDK**: API 21 (Android 5.0 Lollipop)
 - **Target SDK**: API 34+ (Android 14+)
 - **Language**: Kotlin 1.8+
@@ -234,11 +258,13 @@ Success for @loqalabs/loqa-audio-bridge v0.3.0 is measured by **developer experi
 ### Expo Framework Requirements
 
 **Expo Version Compatibility:**
+
 - **Minimum**: Expo 52 (with Expo Modules Core 1.x)
 - **Recommended**: Expo 54+ (with React Native 0.81+)
 - **Build System**: EAS Build compatible
 
 **Module Configuration:**
+
 - Expo config plugin (optional enhancement for app.json integration)
 - Autolinking via expo-module.config.json
 - No ejection required (works with managed workflow)
@@ -246,6 +272,7 @@ Success for @loqalabs/loqa-audio-bridge v0.3.0 is measured by **developer experi
 ### React Native Requirements
 
 **React Native Version:**
+
 - **Minimum**: React Native 0.72
 - **Recommended**: React Native 0.81+
 - **JavaScript Engine**: Hermes or JSC compatible
@@ -254,24 +281,27 @@ Success for @loqalabs/loqa-audio-bridge v0.3.0 is measured by **developer experi
 ### Package Distribution
 
 **npm Package Structure:**
+
 - **Package Name**: `@loqalabs/loqa-audio-bridge`
 - **Scope**: Organization-scoped (@loqalabs)
 - **Installation Method**: `npx expo install @loqalabs/loqa-audio-bridge`
 - **Peer Dependencies**:
-  - expo (*)
-  - expo-modules-core (*)
+  - expo (\*)
+  - expo-modules-core (\*)
   - react (^18.0.0)
   - react-native (>=0.72.0)
 
 ### Autolinking Requirements
 
 **iOS Autolinking:**
+
 - Podspec file must be present in module root
 - Module name in podspec matches Expo config
 - CocoaPods discovers module via Expo autolinking scanner
 - No manual Podfile edits required
 
 **Android Autolinking:**
+
 - build.gradle properly configured with module package name
 - AndroidManifest.xml included with permissions templates
 - Expo autolinking discovers gradle module automatically
@@ -312,17 +342,20 @@ Success for @loqalabs/loqa-audio-bridge v0.3.0 is measured by **developer experi
 ### Testing Requirements
 
 **Unit Tests (Existing - must be preserved):**
-- TypeScript API tests (__tests__/)
+
+- TypeScript API tests (**tests**/)
 - iOS native tests (ios/Tests/ - excluded from builds)
 - Android native tests (android/src/test/)
 
 **Integration Tests:**
+
 - Autolinking validation test (confirm module loads without manual steps)
 - Fresh Expo project installation test
 - Both platforms build successfully test
 - Example app runs test
 
 **Compatibility Testing:**
+
 - Expo 52, 53, 54 versions
 - React Native 0.72, 0.76, 0.81
 - iOS 13.4, 14.0, 15.0, 16.0, 17.0
@@ -331,18 +364,21 @@ Success for @loqalabs/loqa-audio-bridge v0.3.0 is measured by **developer experi
 ### Device Feature Requirements
 
 **Microphone Access:**
+
 - Runtime permission handling (iOS + Android)
 - Clear user-facing permission prompts
 - Graceful degradation if permission denied
 - Permission status checking API
 
 **Battery Optimization:**
+
 - Battery level monitoring (both platforms)
 - Adaptive frame rate reduction when battery < 20%
 - VAD (Voice Activity Detection) for silence skipping
 - Battery usage transparency in documentation
 
 **Audio Session Management (iOS):**
+
 - Proper AVAudioSession category configuration
 - Interruption handling (phone calls, Siri, alarms)
 - Route change handling (headphones, Bluetooth)
@@ -351,6 +387,7 @@ Success for @loqalabs/loqa-audio-bridge v0.3.0 is measured by **developer experi
 ### Build System Requirements
 
 **iOS Build:**
+
 - Compatible with Xcode 14+ and 15+
 - CocoaPods integration via .podspec
 - Swift compilation with zero warnings
@@ -358,6 +395,7 @@ Success for @loqalabs/loqa-audio-bridge v0.3.0 is measured by **developer experi
 - Test files excluded from production builds
 
 **Android Build:**
+
 - Compatible with Android Studio Flamingo+
 - Gradle 8.x build system
 - Kotlin 1.8+ compilation
@@ -367,18 +405,21 @@ Success for @loqalabs/loqa-audio-bridge v0.3.0 is measured by **developer experi
 ### Distribution & Release
 
 **npm Registry:**
+
 - Public package on npm registry
 - Scoped to @loqalabs organization
 - Semantic versioning (MAJOR.MINOR.PATCH)
 - Automated publishing via CI/CD
 
 **GitHub Releases:**
+
 - Tagged releases (v0.3.0, v0.3.1, etc.)
 - Release notes with changelogs
 - Migration guides for breaking changes
 - Source code archives
 
 **EAS Build Compatibility:**
+
 - Works with Expo Application Services (EAS) cloud builds
 - No special configuration required for EAS
 - Validated on both iOS and Android EAS builds
@@ -392,23 +433,27 @@ Success for @loqalabs/loqa-audio-bridge v0.3.0 is measured by **developer experi
 **FR1**: System shall regenerate module structure using `create-expo-module` CLI to ensure proper Expo module scaffolding
 
 **FR2**: System shall include complete package.json with:
+
 - Package name: @loqalabs/loqa-audio-bridge
 - Proper semantic version (0.3.0)
 - Peer dependencies for expo, expo-modules-core, react, react-native
 - Main entry point and TypeScript types declarations
 
 **FR3**: System shall include expo-module.config.json specifying:
+
 - Supported platforms (iOS, Android)
 - iOS module name: VoicelineDSPModule
 - Android module package: expo.modules.voicelinedsp.VoicelineDSPModule
 
 **FR4**: System shall include voiceline-dsp.podspec for iOS with:
+
 - Dynamic version reading from package.json
 - ExpoModulesCore dependency
-- Test file exclusions (ios/Tests/**/*)
+- Test file exclusions (ios/Tests/\*_/_)
 - Swift 5.4+ requirement
 
 **FR5**: System shall include Android build.gradle with:
+
 - Proper module package configuration
 - Kotlin 1.8+ compilation settings
 - Expo Modules Core integration
@@ -436,23 +481,27 @@ Success for @loqalabs/loqa-audio-bridge v0.3.0 is measured by **developer experi
 ### Core Functionality Preservation
 
 **FR14**: System shall maintain 100% feature parity with v0.2.0 including:
+
 - Real-time audio streaming API (startAudioStream, stopAudioStream, isStreaming)
 - Configurable sample rates (8kHz, 16kHz, 32kHz, 44.1kHz, 48kHz)
 - Configurable buffer sizes (512-8192 samples, power-of-2 on iOS)
 - Mono and stereo channel support
 
 **FR15**: System shall preserve Voice Activity Detection (VAD) functionality:
+
 - Native RMS calculation
 - Silence detection (RMS < 0.01 threshold)
 - Automatic frame skipping during silence
 - Battery savings of 30-50% when silent
 
 **FR16**: System shall preserve Adaptive Processing functionality:
+
 - Battery level monitoring on both platforms
 - Frame rate reduction from 8Hz to 4Hz when battery < 20%
 - 20-30% additional power savings on low battery
 
 **FR17**: System shall maintain event-driven architecture with three event types:
+
 - onAudioSamples: Audio data with samples, sampleRate, frameLength, timestamp, RMS
 - onStreamStatusChange: Status updates (streaming/stopped/paused/battery_optimized)
 - onStreamError: Error notifications with code, message, platform, timestamp
@@ -462,6 +511,7 @@ Success for @loqalabs/loqa-audio-bridge v0.3.0 is measured by **developer experi
 **FR19**: System shall maintain all existing TypeScript type definitions and interfaces
 
 **FR20**: System shall preserve all existing unit and integration tests:
+
 - TypeScript API tests
 - iOS Swift tests
 - Android Kotlin tests
@@ -481,12 +531,14 @@ Success for @loqalabs/loqa-audio-bridge v0.3.0 is measured by **developer experi
 ### Documentation
 
 **FR26**: System shall provide README.md with:
+
 - Installation instructions (single command)
 - Quick start example (5-10 lines of code)
 - Basic usage examples
 - Link to comprehensive documentation
 
 **FR27**: System shall provide INTEGRATION_GUIDE.md with:
+
 - Step-by-step Expo integration instructions
 - Prerequisites (Expo version, React Native version)
 - Troubleshooting common issues
@@ -495,6 +547,7 @@ Success for @loqalabs/loqa-audio-bridge v0.3.0 is measured by **developer experi
 **FR28**: System shall migrate existing API.md (730 lines) to new package structure
 
 **FR29**: System shall provide MIGRATION.md with:
+
 - v0.2.0 → v0.3.0 upgrade guide
 - Breaking changes (if any)
 - Migration steps for existing users
@@ -503,6 +556,7 @@ Success for @loqalabs/loqa-audio-bridge v0.3.0 is measured by **developer experi
 ### Example Application
 
 **FR30**: System shall include working example/ directory with Expo app demonstrating:
+
 - Basic audio streaming setup
 - Event handling pattern
 - React hook usage
@@ -539,6 +593,7 @@ Success for @loqalabs/loqa-audio-bridge v0.3.0 is measured by **developer experi
 **NFR3**: Example app shall build successfully in under 5 minutes on standard Mac hardware (M-series or recent Intel)
 
 **NFR4**: Runtime performance shall match v0.2.0 benchmarks:
+
 - CPU usage: 2-5% per core during active streaming
 - Memory footprint: 5-10 MB including buffer pool
 - Battery impact: 3-8%/hour with VAD enabled
@@ -603,12 +658,14 @@ Success for @loqalabs/loqa-audio-bridge v0.3.0 is measured by **developer experi
 The implementation of VoicelineDSP v0.3.0 will be organized into the following epics:
 
 **Epic 1: Module Scaffolding & Configuration**
+
 - Regenerate module structure with create-expo-module
 - Create all required configuration files
 - Set up proper package.json and npm metadata
 - Configure autolinking for both platforms
 
 **Epic 2: Code Migration & Quality Fixes**
+
 - Migrate v0.2.0 code into new scaffolding
 - Fix Swift compilation errors
 - Update deprecated APIs
@@ -616,24 +673,28 @@ The implementation of VoicelineDSP v0.3.0 will be organized into the following e
 - Achieve zero compilation warnings
 
 **Epic 3: Documentation & Integration Guide**
+
 - Write README.md with quick start
 - Create comprehensive INTEGRATION_GUIDE.md
 - Migrate existing API.md
 - Write MIGRATION.md for v0.2.0 users
 
 **Epic 4: Example Application**
+
 - Create example Expo app
 - Implement audio streaming demo
 - Add visualization component
 - Document integration steps
 
 **Epic 5: Testing & Validation**
+
 - Validate autolinking on fresh projects
 - Run all existing v0.2.0 tests
 - Test on multiple Expo/RN versions
 - EAS Build validation
 
 **Epic 6: Distribution & Release**
+
 - Set up npm publishing
 - Create GitHub release workflow
 - Publish v0.3.0 to npm registry
@@ -675,4 +736,3 @@ The implementation of VoicelineDSP v0.3.0 will be organized into the following e
 **Last Updated**: 2025-11-13
 **Created By**: Anna (BMad PRD Workflow)
 **Project Track**: BMad Method (Brownfield Refactoring)
-

@@ -31,13 +31,13 @@ VoicelineDSP v0.2.0 extends the voice analysis capabilities with real-time audio
 
 ### Technology Stack
 
-| Layer | iOS | Android | Shared |
-|-------|-----|---------|--------|
-| **Audio Capture** | AVAudioEngine | AudioRecord | - |
-| **Audio Format** | Float32 PCM | Float32 PCM | [-1.0, 1.0] normalized |
-| **Threading** | Audio I/O thread → Main | Dispatchers.IO → Main | Expo EventEmitter |
-| **Language** | Swift 5.0+ | Kotlin 1.9+ | TypeScript 5.0+ |
-| **Module Framework** | Expo Modules | Expo Modules | expo-modules-core |
+| Layer                | iOS                     | Android               | Shared                 |
+| -------------------- | ----------------------- | --------------------- | ---------------------- |
+| **Audio Capture**    | AVAudioEngine           | AudioRecord           | -                      |
+| **Audio Format**     | Float32 PCM             | Float32 PCM           | [-1.0, 1.0] normalized |
+| **Threading**        | Audio I/O thread → Main | Dispatchers.IO → Main | Expo EventEmitter      |
+| **Language**         | Swift 5.0+              | Kotlin 1.9+           | TypeScript 5.0+        |
+| **Module Framework** | Expo Modules            | Expo Modules          | expo-modules-core      |
 
 ---
 
@@ -59,15 +59,15 @@ latency_ms = (buffer_size_samples / sample_rate_hz) × 1000
 
 **Examples:**
 
-| Sample Rate | Buffer Size | Latency | Use Case |
-|-------------|-------------|---------|----------|
-| 16 kHz | 512 samples | 32 ms | Ultra-low latency (limited analysis) |
-| 16 kHz | 1024 samples | 64 ms | Low latency, basic analysis |
-| 16 kHz | **2048 samples** | **128 ms** | **Recommended: Voice analysis (YIN)** |
-| 16 kHz | 4096 samples | 256 ms | High-resolution analysis |
-| 44.1 kHz | 2048 samples | 46 ms | Low-latency music |
-| 44.1 kHz | **4096 samples** | **93 ms** | **High-quality capture** |
-| 48 kHz | 4096 samples | 85 ms | Professional audio |
+| Sample Rate | Buffer Size      | Latency    | Use Case                              |
+| ----------- | ---------------- | ---------- | ------------------------------------- |
+| 16 kHz      | 512 samples      | 32 ms      | Ultra-low latency (limited analysis)  |
+| 16 kHz      | 1024 samples     | 64 ms      | Low latency, basic analysis           |
+| 16 kHz      | **2048 samples** | **128 ms** | **Recommended: Voice analysis (YIN)** |
+| 16 kHz      | 4096 samples     | 256 ms     | High-resolution analysis              |
+| 44.1 kHz    | 2048 samples     | 46 ms      | Low-latency music                     |
+| 44.1 kHz    | **4096 samples** | **93 ms**  | **High-quality capture**              |
+| 48 kHz      | 4096 samples     | 85 ms      | Professional audio                    |
 
 ### Recommended Configurations
 
@@ -158,14 +158,17 @@ function validateBufferSize(bufferSize: number): void {
 
 ```typescript
 let lastTimestamp = 0;
-const expectedInterval = (bufferSize / sampleRate) * 1000;  // ms
+const expectedInterval = (bufferSize / sampleRate) * 1000; // ms
 
 VoicelineDSP.addAudioSampleListener((event) => {
   const actualInterval = event.timestamp - lastTimestamp;
   const delta = Math.abs(actualInterval - expectedInterval);
 
-  if (delta > expectedInterval * 0.5) {  // 50% tolerance
-    console.warn(`Buffer overflow detected: expected ${expectedInterval}ms, got ${actualInterval}ms`);
+  if (delta > expectedInterval * 0.5) {
+    // 50% tolerance
+    console.warn(
+      `Buffer overflow detected: expected ${expectedInterval}ms, got ${actualInterval}ms`
+    );
     // Mitigation: increase buffer size or reduce processing load
   }
 
@@ -305,34 +308,34 @@ All errors follow a consistent structure across platforms:
 
 ```typescript
 interface StreamErrorEvent {
-  error: string;        // Error code (uppercase, underscore-separated)
-  message: string;      // Human-readable description
-  platform?: string;    // 'ios' | 'android'
-  details?: any;        // Optional platform-specific details
+  error: string; // Error code (uppercase, underscore-separated)
+  message: string; // Human-readable description
+  platform?: string; // 'ios' | 'android'
+  details?: any; // Optional platform-specific details
 }
 ```
 
 ### Standard Error Codes
 
-| Error Code | Description | Severity | Recovery Strategy |
-|------------|-------------|----------|-------------------|
-| `PERMISSION_DENIED` | Microphone permission not granted | **High** | Prompt user to enable in Settings |
-| `SESSION_CONFIG_FAILED` | Audio session setup failed (iOS) | **High** | Retry with fallback config |
-| `ENGINE_START_FAILED` | Audio engine/recorder failed to start | **High** | Check device availability, retry once |
-| `DEVICE_NOT_AVAILABLE` | Microphone hardware unavailable | **High** | Inform user, disable audio features |
-| `BUFFER_OVERFLOW` | Audio frames being dropped | **Medium** | Increase buffer size, reduce processing |
-| `UNKNOWN_ERROR` | Unexpected error occurred | **Medium** | Log for debugging, inform user gracefully |
+| Error Code              | Description                           | Severity   | Recovery Strategy                         |
+| ----------------------- | ------------------------------------- | ---------- | ----------------------------------------- |
+| `PERMISSION_DENIED`     | Microphone permission not granted     | **High**   | Prompt user to enable in Settings         |
+| `SESSION_CONFIG_FAILED` | Audio session setup failed (iOS)      | **High**   | Retry with fallback config                |
+| `ENGINE_START_FAILED`   | Audio engine/recorder failed to start | **High**   | Check device availability, retry once     |
+| `DEVICE_NOT_AVAILABLE`  | Microphone hardware unavailable       | **High**   | Inform user, disable audio features       |
+| `BUFFER_OVERFLOW`       | Audio frames being dropped            | **Medium** | Increase buffer size, reduce processing   |
+| `UNKNOWN_ERROR`         | Unexpected error occurred             | **Medium** | Log for debugging, inform user gracefully |
 
 ### Error Recovery Matrix
 
-| Error | Retry? | Fallback | User Action Required | Auto-Recover |
-|-------|--------|----------|----------------------|--------------|
-| **PERMISSION_DENIED** | No | N/A | Yes (open Settings) | No |
-| **SESSION_CONFIG_FAILED** | Yes (1x) | Different config | No | Possible |
-| **ENGINE_START_FAILED** | Yes (1x) | Check device | Maybe | Possible |
-| **DEVICE_NOT_AVAILABLE** | No | Disable features | Yes (external mic) | No |
-| **BUFFER_OVERFLOW** | No | Larger buffer | No | Yes (adjust config) |
-| **UNKNOWN_ERROR** | No | N/A | Maybe | No |
+| Error                     | Retry?   | Fallback         | User Action Required | Auto-Recover        |
+| ------------------------- | -------- | ---------------- | -------------------- | ------------------- |
+| **PERMISSION_DENIED**     | No       | N/A              | Yes (open Settings)  | No                  |
+| **SESSION_CONFIG_FAILED** | Yes (1x) | Different config | No                   | Possible            |
+| **ENGINE_START_FAILED**   | Yes (1x) | Check device     | Maybe                | Possible            |
+| **DEVICE_NOT_AVAILABLE**  | No       | Disable features | Yes (external mic)   | No                  |
+| **BUFFER_OVERFLOW**       | No       | Larger buffer    | No                   | Yes (adjust config) |
+| **UNKNOWN_ERROR**         | No       | N/A              | Maybe                | No                  |
 
 ### Platform-Specific Error Mapping
 
@@ -483,22 +486,22 @@ function handleStreamError(event: StreamErrorEvent) {
 
 ```typescript
 // ❌ Aggressive messaging
-"Grant microphone permission now or the app won't work!"
-"Error: Permission denied. Fix this immediately."
+"Grant microphone permission now or the app won't work!";
+'Error: Permission denied. Fix this immediately.';
 
 // ✅ Trauma-informed messaging
-"Voice features require microphone access to analyze your voice in real-time."
-"Your audio is processed locally and never leaves your device."
-"You can enable microphone access in Settings anytime."
+'Voice features require microphone access to analyze your voice in real-time.';
+'Your audio is processed locally and never leaves your device.';
+'You can enable microphone access in Settings anytime.';
 
 // ❌ Technical jargon
-"AudioRecord initialization failed (error -1)"
-"AVAudioSession category configuration error 561015905"
+'AudioRecord initialization failed (error -1)';
+'AVAudioSession category configuration error 561015905';
 
 // ✅ User-friendly explanation
-"We're having trouble connecting to your microphone."
-"This might be resolved by restarting the app."
-"If the issue persists, please check your device's microphone settings."
+"We're having trouble connecting to your microphone.";
+'This might be resolved by restarting the app.';
+"If the issue persists, please check your device's microphone settings.";
 ```
 
 #### 4. Retry Logic with Exponential Backoff
@@ -506,23 +509,24 @@ function handleStreamError(event: StreamErrorEvent) {
 ```typescript
 async function startStreamWithRetry(config: StreamConfig, maxRetries = 2) {
   let attempt = 0;
-  let delay = 1000;  // Start with 1 second
+  let delay = 1000; // Start with 1 second
 
   while (attempt < maxRetries) {
     try {
       await VoicelineDSP.startAudioStream(config);
-      return;  // Success
-
+      return; // Success
     } catch (error) {
       attempt++;
 
       if (attempt >= maxRetries) {
-        throw error;  // Give up
+        throw error; // Give up
       }
 
-      console.warn(`Stream start failed (attempt ${attempt}/${maxRetries}), retrying in ${delay}ms...`);
-      await new Promise(resolve => setTimeout(resolve, delay));
-      delay *= 2;  // Exponential backoff
+      console.warn(
+        `Stream start failed (attempt ${attempt}/${maxRetries}), retrying in ${delay}ms...`
+      );
+      await new Promise((resolve) => setTimeout(resolve, delay));
+      delay *= 2; // Exponential backoff
     }
   }
 }
@@ -593,13 +597,13 @@ Start Stream Request
 
 **Target: <100ms (microphone → visual update)**
 
-| Component | iOS Target | Android Target | Measurement Method |
-|-----------|------------|----------------|-------------------|
-| **Mic → Native** | <40 ms | <60 ms | Hardware + OS latency |
-| **Native → JS** | <10 ms | <10 ms | Timestamp tracking (native→JS event) |
-| **JS Processing** | <30 ms | <30 ms | Performance.now() before/after |
-| **Visual Update** | <16 ms | <16 ms | 60fps render frame time |
-| **Total** | **<96 ms** ✅ | **<116 ms** ⚠️ | End-to-end timestamp tracking |
+| Component         | iOS Target    | Android Target | Measurement Method                   |
+| ----------------- | ------------- | -------------- | ------------------------------------ |
+| **Mic → Native**  | <40 ms        | <60 ms         | Hardware + OS latency                |
+| **Native → JS**   | <10 ms        | <10 ms         | Timestamp tracking (native→JS event) |
+| **JS Processing** | <30 ms        | <30 ms         | Performance.now() before/after       |
+| **Visual Update** | <16 ms        | <16 ms         | 60fps render frame time              |
+| **Total**         | **<96 ms** ✅ | **<116 ms** ⚠️ | End-to-end timestamp tracking        |
 
 **Note:** Android latency ~20-40ms higher than iOS due to platform differences. This is acceptable for Voiceline use case (voice training doesn't require <50ms latency).
 
@@ -942,14 +946,14 @@ VoicelineDSP.addAudioSampleListener((event) => {
 
 **Guarantee: Identical API on iOS and Android**
 
-| Feature | iOS | Android | Consistent? |
-|---------|-----|---------|-------------|
-| **TypeScript API** | ✅ Same | ✅ Same | ✅ Yes |
-| **Function signatures** | ✅ Same | ✅ Same | ✅ Yes |
-| **Event payloads** | ✅ Same | ✅ Same | ✅ Yes |
-| **Error codes** | ✅ Same | ✅ Same | ✅ Yes |
-| **Default config** | ✅ Same | ✅ Same | ✅ Yes |
-| **Buffer size constraints** | ✅ 512-8192 | ✅ 512-8192 | ✅ Yes |
+| Feature                     | iOS         | Android     | Consistent? |
+| --------------------------- | ----------- | ----------- | ----------- |
+| **TypeScript API**          | ✅ Same     | ✅ Same     | ✅ Yes      |
+| **Function signatures**     | ✅ Same     | ✅ Same     | ✅ Yes      |
+| **Event payloads**          | ✅ Same     | ✅ Same     | ✅ Yes      |
+| **Error codes**             | ✅ Same     | ✅ Same     | ✅ Yes      |
+| **Default config**          | ✅ Same     | ✅ Same     | ✅ Yes      |
+| **Buffer size constraints** | ✅ 512-8192 | ✅ 512-8192 | ✅ Yes      |
 
 ### Event Payload Consistency
 
@@ -989,30 +993,30 @@ VoicelineDSP.addAudioSampleListener((event) => {
 
 **Identical error codes across platforms:**
 
-| Error Code | iOS | Android | Message Format |
-|------------|-----|---------|----------------|
-| `PERMISSION_DENIED` | ✅ | ✅ | "Microphone permission not granted" |
-| `SESSION_CONFIG_FAILED` | ✅ | ⚠️ (rare) | "Audio session setup failed" |
-| `ENGINE_START_FAILED` | ✅ | ✅ | "Audio engine/recorder failed to start" |
-| `DEVICE_NOT_AVAILABLE` | ✅ | ✅ | "Microphone hardware unavailable" |
-| `BUFFER_OVERFLOW` | ✅ | ✅ | "Audio frames are being dropped" |
-| `UNKNOWN_ERROR` | ✅ | ✅ | "Unexpected error occurred" |
+| Error Code              | iOS | Android   | Message Format                          |
+| ----------------------- | --- | --------- | --------------------------------------- |
+| `PERMISSION_DENIED`     | ✅  | ✅        | "Microphone permission not granted"     |
+| `SESSION_CONFIG_FAILED` | ✅  | ⚠️ (rare) | "Audio session setup failed"            |
+| `ENGINE_START_FAILED`   | ✅  | ✅        | "Audio engine/recorder failed to start" |
+| `DEVICE_NOT_AVAILABLE`  | ✅  | ✅        | "Microphone hardware unavailable"       |
+| `BUFFER_OVERFLOW`       | ✅  | ✅        | "Audio frames are being dropped"        |
+| `UNKNOWN_ERROR`         | ✅  | ✅        | "Unexpected error occurred"             |
 
 ### Platform-Specific Behavior Documentation
 
 **Differences to document and handle:**
 
-| Aspect | iOS | Android | Mitigation |
-|--------|-----|---------|------------|
-| **Latency** | 40-60ms | 60-100ms | Document difference, adjust expectations |
-| **Permission Flow** | System prompt (automatic) | Runtime request (explicit) | Handle in app code (Android) |
-| **Interruption Handling** | Automatic (AVAudioSession) | Manual (focus management) | Implement interruption handling (Android) |
-| **Sample Format** | Int16 → Float32 conversion | Native Float32 (API 23+) | Transparent to JS layer |
-| **Threading Model** | Audio thread → Main | Dispatchers.IO → Main | Same event delivery model |
+| Aspect                    | iOS                        | Android                    | Mitigation                                |
+| ------------------------- | -------------------------- | -------------------------- | ----------------------------------------- |
+| **Latency**               | 40-60ms                    | 60-100ms                   | Document difference, adjust expectations  |
+| **Permission Flow**       | System prompt (automatic)  | Runtime request (explicit) | Handle in app code (Android)              |
+| **Interruption Handling** | Automatic (AVAudioSession) | Manual (focus management)  | Implement interruption handling (Android) |
+| **Sample Format**         | Int16 → Float32 conversion | Native Float32 (API 23+)   | Transparent to JS layer                   |
+| **Threading Model**       | Audio thread → Main        | Dispatchers.IO → Main      | Same event delivery model                 |
 
 **Example: Document Platform Differences**
 
-```markdown
+````markdown
 ### Platform-Specific Notes
 
 #### Latency
@@ -1033,24 +1037,20 @@ This is acceptable for voice training use case (not latency-critical).
 
 ```typescript
 // Android: Check permission before starting
-const hasPermission = await PermissionsAndroid.check(
-  PermissionsAndroid.PERMISSIONS.RECORD_AUDIO
-);
+const hasPermission = await PermissionsAndroid.check(PermissionsAndroid.PERMISSIONS.RECORD_AUDIO);
 
 if (!hasPermission) {
-  await PermissionsAndroid.request(
-    PermissionsAndroid.PERMISSIONS.RECORD_AUDIO,
-    {
-      title: 'Microphone Permission',
-      message: 'Voice features require microphone access for real-time analysis.',
-      buttonPositive: 'Allow'
-    }
-  );
+  await PermissionsAndroid.request(PermissionsAndroid.PERMISSIONS.RECORD_AUDIO, {
+    title: 'Microphone Permission',
+    message: 'Voice features require microphone access for real-time analysis.',
+    buttonPositive: 'Allow',
+  });
 }
 
 // iOS: No explicit check needed, system handles automatically
 await VoicelineDSP.startAudioStream(config);
 ```
+````
 
 #### Interruption Handling
 
@@ -1058,7 +1058,8 @@ await VoicelineDSP.startAudioStream(config);
 - **Android:** Manual handling via AudioFocusRequest (phone calls, other apps)
 
 **Impact:** iOS resumes automatically, Android may require manual resume.
-```
+
+````
 
 ### Testing Strategy for Cross-Platform Parity
 
@@ -1104,7 +1105,7 @@ describe('VoicelineDSP API', () => {
     expect(typeof event.timestamp).toBe('number');
   });
 });
-```
+````
 
 #### 2. Error Code Consistency Tests
 
@@ -1121,14 +1122,19 @@ describe('Error Handling', () => {
     // ... (platform-specific test setup)
 
     // Verify error codes match across platforms
-    errors.forEach(error => {
+    errors.forEach((error) => {
       expect(error).toHaveProperty('error');
       expect(error).toHaveProperty('message');
       expect(error).toHaveProperty('platform');
 
-      expect(['PERMISSION_DENIED', 'SESSION_CONFIG_FAILED', 'ENGINE_START_FAILED',
-              'DEVICE_NOT_AVAILABLE', 'BUFFER_OVERFLOW', 'UNKNOWN_ERROR'])
-        .toContain(error.error);
+      expect([
+        'PERMISSION_DENIED',
+        'SESSION_CONFIG_FAILED',
+        'ENGINE_START_FAILED',
+        'DEVICE_NOT_AVAILABLE',
+        'BUFFER_OVERFLOW',
+        'UNKNOWN_ERROR',
+      ]).toContain(error.error);
     });
 
     sub.remove();
@@ -1155,9 +1161,9 @@ describe('Configuration', () => {
 
   it('should reject same invalid configs on iOS and Android', async () => {
     const invalidConfigs = [
-      { sampleRate: 16000, bufferSize: 100, channels: 1 },   // Too small
+      { sampleRate: 16000, bufferSize: 100, channels: 1 }, // Too small
       { sampleRate: 16000, bufferSize: 10000, channels: 1 }, // Too large
-      { sampleRate: -1, bufferSize: 2048, channels: 1 },     // Negative
+      { sampleRate: -1, bufferSize: 2048, channels: 1 }, // Negative
     ];
 
     for (const config of invalidConfigs) {
@@ -1392,18 +1398,21 @@ User App          VoicelineDSP       Native Module      Audio Engine      Microp
 ### Platform Documentation
 
 **iOS:**
+
 - [AVAudioEngine Documentation](https://developer.apple.com/documentation/avfaudio/avaudioengine)
 - [AVAudioSession Documentation](https://developer.apple.com/documentation/avfoundation/avaudiosession)
 - [installTap Reference](https://developer.apple.com/documentation/avfaudio/avaudionode/1387122-installtap)
 - [Accelerate Framework (vDSP)](https://developer.apple.com/documentation/accelerate/vdsp)
 
 **Android:**
+
 - [AudioRecord Documentation](https://developer.android.com/reference/android/media/AudioRecord)
 - [AudioFormat Documentation](https://developer.android.com/reference/android/media/AudioFormat)
 - [Runtime Permissions Guide](https://developer.android.com/training/permissions/requesting)
 - [Kotlin Coroutines Guide](https://kotlinlang.org/docs/coroutines-guide.html)
 
 **Expo:**
+
 - [Expo Modules API](https://docs.expo.dev/modules/overview/)
 - [EventEmitter Pattern](https://docs.expo.dev/modules/module-api/#events)
 
@@ -1421,9 +1430,9 @@ User App          VoicelineDSP       Native Module      Audio Engine      Microp
 
 ## Document History
 
-| Version | Date | Author | Changes |
-|---------|------|--------|---------|
-| 0.2.0 | 2025-11-12 | Loqa Architecture Team | Initial design document for Epic 2D |
+| Version | Date       | Author                 | Changes                             |
+| ------- | ---------- | ---------------------- | ----------------------------------- |
+| 0.2.0   | 2025-11-12 | Loqa Architecture Team | Initial design document for Epic 2D |
 
 ---
 

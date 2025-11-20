@@ -36,6 +36,7 @@ This document provides step-by-step procedures for validating the VoicelineDSP v
 **Location:** `modules/voiceline-dsp/ios/Tests/VoicelineDSPIntegrationTests.swift`
 
 **Prerequisites:**
+
 - Xcode 15.0+ installed
 - iOS 17.0+ physical device or simulator
 - Microphone access granted
@@ -60,6 +61,7 @@ xcodebuild test \
 ```
 
 **Test Coverage:**
+
 - ✅ Start/stop streaming lifecycle
 - ✅ Event rate validation (~8Hz)
 - ✅ Sample value range [-1.0, 1.0]
@@ -70,6 +72,7 @@ xcodebuild test \
 - ✅ Cleanup and memory management
 
 **Expected Results:**
+
 - All tests pass on simulator and physical device
 - No crashes or memory leaks detected
 - Event rate within 6-10 Hz range
@@ -81,6 +84,7 @@ xcodebuild test \
 **Location:** `modules/voiceline-dsp/android/src/androidTest/java/expo/modules/voicelinedsp/VoicelineDSPIntegrationTest.kt`
 
 **Prerequisites:**
+
 - Android Studio installed
 - Android device (API 26+) or emulator
 - RECORD_AUDIO permission granted
@@ -101,6 +105,7 @@ cd modules/voiceline-dsp/android
 ```
 
 **Test Coverage:**
+
 - ✅ Permission handling (grant/deny)
 - ✅ Start/stop streaming lifecycle
 - ✅ Event rate validation (~8Hz)
@@ -112,6 +117,7 @@ cd modules/voiceline-dsp/android
 - ✅ Cleanup and memory management
 
 **Expected Results:**
+
 - All tests pass on emulator and physical device
 - No crashes or ANRs detected
 - Event rate within 5-12 Hz range
@@ -133,6 +139,7 @@ yarn test latency-measurement.test.ts
 ```
 
 **Test Coverage:**
+
 - ✅ Component latency calculations
 - ✅ Percentile statistics (50th, 95th, 99th)
 - ✅ Platform-specific expectations
@@ -141,6 +148,7 @@ yarn test latency-measurement.test.ts
 - ✅ Timestamp accuracy validation
 
 **Expected Results:**
+
 - 95th percentile latency <100ms
 - Native component <45ms (median)
 - Bridge component <15ms (median)
@@ -156,12 +164,14 @@ yarn test latency-measurement.test.ts
 **Setup:**
 
 1. **Build Release Configuration:**
+
    ```bash
    cd modules/voiceline-dsp
    xcodebuild -configuration Release
    ```
 
 2. **Install on Physical Device:**
+
    - Connect iPhone via USB
    - Install app: `Product → Run` in Xcode (Release scheme)
 
@@ -175,9 +185,9 @@ yarn test latency-measurement.test.ts
 1. Launch app on device
 2. Start recording in Instruments
 3. Let app idle for **30 minutes**
-4. Note battery % before: _____
-5. Note battery % after: _____
-6. Calculate drain: **Baseline = _____% **
+4. Note battery % before: **\_**
+5. Note battery % after: **\_**
+6. Calculate drain: **Baseline = **\_**% **
 
 7. Export Instruments data:
    - `File → Export`
@@ -186,11 +196,11 @@ yarn test latency-measurement.test.ts
 **Streaming Test:**
 
 1. Reset: Stop recording, close app
-2. Note battery % before: _____
+2. Note battery % before: **\_**
 3. Launch app, start audio streaming
 4. Speak continuously or play audio loop for **30 minutes**
-5. Note battery % after: _____
-6. Calculate drain: **Streaming = _____% **
+5. Note battery % after: **\_**
+6. Calculate drain: **Streaming = **\_**% **
 
 7. Export Instruments data:
    - `File → Export`
@@ -231,12 +241,14 @@ Overhead: 3% ✅ (within target)
 **Setup:**
 
 1. **Build Release APK:**
+
    ```bash
    cd modules/voiceline-dsp/android
    ./gradlew assembleRelease
    ```
 
 2. **Install on Physical Device:**
+
    ```bash
    adb install app/build/outputs/apk/release/app-release.apk
    ```
@@ -249,16 +261,18 @@ Overhead: 3% ✅ (within target)
 
 1. Connect device via USB
 2. Reset battery stats:
+
    ```bash
    adb shell dumpsys batterystats --reset
    ```
 
 3. **Disconnect USB** (battery stats accurate only when unplugged)
 4. Launch app, let idle for **30 minutes**
-5. Note battery % before: _____
-6. Note battery % after: _____
+5. Note battery % before: **\_**
+6. Note battery % after: **\_**
 
 7. Reconnect USB, capture bugreport:
+
    ```bash
    adb bugreport > baseline.zip
    ```
@@ -269,6 +283,7 @@ Overhead: 3% ✅ (within target)
 **Streaming Test:**
 
 1. Reset battery stats:
+
    ```bash
    adb shell dumpsys batterystats --reset
    ```
@@ -276,10 +291,11 @@ Overhead: 3% ✅ (within target)
 2. **Disconnect USB**
 3. Launch app, start audio streaming
 4. Stream continuously for **30 minutes**
-5. Note battery % before: _____
-6. Note battery % after: _____
+5. Note battery % before: **\_**
+6. Note battery % after: **\_**
 
 7. Reconnect USB, capture bugreport:
+
    ```bash
    adb bugreport > streaming.zip
    ```
@@ -381,6 +397,7 @@ Overhead: 4% ✅ (within target)
 
 1. **Open Android Studio**
 2. **Run app** on device with profiling enabled:
+
    - `Run → Profile 'app'`
    - Or click "Profile" icon in toolbar
 
@@ -454,16 +471,19 @@ Overhead: 4% ✅ (within target)
 **Procedure:**
 
 1. **iOS Recording:**
+
    - Start VoicelineDSP streaming
    - Play test audio for 10 seconds
    - Export samples to file: `ios-samples.txt`
 
 2. **Android Recording:**
+
    - Start VoicelineDSP streaming
    - Play same test audio for 10 seconds
    - Export samples to file: `android-samples.txt`
 
 3. **Compare Samples:**
+
    ```python
    import numpy as np
 
@@ -492,10 +512,12 @@ Overhead: 4% ✅ (within target)
 
 1. **Start streaming** on device
 2. **Launch heavy CPU task** (compute-intensive loop):
+
    - iOS: Run Geekbench CPU benchmark simultaneously
    - Android: Run CPU stress test app
 
 3. **Monitor dropout rate:**
+
    - iOS: Check console for `Buffer overflow` warnings
    - Android: Check logcat for `underrun` warnings
 
@@ -541,12 +563,12 @@ Overhead: 4% ✅ (within target)
 
 Test on the following devices (or best available):
 
-| Device | OS Version | Test Status | Latency | Battery | Notes |
-|--------|------------|-------------|---------|---------|-------|
-| iPhone 12 | iOS 15 | Pending | ___ms | ___%  | |
-| iPhone 13 Pro | iOS 16 | Pending | ___ms | ___%  | |
-| iPhone 14 | iOS 17 | Pending | ___ms | ___%  | |
-| iPad Air | iOS 16 | Pending | ___ms | ___%  | |
+| Device        | OS Version | Test Status | Latency  | Battery | Notes |
+| ------------- | ---------- | ----------- | -------- | ------- | ----- |
+| iPhone 12     | iOS 15     | Pending     | \_\_\_ms | \_\_\_% |       |
+| iPhone 13 Pro | iOS 16     | Pending     | \_\_\_ms | \_\_\_% |       |
+| iPhone 14     | iOS 17     | Pending     | \_\_\_ms | \_\_\_% |       |
+| iPad Air      | iOS 16     | Pending     | \_\_\_ms | \_\_\_% |       |
 
 **For Each Device:**
 
@@ -561,14 +583,14 @@ Test on the following devices (or best available):
 
 Test on the following devices (or best available):
 
-| Device | OS Version | Test Status | Latency | Battery | Notes |
-|--------|------------|-------------|---------|---------|-------|
-| Samsung Galaxy S21 | Android 12 | Pending | ___ms | ___%  | OneUI skin |
-| Google Pixel 6 | Android 13 | Pending | ___ms | ___%  | Stock Android |
-| OnePlus 9 | Android 12 | Pending | ___ms | ___%  | OxygenOS |
-| Android Emulator | API 26 (8.0) | Pending | ___ms | N/A | Slowest supported |
-| Android Emulator | API 30 (11.0) | Pending | ___ms | N/A | |
-| Android Emulator | API 33 (13.0) | Pending | ___ms | N/A | Latest |
+| Device             | OS Version    | Test Status | Latency  | Battery | Notes             |
+| ------------------ | ------------- | ----------- | -------- | ------- | ----------------- |
+| Samsung Galaxy S21 | Android 12    | Pending     | \_\_\_ms | \_\_\_% | OneUI skin        |
+| Google Pixel 6     | Android 13    | Pending     | \_\_\_ms | \_\_\_% | Stock Android     |
+| OnePlus 9          | Android 12    | Pending     | \_\_\_ms | \_\_\_% | OxygenOS          |
+| Android Emulator   | API 26 (8.0)  | Pending     | \_\_\_ms | N/A     | Slowest supported |
+| Android Emulator   | API 30 (11.0) | Pending     | \_\_\_ms | N/A     |                   |
+| Android Emulator   | API 33 (13.0) | Pending     | \_\_\_ms | N/A     | Latest            |
 
 **For Each Device:**
 
@@ -586,6 +608,7 @@ Test on the following devices (or best available):
 **Procedure:**
 
 1. Instrument code with timestamps at each stage:
+
    - `t1`: Audio generated (reference time)
    - `t2`: Native buffer received
    - `t3`: JS event received
@@ -594,6 +617,7 @@ Test on the following devices (or best available):
 
 2. Run 100 iterations, collect timestamps
 3. Calculate component latencies:
+
    - Native: `t2 - t1`
    - Bridge: `t3 - t2`
    - Processing: `t4 - t3`
@@ -605,13 +629,13 @@ Test on the following devices (or best available):
 
 **Target Breakdown:**
 
-| Component | iOS Target | Android Target |
-|-----------|------------|----------------|
-| Native (mic → buffer) | <40ms | <50ms |
-| Bridge (native → JS) | <10ms | <15ms |
-| Processing (JS) | <15ms | <15ms |
-| Visual (render) | <10ms | <10ms |
-| **Total (E2E)** | **<75ms** | **<90ms** |
+| Component             | iOS Target | Android Target |
+| --------------------- | ---------- | -------------- |
+| Native (mic → buffer) | <40ms      | <50ms          |
+| Bridge (native → JS)  | <10ms      | <15ms          |
+| Processing (JS)       | <15ms      | <15ms          |
+| Visual (render)       | <10ms      | <10ms          |
+| **Total (E2E)**       | **<75ms**  | **<90ms**      |
 
 ---
 
@@ -620,12 +644,14 @@ Test on the following devices (or best available):
 **Procedure:**
 
 1. Measure battery impact in 4 configurations:
+
    - Baseline (no streaming)
    - Streaming (VAD disabled, adaptive disabled)
    - Streaming (VAD enabled, adaptive disabled)
    - Streaming (VAD enabled, adaptive enabled)
 
 2. Calculate savings:
+
    - VAD savings = (No VAD %) - (VAD enabled %)
    - Adaptive savings = (Adaptive disabled %) - (Adaptive enabled %)
 
@@ -644,6 +670,7 @@ Test on the following devices (or best available):
 
 1. Profile memory allocations during streaming
 2. Identify allocation hotspots:
+
    - Buffer allocations per frame
    - Event payload allocations
    - Temporary objects
@@ -664,6 +691,7 @@ Test on the following devices (or best available):
 After completing all tests, compile results into:
 
 **Performance Benchmark Report:**
+
 - Location: `docs/voiceline/voicelinedsp-v0.2.0-performance-report.md`
 - Template provided in this repository
 - Include all metrics, screenshots, and device compatibility matrix
@@ -686,18 +714,23 @@ After completing all tests, compile results into:
 ### Common Issues
 
 **Issue:** iOS tests fail with "Audio session activation failed"
+
 - **Fix:** Check microphone permissions in Settings → Privacy → Microphone
 
 **Issue:** Android tests fail with "PERMISSION_DENIED"
+
 - **Fix:** Grant RECORD_AUDIO permission before running tests
 
 **Issue:** High latency on emulator
+
 - **Fix:** Emulator has additional buffering; test on physical device for accurate latency
 
 **Issue:** Battery drain higher on older devices
+
 - **Fix:** Expected; enable adaptive processing by default for older devices
 
 **Issue:** Memory leaks detected
+
 - **Fix:** Verify event listeners are removed on cleanup, coroutines are cancelled
 
 ---
