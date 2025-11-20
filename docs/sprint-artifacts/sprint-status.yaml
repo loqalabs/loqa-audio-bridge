@@ -79,7 +79,7 @@ development_status:
   epic-5: contexted
   5-1-configure-npm-package-for-publishing: done  # ✅ APPROVED - All 4 ACs verified, 33/33 tasks validated, zero blocking issues. Package configuration production-ready (62 KB tarball, multi-layer test exclusion working, comprehensive validation complete).
   5-2-create-github-actions-ci-pipeline: done  # ✅ APPROVED - All 9 ACs implemented, 33/33 tasks verified, CI pipeline with 5 parallel jobs passing (51s total), upgraded @types/react to v19 to match React 19.2.0, native module structure validation (not full builds), implements Architecture Decision 3 Layer 4, zero blocking issues
-  5-3-create-automated-npm-publishing-workflow: ready-for-dev
+  5-3-create-automated-npm-publishing-workflow: review  # Workflow and docs created, awaits manual NPM_TOKEN config and publish test
   5-4-validate-eas-build-compatibility: ready-for-dev
   5-5-create-changelog-md-and-release-process-documentation: ready-for-dev
   epic-5-retrospective: optional

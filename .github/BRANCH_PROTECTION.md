@@ -24,10 +24,12 @@ Configure the following status checks to be required before merging to `main`:
 ### Branch Protection Settings
 
 - ✅ **Require a pull request before merging**
+
   - Require approvals: 1 (recommended)
   - Dismiss stale pull request approvals when new commits are pushed
 
 - ✅ **Require status checks to pass before merging**
+
   - Require branches to be up to date before merging
   - Status checks that are required:
     - `lint`

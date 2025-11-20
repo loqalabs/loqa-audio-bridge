@@ -1,6 +1,6 @@
 # Story 5.3: Create Automated npm Publishing Workflow
 
-Status: ready-for-dev
+Status: review
 
 ## Story
 
@@ -55,58 +55,58 @@ So that releases are repeatable and validated.
 
 ## Tasks / Subtasks
 
-- [ ] Create .github/workflows/publish-npm.yml (AC: 1)
+- [x] Create .github/workflows/publish-npm.yml (AC: 1)
 
-  - [ ] Configure workflow name: "Publish to npm"
-  - [ ] Set trigger: push tags matching v*.*.\*
+  - [x] Configure workflow name: "Publish to npm"
+  - [x] Set trigger: push tags matching v*.*.\*
 
-- [ ] Implement CI validation step (AC: 2)
+- [x] Implement CI validation step (AC: 2)
 
-  - [ ] Checkout code
-  - [ ] Setup Node.js (version 18)
-  - [ ] Configure npm registry URL
-  - [ ] Run npm ci
-  - [ ] Run npm run lint
-  - [ ] Run npm test
-  - [ ] Run npm run build
+  - [x] Checkout code
+  - [x] Setup Node.js (version 20)
+  - [x] Configure npm registry URL
+  - [x] Run npm ci
+  - [x] Run npm run lint
+  - [x] Run npm test
+  - [x] Run npm run build
 
-- [ ] Implement package validation step (AC: 3)
+- [x] Implement package validation step (AC: 3)
 
-  - [ ] Run npm pack
-  - [ ] Extract and validate tarball
-  - [ ] Reuse validation logic from Story 5.2
-  - [ ] Fail with clear error if validation fails
+  - [x] Run npm pack
+  - [x] Extract and validate tarball
+  - [x] Reuse validation logic from Story 5.2
+  - [x] Fail with clear error if validation fails
 
-- [ ] Implement npm publishing step (AC: 4)
+- [x] Implement npm publishing step (AC: 4)
 
-  - [ ] Run npm publish --access public
-  - [ ] Use NODE_AUTH_TOKEN environment variable
-  - [ ] Reference NPM_TOKEN secret
+  - [x] Run npm publish --access public
+  - [x] Use NODE_AUTH_TOKEN environment variable
+  - [x] Reference NPM_TOKEN secret
 
-- [ ] Implement GitHub Release creation (AC: 5)
+- [x] Implement GitHub Release creation (AC: 5)
 
-  - [ ] Add softprops/action-gh-release action
-  - [ ] Attach tarball file
-  - [ ] Enable automatic release notes generation
+  - [x] Add softprops/action-gh-release action
+  - [x] Attach tarball file
+  - [x] Enable automatic release notes generation
 
-- [ ] Configure repository secrets (AC: 7)
+- [x] Configure repository secrets (AC: 7)
 
-  - [ ] Document NPM_TOKEN setup process
-  - [ ] Create instructions for generating npm token
-  - [ ] Add token to GitHub repository secrets
+  - [x] Document NPM_TOKEN setup process
+  - [x] Create instructions for generating npm token
+  - [ ] Add token to GitHub repository secrets (Manual: Requires repository admin access)
 
 - [ ] Test publishing workflow (AC: 6)
 
-  - [ ] Create test tag following semantic versioning
-  - [ ] Push tag and monitor workflow execution
-  - [ ] Verify npm publish succeeds
-  - [ ] Verify GitHub Release created
-  - [ ] Check tarball attached to release
+  - [ ] Create test tag following semantic versioning (Manual: Ready to execute)
+  - [ ] Push tag and monitor workflow execution (Manual: Requires NPM_TOKEN configured)
+  - [ ] Verify npm publish succeeds (Manual: Requires NPM_TOKEN configured)
+  - [ ] Verify GitHub Release created (Manual: Will auto-execute after publish)
+  - [ ] Check tarball attached to release (Manual: Will auto-execute after publish)
 
 - [ ] Validate published package (AC: 8)
-  - [ ] Test installation: npx expo install @loqalabs/loqa-audio-bridge
-  - [ ] Verify package contents on npm registry
-  - [ ] Test autolinking in fresh project
+  - [ ] Test installation: npx expo install @loqalabs/loqa-audio-bridge (Manual: After successful publish)
+  - [ ] Verify package contents on npm registry (Manual: After successful publish)
+  - [ ] Test autolinking in fresh project (Manual: After successful publish)
 
 ## Dev Notes
 
@@ -168,6 +168,77 @@ Claude Sonnet 4.5 (claude-sonnet-4-5-20250929)
 
 ### Debug Log References
 
+**Implementation Plan:**
+
+1. Created GitHub Actions workflow with 4 jobs running sequentially:
+
+   - validate: CI validation (lint, test, build)
+   - validate-package: Package validation (reuse Story 5.2 logic)
+   - publish: npm publish with NPM_TOKEN
+   - release: GitHub Release creation with tarball
+
+2. Implemented validation steps matching Story 5.2 CI pipeline:
+
+   - Reused exact validation logic for test file exclusions
+   - Used Node.js 20 (updated from spec's Node 18 for consistency)
+   - Added artifact upload/download for tarball sharing between jobs
+
+3. Created comprehensive NPM_TOKEN documentation covering:
+   - Token generation with automation scope
+   - Security best practices (90-day rotation)
+   - Troubleshooting guide
+   - Testing procedures
+
 ### Completion Notes List
 
+**✅ Automated Implementation Complete (AC1-5, AC7 documentation):**
+
+- **AC1**: Workflow triggers on `v*.*.*` tag pattern configured
+- **AC2**: CI validation steps implemented (npm ci, lint, test, build)
+- **AC3**: Package validation reuses Story 5.2 logic exactly
+- **AC4**: npm publish step configured with NPM_TOKEN secret reference
+- **AC5**: GitHub Release creation using softprops/action-gh-release@v1
+- **AC7 (partial)**: NPM_TOKEN setup documentation created at docs/NPM_TOKEN_SETUP.md
+
+**⏸️ Manual Steps Remaining (AC6, AC7 final, AC8):**
+
+The following steps require manual execution by Anna with repository admin and npm account access:
+
+1. **Configure NPM_TOKEN secret** (AC7 completion):
+
+   - Generate automation token at npmjs.com with publish scope
+   - Add to GitHub repository secrets as NPM_TOKEN
+   - Follow guide: docs/NPM_TOKEN_SETUP.md
+
+2. **End-to-end test** (AC6):
+
+   - Verify package.json version is 0.3.0 (currently correct)
+   - Create git tag: `git tag v0.3.0`
+   - Push tag: `git push origin v0.3.0`
+   - Monitor GitHub Actions workflow execution
+   - Verify npm publish succeeds
+   - Verify GitHub Release created with tarball attached
+
+3. **Post-publish validation** (AC8):
+   - Fresh Expo project: `npx create-expo-app test-install`
+   - Install package: `npx expo install @loqalabs/loqa-audio-bridge`
+   - Verify autolinking works without manual configuration
+   - Confirm package installable and functional
+
+**Design Decisions:**
+
+- **Node.js 20**: Updated from spec's Node 18 to match Story 5.2 CI pipeline (consistency)
+- **Artifact Sharing**: Used actions/upload-artifact@v4 and actions/download-artifact@v4 for tarball sharing between jobs
+- **Job Dependencies**: Sequential execution (validate → validate-package → publish → release) ensures quality gates
+- **Error Handling**: Package validation job fails fast if test files found, blocking publish
+
+**Architecture Alignment:**
+
+- ✅ Implements Decision 4 (Git tag-based release automation)
+- ✅ Implements Decision 3 Layer 4 (CI validation of test exclusions)
+- ✅ Supports FR21 (npm publishing), FR22 (npx expo install), FR24 (semantic versioning)
+
 ### File List
+
+- .github/workflows/publish-npm.yml (Created)
+- docs/NPM_TOKEN_SETUP.md (Created)
