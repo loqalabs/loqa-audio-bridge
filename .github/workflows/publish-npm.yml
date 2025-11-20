@@ -1,0 +1,184 @@
+name: Publish to npm
+
+on:
+  push:
+    tags:
+      - 'v*.*.*'
+
+jobs:
+  validate:
+    name: CI Validation
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+          registry-url: 'https://registry.npmjs.org'
+
+      - name: Install dependencies
+        run: npm ci --legacy-peer-deps
+
+      - name: Run linter
+        run: npm run lint
+
+      - name: Run tests
+        run: npm test
+
+      - name: Build TypeScript
+        run: npm run build
+
+  validate-package:
+    name: Package Validation
+    runs-on: ubuntu-latest
+    needs: validate
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci --legacy-peer-deps
+
+      - name: Build package
+        run: npm run build
+
+      - name: Create npm package
+        run: npm pack
+
+      - name: Extract tarball
+        run: |
+          mkdir -p package-inspection
+          tar -xzf loqalabs-loqa-audio-bridge-*.tgz -C package-inspection
+
+      - name: Validate no test files in package
+        run: |
+          cd package-inspection/package
+
+          echo "🔍 Checking for test files..."
+
+          # Check for TypeScript test files
+          if find . -name "*.test.ts" -o -name "*.spec.ts" | grep .; then
+            echo "❌ ERROR: TypeScript test files found in package!"
+            exit 1
+          fi
+
+          # Check for Swift test files
+          if find . -name "*Tests.swift" -o -name "*Test.swift" | grep .; then
+            echo "❌ ERROR: Swift test files found in package!"
+            exit 1
+          fi
+
+          # Check for Kotlin test files
+          if find . -name "*Test.kt" -o -name "*Tests.kt" | grep .; then
+            echo "❌ ERROR: Kotlin test files found in package!"
+            exit 1
+          fi
+
+          echo "✅ No test files found (TypeScript, Swift, Kotlin)"
+
+      - name: Validate no test directories in package
+        run: |
+          cd package-inspection/package
+
+          echo "🔍 Checking for test directories..."
+
+          # Check for common test directories
+          if [ -d "__tests__" ]; then
+            echo "❌ ERROR: __tests__/ directory found in package!"
+            exit 1
+          fi
+
+          if [ -d "ios/Tests" ]; then
+            echo "❌ ERROR: ios/Tests/ directory found in package!"
+            exit 1
+          fi
+
+          if [ -d "android/src/test" ]; then
+            echo "❌ ERROR: android/src/test/ directory found in package!"
+            exit 1
+          fi
+
+          if [ -d "android/src/androidTest" ]; then
+            echo "❌ ERROR: android/src/androidTest/ directory found in package!"
+            exit 1
+          fi
+
+          if [ -d "example" ]; then
+            echo "❌ ERROR: example/ directory found in package!"
+            exit 1
+          fi
+
+          echo "✅ No test directories found"
+
+      - name: Upload tarball for publishing
+        uses: actions/upload-artifact@v4
+        with:
+          name: npm-package
+          path: loqalabs-loqa-audio-bridge-*.tgz
+          retention-days: 1
+
+  publish:
+    name: Publish to npm Registry
+    runs-on: ubuntu-latest
+    needs: validate-package
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          registry-url: 'https://registry.npmjs.org'
+
+      - name: Install dependencies
+        run: npm ci --legacy-peer-deps
+
+      - name: Build package
+        run: npm run build
+
+      - name: Publish to npm
+        run: npm publish --access public
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+
+      - name: Create tarball for release
+        run: npm pack
+
+      - name: Upload tarball for release
+        uses: actions/upload-artifact@v4
+        with:
+          name: release-tarball
+          path: loqalabs-loqa-audio-bridge-*.tgz
+          retention-days: 90
+
+  release:
+    name: Create GitHub Release
+    runs-on: ubuntu-latest
+    needs: publish
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Download tarball
+        uses: actions/download-artifact@v4
+        with:
+          name: release-tarball
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v1
+        with:
+          files: loqalabs-loqa-audio-bridge-*.tgz
+          generate_release_notes: true
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
