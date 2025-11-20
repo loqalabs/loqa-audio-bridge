@@ -63,7 +63,7 @@
   "homepage": "https://github.com/loqalabs/loqa-audio-bridge#readme",
   "devDependencies": {
     "@types/jest": "^30.0.0",
-    "@types/react": "^18.0.0",
+    "@types/react": "^19.0.0",
     "eslint": "^8.0.0",
     "eslint-config-expo": "^10.0.0",
     "eslint-config-prettier": "^10.1.8",
