@@ -5,6 +5,9 @@ on:
     tags:
       - 'v*.*.*'
 
+permissions:
+  contents: write  # Required for creating GitHub Releases
+
 jobs:
   validate:
     name: CI Validation
