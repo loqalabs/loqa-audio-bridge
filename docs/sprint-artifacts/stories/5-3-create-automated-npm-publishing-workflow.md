@@ -203,12 +203,14 @@ Claude Sonnet 4.5 (claude-sonnet-4-5-20250929)
 **✅ All Acceptance Criteria Complete (AC1-8):**
 
 - **AC6** (End-to-end test): ✅ PASSED
+
   - Created and pushed v0.3.0 tag
   - Workflow executed successfully (CI validation: 30s, Package validation: 34s, Publish: 40s)
   - npm publish succeeded to https://www.npmjs.com/package/@loqalabs/loqa-audio-bridge
   - GitHub Release created manually at https://github.com/loqalabs/loqa-audio-bridge/releases/tag/v0.3.0
 
 - **AC7** (NPM_TOKEN configured): ✅ COMPLETE
+
   - Created @loqalabs organization on npm
   - Generated granular access token with org-level write permissions (90-day expiration, 2FA bypass for automation)
   - Configured GitHub secret NPM_TOKEN successfully

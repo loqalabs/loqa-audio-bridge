@@ -25,6 +25,8 @@
     "README.md",
     "API.md",
     "INTEGRATION_GUIDE.md",
+    "CHANGELOG.md",
+    "RELEASING.md",
     "LICENSE"
   ],
   "publishConfig": {
