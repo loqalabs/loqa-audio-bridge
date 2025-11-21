@@ -1,6 +1,6 @@
 {
   "name": "@loqalabs/loqa-audio-bridge",
-  "version": "0.3.0",
+  "version": "0.3.1",
   "description": "Production-grade Expo native module for real-time audio streaming with Voice Activity Detection and battery optimization",
   "main": "build/src/index.js",
   "types": "build/src/index.d.ts",
