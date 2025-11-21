@@ -175,6 +175,64 @@ if (status === 'granted') {
 - **Audio Analysis**: 44.1kHz-48kHz for high-fidelity capture
 - **Environmental Monitoring**: VAD-enabled streaming with low sample rates
 
+## EAS Build Compatibility
+
+This package works seamlessly with **Expo Application Services (EAS) Build** for cloud-based iOS and Android builds. No special configuration required.
+
+### Quick Setup
+
+1. Install the package:
+
+   ```bash
+   npx expo install @loqalabs/loqa-audio-bridge
+   ```
+
+2. Configure EAS Build (if not already done):
+
+   ```bash
+   npx eas build:configure
+   ```
+
+3. Build your app:
+
+   ```bash
+   # iOS
+   eas build --platform ios --profile development
+
+   # Android
+   eas build --platform android --profile development
+   ```
+
+### Standard Configuration
+
+The package works with a standard `eas.json`:
+
+```json
+{
+  "build": {
+    "development": {
+      "developmentClient": true,
+      "distribution": "internal"
+    },
+    "production": {
+      "distribution": "store"
+    }
+  }
+}
+```
+
+**No custom plugins, build hooks, or special environment variables required.** The module autolinks identically in cloud builds as it does in local builds.
+
+### Verification
+
+Once your EAS build completes:
+
+1. Download the `.ipa` (iOS) or `.apk` (Android) from the EAS dashboard
+2. Install on a physical device
+3. The audio streaming functionality works identically to local builds
+
+For detailed EAS Build setup and troubleshooting, see the [Integration Guide](./INTEGRATION_GUIDE.md#eas-build).
+
 ## License
 
 MIT

@@ -16,6 +16,7 @@ Complete step-by-step guide for integrating real-time audio streaming into your 
 6. [Step 5: Testing](#step-5-testing)
 7. [Troubleshooting](#troubleshooting)
 8. [Advanced Topics](#advanced-topics)
+   - [8.6 EAS Build (Cloud Builds)](#86-eas-build-cloud-builds)
 
 ---
 
@@ -1102,6 +1103,290 @@ async function startStreamingWithFallback() {
   return false;
 }
 ```
+
+---
+
+### 8.6 EAS Build (Cloud Builds)
+
+#### Overview
+
+**Expo Application Services (EAS) Build** enables cloud-based iOS and Android builds without requiring local Xcode or Android Studio installations. The `@loqalabs/loqa-audio-bridge` package works seamlessly with EAS Build with **zero special configuration required**.
+
+**Key Benefits**:
+
+- Build iOS apps without owning a Mac
+- Build Android apps without Android Studio setup
+- Consistent build environment (no "works on my machine" issues)
+- Parallel builds for faster iteration
+- Build artifacts stored in cloud
+
+#### Prerequisites
+
+1. **Expo Account**: Sign up at [expo.dev](https://expo.dev)
+2. **EAS CLI**: Install globally
+
+   ```bash
+   npm install -g eas-cli
+   ```
+
+3. **Authentication**: Login to your Expo account
+
+   ```bash
+   eas login
+   ```
+
+#### Step-by-Step Setup
+
+##### Step 1: Install the Package
+
+```bash
+npx expo install @loqalabs/loqa-audio-bridge
+```
+
+The package will be added to your `package.json` dependencies.
+
+##### Step 2: Configure EAS Build
+
+Run the configuration command:
+
+```bash
+eas build:configure
+```
+
+This creates an `eas.json` file in your project root. The default configuration works perfectly:
+
+```json
+{
+  "build": {
+    "development": {
+      "developmentClient": true,
+      "distribution": "internal"
+    },
+    "production": {
+      "distribution": "store"
+    }
+  }
+}
+```
+
+No modifications needed! The module autolinks automatically in the cloud environment.
+
+##### Step 3: Add Permissions (if not already done)
+
+Ensure your `app.json` includes microphone permissions:
+
+```json
+{
+  "expo": {
+    "ios": {
+      "infoPlist": {
+        "NSMicrophoneUsageDescription": "This app needs microphone access for audio recording."
+      }
+    },
+    "android": {
+      "permissions": ["RECORD_AUDIO"]
+    }
+  }
+}
+```
+
+##### Step 4: Trigger iOS Build
+
+```bash
+eas build --platform ios --profile development
+```
+
+What happens:
+
+1. EAS uploads your project to the cloud
+2. Installs dependencies (including `@loqalabs/loqa-audio-bridge`)
+3. Runs `npx expo prebuild` (autolinking happens here)
+4. Runs `pod install` (CocoaPods links native iOS code)
+5. Compiles with Xcodebuild
+6. Generates `.ipa` file
+
+Build logs will show:
+
+```text
+[iOS] Installing pods...
+Auto-linked 'LoqaAudioBridge' module
+```
+
+##### Step 5: Trigger Android Build
+
+```bash
+eas build --platform android --profile development
+```
+
+What happens:
+
+1. EAS uploads your project to cloud
+2. Installs dependencies
+3. Runs `npx expo prebuild` (autolinking happens here)
+4. Gradle detects and links `loqa-audio-bridge` module
+5. Compiles with Gradle
+6. Generates `.apk` file
+
+Build logs will show:
+
+```text
+[Android] Configuring build...
+Autolinking found loqa-audio-bridge
+```
+
+#### Downloading and Testing Builds
+
+Once builds complete (typically 10-20 minutes), download the artifacts:
+
+**iOS (.ipa)**:
+
+1. Navigate to [expo.dev/accounts/[your-account]/projects/[your-project]/builds](https://expo.dev)
+2. Find your iOS build, click "Download"
+3. Install on physical device via Xcode or TestFlight
+
+**Android (.apk)**:
+
+1. Download `.apk` from EAS dashboard
+2. Transfer to Android device
+3. Enable "Install from Unknown Sources" in device settings
+4. Tap `.apk` to install
+
+**Testing**: Launch the app and verify audio streaming works identically to local builds.
+
+#### Troubleshooting EAS Builds
+
+##### Issue: Build fails with "Module not found: @loqalabs/loqa-audio-bridge"
+
+Cause: Package not in `package.json` dependencies
+
+Solution:
+
+```bash
+npx expo install @loqalabs/loqa-audio-bridge
+git add package.json package-lock.json
+git commit -m "Add loqa-audio-bridge dependency"
+eas build --platform ios
+```
+
+---
+
+##### Issue: iOS build fails with "LoqaAudioBridge.podspec not found"
+
+Cause: Corrupted npm package or network issue during install
+
+Solution:
+
+1. Verify package installed correctly:
+
+   ```bash
+   npm ls @loqalabs/loqa-audio-bridge
+   ```
+
+2. If missing, reinstall:
+
+   ```bash
+   npm install @loqalabs/loqa-audio-bridge --force
+   ```
+
+3. Retry build
+
+---
+
+##### Issue: Android build fails with Gradle errors
+
+Cause: Gradle cache issues or dependency conflicts
+
+Solution:
+
+Add to `eas.json`:
+
+```json
+{
+  "build": {
+    "development": {
+      "android": {
+        "gradleCommand": ":app:assembleDebug --no-daemon --console=plain"
+      }
+    }
+  }
+}
+```
+
+Retry build with clean cache:
+
+```bash
+eas build --platform android --clear-cache
+```
+
+---
+
+##### Issue: Build succeeds but app crashes on device
+
+Cause: Missing runtime permissions or incompatible Expo SDK version
+
+Solution:
+
+1. Check Expo SDK version compatibility:
+
+   ```bash
+   npx expo-doctor
+   ```
+
+2. Verify microphone permissions in `app.json` (see Step 3 above)
+3. Check device logs:
+   - iOS: Xcode → Window → Devices and Simulators → Select device → View logs
+   - Android: `adb logcat`
+
+#### Production Builds for App Stores
+
+For production builds destined for Apple App Store or Google Play Store:
+
+```bash
+# iOS (App Store)
+eas build --platform ios --profile production
+
+# Android (Google Play)
+eas build --platform android --profile production
+```
+
+**Important**: Production builds require:
+
+- Apple Developer account ($99/year) for iOS
+- Google Play Developer account ($25 one-time) for Android
+- Proper code signing certificates configured in EAS
+
+See [EAS Submit documentation](https://docs.expo.dev/submit/introduction/) for app store submission.
+
+#### EAS Build Pricing
+
+**Free Tier** (sufficient for testing):
+
+- Limited builds per month
+- Shared build queue (may wait for available runner)
+
+**Paid Plans**:
+
+- Priority build queue
+- Unlimited builds
+- Faster build servers
+
+See [pricing](https://expo.dev/pricing) for current rates.
+
+#### Verification Checklist
+
+After successful EAS build:
+
+- [ ] Build completed without errors (check EAS dashboard)
+- [ ] Download `.ipa` (iOS) or `.apk` (Android)
+- [ ] Install on physical device
+- [ ] App launches successfully
+- [ ] Microphone permission prompt appears
+- [ ] Grant permission
+- [ ] Audio streaming functionality works
+- [ ] RMS values update during speech
+- [ ] No crashes or errors in device logs
+
+**Success Criteria**: Audio streaming works identically to local development builds.
 
 ---
 
